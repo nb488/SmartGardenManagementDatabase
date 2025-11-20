@@ -15,7 +15,7 @@
     <!-- Display the current status of the database connection. 
          !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
          -->
-    <h1>Database Connection Status: 
+    <h1>Database Connection Status:
         <!-- An in-line placeholder to display connection status. -->
         <span id="dbStatus"> </span>
         <!-- A loading GIF, will be hided once get the status. -->
@@ -24,9 +24,31 @@
 
     <br><hr><br> <!-- ========================================================================= -->
 
+    <label for="tableSelector">Select Table:</label>
+    <select id="tableSelector">
+        <option value="">--Choose a Table--</option>
+        <option value="persontable">Person</option>
+        <option value="postalcodetable">PostalCode</option>
+        <option value="tooltypetable">Tool Type</option>
+        <option value="planttypetable">Plant Type</option>
+        <option value="sectiondimensionstable">SectionDimensions</option>
+        <option value="locationtable">Location</option>
+        <option value="gardentable">Garden</option>
+        <option value="tooltable">Tool</option>
+        <option value="hasaccesstable">HasAccess</option>
+        <option value="sectiontable">Section</option>
+        <option value="planttable">Plant</option>
+        <option value="environmentaldatapointtable">EnvironmentalDataPoint</option>
+        <option value="maintenancelogtable">MaintenanceLog</option>
+        <option value="watertable">Water</option>
+        <option value="nutrienttable">Nutrient</option>
+        <option value="lighttable">Light</option>
+    </select>
+
+
     <!-- Show 'Demotable'. 
         Data will be fetched and inserted here dynamically using JavaScript. -->
-    <h2>Show Demotable</h2>
+    <h2>Demotable</h2>
     <table id="demotable" border="1">
         <thead>
             <tr>
@@ -38,6 +60,266 @@
         <tbody>
         </tbody>
     </table>
+
+    <div id="persontableContainer">
+    <h2>Person</h2>
+    <table id="persontable" border="1">
+        <thead>
+        <tr>
+            <th>person_id</th>
+            <th>name</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="postalcodetableContainer">
+    <h2>PostalCode</h2>
+    <table id="postalcodetable" border="1">
+        <thead>
+        <tr>
+            <th>postalcode</th>
+            <th>province</th>
+            <th>city</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="tooltypetableContainer">
+    <h2>ToolType</h2>
+    <table id="tooltypetable" border="1">
+        <thead>
+        <tr>
+            <th>name</th>
+            <th>function</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="planttypetableContainer">
+    <h2>Planttype</h2>
+    <table id="planttypetable" border="1">
+        <thead>
+        <tr>
+            <th>name</th>
+            <th>requirements</th>
+            <th>description</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="sectiondimensionstableContainer">
+    <h2>SectionDimensions</h2>
+    <table id="sectiondimensionstable" border="1">
+        <thead>
+        <tr>
+            <th>length</th>
+            <th>width</th>
+            <th>area</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="locationtableContainer">
+    <h2>Location</h2>
+    <table id="locationtable" border="1">
+        <thead>
+        <tr>
+            <th>postal_code</th>
+            <th>house_number</th>
+            <th>street_name</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="gardentableContainer">
+    <h2>Garden</h2>
+    <table id="gardentable" border="1">
+        <thead>
+        <tr>
+            <th>garden_id</th>
+            <th>name</th>
+            <th>postal_code</th>
+            <th>street_name</th>
+            <th>house_number</th>
+            <th>owner_id</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="tooltableContainer">
+    <h2>Tool</h2>
+    <table id="tooltable" border="1">
+        <thead>
+        <tr>
+            <th>tool_id</th>
+            <th>date_added</th>
+            <th>garden_id</th>
+            <th>type_name</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="hasaccesstableContainer">
+    <h2>HasAccess</h2>
+    <table id="hasaccesstable" border="1">
+        <thead>
+        <tr>
+            <th>garden_id</th>
+            <th>person_id</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="sectiontableContainer">
+    <h2>Section</h2>
+    <table id="sectiontable" border="1">
+        <thead>
+        <tr>
+            <th>section_id</th>
+            <th>garden_id</th>
+            <th>latitude</th>
+            <th>longitude</th>
+            <th>length</th>
+            <th>width</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="planttableContainer">
+    <h2>Plant</h2>
+    <table id="planttable" border="1">
+        <thead>
+        <tr>
+            <th>plant_id</th>
+            <th>latitude</th>
+            <th>longitude</th>
+            <th>radius</th>
+            <th>is_ready</th>
+            <th>type_name</th>
+            <th>section_id</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="environmentaldatapointtableContainer">
+    <h2>EnvironmentalDataPoint</h2>
+    <table id="environmentaldatapointtable" border="1">
+        <thead>
+        <tr>
+            <th>timestamp</th>
+            <th>section_id</th>
+            <th>temperature</th>
+            <th>moisture</th>
+            <th>pH</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="maintenancelogtableContainer">
+    <h2>MaintenanceLog</h2>
+    <table id="maintenancelogtable" border="1">
+        <thead>
+        <tr>
+            <th>maintenance_log_id</th>
+            <th>timestamp</th>
+            <th>entry</th>
+            <th>section_id</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="watertableContainer">
+    <h2>Water</h2>
+    <table id="watertable" border="1">
+        <thead>
+        <tr>
+            <th>resource_usage_data_point_id</th>
+            <th>timestamp</th>
+            <th>volume_litres</th>
+            <th>section_id</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="nutrienttableContainer">
+    <h2>Nutrient</h2>
+    <table id="nutrienttable" border="1">
+        <thead>
+        <tr>
+            <th>resource_usage_data_point_id</th>
+            <th>timestamp</th>
+            <th>nitrogen_grams</th>
+            <th>potassium_grams</th>
+            <th>phosphorus_grams</th>
+            <th>section_id</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+    <div id="lighttableContainer">
+    <h2>Light</h2>
+    <table id="lighttable" border="1">
+        <thead>
+        <tr>
+            <th>resource_usage_data_point_id</th>
+            <th>timestamp</th>
+            <th>intensity_lux</th>
+            <th>duration_mins</th>
+            <th>type</th>
+            <th>section_id</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    </div>
+
+
 
     <br><hr><br> <!-- ========================================================================= -->
 

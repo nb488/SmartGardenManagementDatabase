@@ -107,6 +107,9 @@ async function insertDemotable(event) {
     }
 }
 
+
+
+
 // Updates names in the demotable.
 async function updateNameDemotable(event) {
     event.preventDefault();
@@ -161,10 +164,62 @@ async function countDemotable() {
 window.onload = function() {
     checkDbConnection();
     fetchTableData();
+
+    loadTable({
+        endpoint: '/persontable',
+        tableId: 'persontable' });
+    loadTable({
+        endpoint: '/postalcodetable',
+        tableId: 'postalcodetable'});
+    loadTable({
+        endpoint: '/tooltypetable',
+        tableId: 'tooltypetable' });
+    loadTable({
+        endpoint: '/planttypetable',
+        tableId: 'planttypetable'});
+    loadTable({
+        endpoint: '/sectiondimensionstable',
+        tableId: 'sectiondimensionstable' });
+    loadTable({
+        endpoint: '/locationtable',
+        tableId: 'locationtable'});
+    loadTable({
+        endpoint: '/gardentable',
+        tableId: 'gardentable' });
+    loadTable({
+        endpoint: '/tooltable',
+        tableId: 'tooltable'});
+    loadTable({
+        endpoint: '/hasaccesstable',
+        tableId: 'hasaccesstable' });
+    loadTable({
+        endpoint: '/sectiontable',
+        tableId: 'sectiontable'});
+    loadTable({
+        endpoint: '/planttable',
+        tableId: 'planttable' });
+    loadTable({
+        endpoint: '/environmentaldatapointtable',
+        tableId: 'environmentaldatapointtable'});
+    loadTable({
+        endpoint: '/maintenancelogtable',
+        tableId: 'maintenancelogtable' });
+    loadTable({
+        endpoint: '/watertable',
+        tableId: 'watertable'});
+    loadTable({
+        endpoint: '/nutrienttable',
+        tableId: 'nutrienttable' });
+    loadTable({
+        endpoint: '/lighttable',
+        tableId: 'lighttable'});
+
+
     document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
     document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
     document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
     document.getElementById("countDemotable").addEventListener("click", countDemotable);
+    document.getElementById("tableSelector").addEventListener("change", selectTable);
 };
 
 // General function to refresh the displayed table data. 
@@ -172,3 +227,59 @@ window.onload = function() {
 function fetchTableData() {
     fetchAndDisplayUsers();
 }
+
+// Selects a table from dropdown and displays it
+//
+async function selectTable(event) {
+    const selected = event.target.value;
+    const containers = ["persontableContainer",
+    "postalcodetableContainer",
+    "tooltypetableContainer",
+    "planttypetableContainer",
+    "sectiondimensionstableContainer",
+    "locationtableContainer",
+    "gardentableContainer",
+    "tooltableContainer",
+    "hasaccesstableContainer",
+    "sectiontableContainer",
+    "planttableContainer",
+    "environmentaldatapointtableContainer",
+    "maintenancelogtableContainer",
+    "watertableContainer",
+    "nutrienttableContainer",
+    "lighttableContainer"];
+
+    containers.forEach(id => {
+        const element = document.getElementById(id);
+        element.style.display = (id === selected + 'Container') ? 'block' : 'none';
+        });
+}
+
+// Generic function - Fetches data from a table and displays it.
+// tableID is string ex 'persontable', endpoint is string ex. '/persontable'
+async function loadTable({endpoint, tableId}) {
+    const tableElement = document.getElementById(tableId);
+    const tableBody = tableElement.querySelector('tbody');
+
+    const response = await fetch(endpoint, {
+        method: 'GET'
+    });
+
+    const responseData = await response.json();
+    const tableIdContent = responseData.data;
+
+    // Always clear old, already fetched data before new fetching process.
+    if (tableBody) {
+        tableBody.innerHTML = '';
+    }
+
+    tableIdContent.forEach(user => {
+        const row = tableBody.insertRow();
+        user.forEach((field, index) => {
+            const cell = row.insertCell(index);
+            cell.textContent = field;
+        });
+    });
+}
+
+

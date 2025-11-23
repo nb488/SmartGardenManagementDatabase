@@ -15,3 +15,7 @@ into sections, each of which may be allocated resources, plants, and tools as re
 section has a monitoring system which tracks various environmental endpoints and resource 
 usage, as well as maintains a maintenance log. Every garden has an owner and others may be 
 granted access to it.
+
+# Additional Instruction
+
+To initialize the database, run the 'database_initialization.sql' using SQL Plus command: @database_initialization.sql

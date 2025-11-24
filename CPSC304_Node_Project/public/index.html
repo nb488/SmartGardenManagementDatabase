@@ -15,40 +15,48 @@
     <!-- Display the current status of the database connection. 
          !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
          -->
-    <h1>Database Connection Status:
-        <!-- An in-line placeholder to display connection status. -->
-        <span id="dbStatus"> </span>
-        <!-- A loading GIF, will be hided once get the status. -->
-        <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
-    </h1>
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <div id = "tableContainer">
-    <div id = "sidebar">
-        <label><strong>SELECT TABLES :</strong></label><br><br>
-            <div id="tableSelector">
-                <label><input type="checkbox" value="persontable"> Person</label>
-                <label><input type="checkbox" value="postalcodetable">PostalCode</label>
-                <label><input type="checkbox" value="tooltypetable">Tool Type</label>
-                <label><input type="checkbox" value="planttypetable">Plant Type</label>
-                <label><input type="checkbox" value="sectiondimensionstable">SectionDimensions</label>
-                <label><input type="checkbox" value="locationtable">Location</label>
-                <label><input type="checkbox" value="gardentable">Garden</label>
-                <label><input type="checkbox" value="tooltable">Tool</label>
-                <label><input type="checkbox" value="hasaccesstable">HasAccess</label>
-                <label><input type="checkbox" value="sectiontable">Section</label>
-                <label><input type="checkbox" value="planttable">Plant</label>
-                <label><input type="checkbox" value="environmentaldatapointtable">EnvironmentalDataPoint</label>
-                <label><input type="checkbox" value="maintenancelogtable">MaintenanceLog</label>
-                <label><input type="checkbox" value="watertable">Water</label>
-                <label><input type="checkbox" value="nutrienttable">Nutrient</label>
-                <label><input type="checkbox" value="lighttable">Light</label>
-            </div>
+    <!--Displays title and connection status-->
+    <div class = "titleContainer">
+            <h1 class = "title"><strong>Smart Gardening System</strong> : Database Management Interface</h1>
+            <h3 class = "title">Connection Status:
+                <!-- An in-line placeholder to display connection status. -->
+                <span id="dbStatus"> </span>
+                <!-- A loading GIF, will be hided once get the status. -->
+                <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
+            </h3>
     </div>
 
+    <!--Displays Query Buttons under titleContainer-->
+    <div class="queryButtons">
+        <button id = "homebutton" type="button">Home</button>
+        <button id = "insertbutton" type="button">Insert</button>
+        <button id = "updatebutton" type="button">Update</button>
+        <button id = "deletebutton" type="button">Delete</button>
+        <button id = "selectionbutton" type="button">Selection</button>
+        <button id = "projectionbutton" type="button">Projection</button>
+        <button id = "joinbutton" type="button">Join</button>
+        <button id = "groupbybutton" type="button">Group By</button>
+        <button id = "havingbutton" type="button">Having</button>
+        <button id = "nestedaggbutton" type="button">Nested Agg</button>
+        <button id = "divisionbutton" type="button">Division</button>
+    </div>
 
-    <!-- Show 'Demotable'. 
+    <br><br> <!-- ========================================================================= -->
+
+    <form id="insertGardentable" class="queryinputContainer">
+        <h2> Insert New Garden </h2>
+        Garden ID: <input type="number" id="insertgId" placeholder="Garden ID" required> <br><br>
+        Name: <input type="text" id="insertgName" placeholder="Garden Name" maxlength="20"> <br><br>
+        Postal Code: <input type="text" id="insertgPostalCode" placeholder="Postal Code" maxlength="20"> <br><br>
+        Street Name: <input type="text" id="insertgStreetName" placeholder="Street Name" maxlength="20"> <br><br>
+        House Number: <input type="number" id="insertgHouseNumber" placeholder="House Number"> <br><br>
+        Owner ID: <input type="number" id="insertgOwnerId" placeholder="Owner ID"> <br><br>
+
+        <button type="submit"> insert </button> <br>
+        <div id="ginsertResultMsg"></div>
+    </form>
+
+    <!-- Show all the tables. Note that demotable was not changed.
         Data will be fetched and inserted here dynamically using JavaScript. -->
     <div id="mainTables">
     <h2>Demotable</h2>
@@ -64,7 +72,7 @@
         </tbody>
     </table>
 
-    <div id="persontableContainer">
+    <div id="persontableContainer" class=" queryTable" >
     <h2>Person</h2>
     <table id="persontable" border="1">
         <thead>
@@ -78,7 +86,7 @@
     </table>
     </div>
 
-    <div id="postalcodetableContainer">
+    <div id="postalcodetableContainer" class=" queryTable" >
     <h2>PostalCode</h2>
     <table id="postalcodetable" border="1">
         <thead>
@@ -93,7 +101,7 @@
     </table>
     </div>
 
-    <div id="tooltypetableContainer">
+    <div id="tooltypetableContainer" class=" queryTable" >
     <h2>ToolType</h2>
     <table id="tooltypetable" border="1">
         <thead>
@@ -107,7 +115,7 @@
     </table>
     </div>
 
-    <div id="planttypetableContainer">
+    <div id="planttypetableContainer" class=" queryTable" >
     <h2>Planttype</h2>
     <table id="planttypetable" border="1">
         <thead>
@@ -122,7 +130,7 @@
     </table>
     </div>
 
-    <div id="sectiondimensionstableContainer">
+    <div id="sectiondimensionstableContainer" class=" queryTable" >
     <h2>SectionDimensions</h2>
     <table id="sectiondimensionstable" border="1">
         <thead>
@@ -137,7 +145,7 @@
     </table>
     </div>
 
-    <div id="locationtableContainer">
+    <div id="locationtableContainer" class=" queryTable" >
     <h2>Location</h2>
     <table id="locationtable" border="1">
         <thead>
@@ -152,7 +160,7 @@
     </table>
     </div>
 
-    <div id="gardentableContainer">
+    <div id="gardentableContainer" class=" queryTable" >
     <h2>Garden</h2>
     <table id="gardentable" border="1">
         <thead>
@@ -170,7 +178,7 @@
     </table>
     </div>
 
-    <div id="tooltableContainer">
+    <div id="tooltableContainer" class=" queryTable" >
     <h2>Tool</h2>
     <table id="tooltable" border="1">
         <thead>
@@ -186,7 +194,7 @@
     </table>
     </div>
 
-    <div id="hasaccesstableContainer">
+    <div id="hasaccesstableContainer" class=" queryTable" >
     <h2>HasAccess</h2>
     <table id="hasaccesstable" border="1">
         <thead>
@@ -200,7 +208,7 @@
     </table>
     </div>
 
-    <div id="sectiontableContainer">
+    <div id="sectiontableContainer" class=" queryTable" >
     <h2>Section</h2>
     <table id="sectiontable" border="1">
         <thead>
@@ -218,7 +226,7 @@
     </table>
     </div>
 
-    <div id="planttableContainer">
+    <div id="planttableContainer" class=" queryTable" >
     <h2>Plant</h2>
     <table id="planttable" border="1">
         <thead>
@@ -237,7 +245,7 @@
     </table>
     </div>
 
-    <div id="environmentaldatapointtableContainer">
+    <div id="environmentaldatapointtableContainer" class=" queryTable" >
     <h2>EnvironmentalDataPoint</h2>
     <table id="environmentaldatapointtable" border="1">
         <thead>
@@ -254,7 +262,7 @@
     </table>
     </div>
 
-    <div id="maintenancelogtableContainer">
+    <div id="maintenancelogtableContainer" class=" queryTable" >
     <h2>MaintenanceLog</h2>
     <table id="maintenancelogtable" border="1">
         <thead>
@@ -270,7 +278,7 @@
     </table>
     </div>
 
-    <div id="watertableContainer">
+    <div id="watertableContainer" class=" queryTable" >
     <h2>Water</h2>
     <table id="watertable" border="1">
         <thead>
@@ -286,7 +294,7 @@
     </table>
     </div>
 
-    <div id="nutrienttableContainer">
+    <div id="nutrienttableContainer" class=" queryTable" >
     <h2>Nutrient</h2>
     <table id="nutrienttable" border="1">
         <thead>
@@ -304,7 +312,7 @@
     </table>
     </div>
 
-    <div id="lighttableContainer">
+    <div id="lighttableContainer" class=" queryTable" >
     <h2>Light</h2>
     <table id="lighttable" border="1">
         <thead>
@@ -321,6 +329,7 @@
         </tbody>
     </table>
     </div>
+
     </div>
     </div>
 
@@ -351,19 +360,6 @@
     </form>
     <div id="insertResultMsg"></div>
 
-    <h2> Insert New Garden </h2>
-    <form id="insertGardentable">
-
-        Garden ID: <input type="number" id="insertgId" placeholder="Garden ID" required> <br><br>
-        Name: <input type="text" id="insertgName" placeholder="Garden Name" maxlength="20"> <br><br>
-        Postal Code: <input type="text" id="insertgPostalCode" placeholder="Postal Code" maxlength="20"> <br><br>
-        Street Name: <input type="text" id="insertgStreetName" placeholder="Street Name" maxlength="20"> <br><br>
-        House Number: <input type="number" id="insertgHouseNumber" placeholder="House Number"> <br><br>
-        Owner ID: <input type="number" id="insertgOwnerId" placeholder="Owner ID"> <br><br>
-
-        <button type="submit"> insert </button> <br>
-    </form>
-    <div id="ginsertResultMsg"></div>
 
     <br><hr><br> <!-- ========================================================================= -->
 

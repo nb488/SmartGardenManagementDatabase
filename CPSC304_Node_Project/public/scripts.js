@@ -12,7 +12,8 @@
  * 
  */
 
-// global array
+
+// global array of all table containers
 const containers = [
         "persontableContainer",
         "postalcodetableContainer",
@@ -239,27 +240,51 @@ window.onload = function() {
     checkDbConnection();
     fetchTableData();
 
-    document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
-    document.getElementById("resetGardentable").addEventListener("click", resetGardentable);
+    // HOME
+    // displays all tables in the database?
+    const homeButton = document.getElementById("homebutton");
+    homeButton.addEventListener("click", () => {
+        HideAllQueryComponents();
+        // TODO: Make function to intialize/reset all the tables (currently only resets garden and demotable)?
+        // TODO: Remove demotable later
+        // TODO: Home tab can show all the tables
+        document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
+        document.getElementById("resetGardentable").addEventListener("click", resetGardentable);
 
-    document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
-    document.getElementById("insertGardentable").addEventListener("submit", insertGarden);
+        document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
 
-    document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
-    document.getElementById("countDemotable").addEventListener("click", countDemotable);
-
-    // hide all tables by default
-    containers.forEach(id => {
-        const element= document.getElementById(id);
-        element.style.display = 'none';
+        document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
+        document.getElementById("countDemotable").addEventListener("click", countDemotable);
     });
 
-    // toggle event listeners
-    const checkboxes = document.querySelectorAll("#tableSelector input[type=checkbox]");
-    checkboxes.forEach(cb => {
-        cb.addEventListener("change", toggleTables);
+    // INSERT QUERY
+    // displays the query box and the required tables for insertion query
+    const insertButton = document.getElementById("insertbutton");
+    insertButton.addEventListener("click", () => {
+        HideAllQueryComponents();
+
+        document.getElementById("insertGardentable").classList.add("active");
+        document.getElementById("insertGardentable").addEventListener("submit", insertGarden);
+        // show garden, person, location table when button is clicked
+        document.getElementById("gardentableContainer").classList.add("active");
+        document.getElementById("persontableContainer").classList.add("active");
+        document.getElementById("locationtableContainer").classList.add("active");
     });
+
+    // NEXT QUERY
+
 };
+
+
+// Hides all the query components, used to reset the view of the window.
+function HideAllQueryComponents() {
+    document.querySelectorAll(".queryTable").forEach(element => {
+        element.classList.remove("active");
+    });
+    document.querySelectorAll(".queryinputContainer").forEach(element => {
+        element.classList.remove("active");
+    });
+}
 
 // General function to refresh the displayed table data. 
 // You can invoke this after any table-modifying operation to keep consistency.
@@ -285,16 +310,6 @@ function fetchTableData() {
     ];
 
     tables.forEach(t => loadTable(t));
-}
-
-// Selects a table from dropdown and displays it
-//
-async function toggleTables() {
-    containers.forEach(id => {
-        const element = document.getElementById(id);
-        const checkbox = document.querySelector(`#tableSelector input[value=${id.replace("Container","")}]`);
-        element.style.display = checkbox.checked ? 'block' : 'none';
-        });
 }
 
 

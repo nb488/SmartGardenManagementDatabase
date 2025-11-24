@@ -20,8 +20,22 @@ router.get('/demotable', async (req, res) => {
     res.json({data: tableContent});
 });
 
+router.get('/gardentable', async (req, res) => {
+    const tableContent = await appService.fetchGardentableFromDb();
+    res.json({data: tableContent});
+});
+
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
+    if (initiateResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/initiate-gardentable", async (req, res) => {
+    const initiateResult = await appService.initiateGardentable();
     if (initiateResult) {
         res.json({ success: true });
     } else {
@@ -32,6 +46,16 @@ router.post("/initiate-demotable", async (req, res) => {
 router.post("/insert-demotable", async (req, res) => {
     const { id, name } = req.body;
     const insertResult = await appService.insertDemotable(id, name);
+    if (insertResult) {
+        res.json({ success: true });
+    } else {
+        res.status(500).json({ success: false });
+    }
+});
+
+router.post("/insert-gardentable", async (req, res) => {
+    const { garden_id, name, postal_code, street_name, house_number, owner_id } = req.body;
+    const insertResult = await appService.insertGardentable(garden_id, name, postal_code, street_name, house_number, owner_id);
     if (insertResult) {
         res.json({ success: true });
     } else {
@@ -52,13 +76,13 @@ router.post("/update-name-demotable", async (req, res) => {
 router.get('/count-demotable', async (req, res) => {
     const tableCount = await appService.countDemotable();
     if (tableCount >= 0) {
-        res.json({ 
-            success: true,  
+        res.json({
+            success: true,
             count: tableCount
         });
     } else {
-        res.status(500).json({ 
-            success: false, 
+        res.status(500).json({
+            success: false,
             count: tableCount
         });
     }

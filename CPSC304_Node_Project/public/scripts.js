@@ -36,31 +36,6 @@ async function checkDbConnection() {
     });
 }
 
-// Fetches data from the demotable and displays it.
-async function fetchAndDisplayUsers() {
-    const tableElement = document.getElementById('demotable');
-    const tableBody = tableElement.querySelector('tbody');
-
-    const response = await fetch('/demotable', {
-        method: 'GET'
-    });
-
-    const responseData = await response.json();
-    const demotableContent = responseData.data;
-
-    // Always clear old, already fetched data before new fetching process.
-    if (tableBody) {
-        tableBody.innerHTML = '';
-    }
-
-    demotableContent.forEach(user => {
-        const row = tableBody.insertRow();
-        user.forEach((field, index) => {
-            const cell = row.insertCell(index);
-            cell.textContent = field;
-        });
-    });
-}
 
 // This function resets or initializes the demotable.
 async function resetDemotable() {
@@ -72,6 +47,22 @@ async function resetDemotable() {
     if (responseData.success) {
         const messageElement = document.getElementById('resetResultMsg');
         messageElement.textContent = "demotable initiated successfully!";
+        fetchTableData();
+    } else {
+        alert("Error initiating table!");
+    }
+}
+
+// This function resets or initializes the demotable.
+async function resetGardentable() {
+    const response = await fetch("/initiate-gardentable", {
+        method: 'POST'
+    });
+    const responseData = await response.json();
+
+    if (responseData.success) {
+        const messageElement = document.getElementById('gresetResultMsg');
+        messageElement.textContent = "gardentable initiated successfully!";
         fetchTableData();
     } else {
         alert("Error initiating table!");
@@ -101,7 +92,45 @@ async function insertDemotable(event) {
 
     if (responseData.success) {
         messageElement.textContent = "Data inserted successfully!";
-        fetchTableData();
+        loadTable({endpoint: '/demotable', tableId: 'demotable'});
+    } else {
+        messageElement.textContent = "Error inserting data!";
+    }
+}
+
+
+// Inserts new records into the gardentable.
+async function insertGarden(event) {
+    event.preventDefault();
+
+    const idValue = document.getElementById('insertgId').value;
+    const nameValue = document.getElementById('insertgName').value;
+    const postalcodeValue = document.getElementById('insertgPostalCode').value;
+    const streetnameValue = document.getElementById('insertgStreetName').value;
+    const housenumberValue = document.getElementById('insertgHouseNumber').value;
+    const owneridValue = document.getElementById('insertgOwnerId').value;
+
+    const response = await fetch('/insert-gardentable', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            garden_id: idValue,
+            name: nameValue,
+            postal_code: postalcodeValue,
+            street_name: streetnameValue,
+            house_number: housenumberValue,
+            owner_id: owneridValue
+        })
+    });
+
+    const responseData = await response.json();
+    const messageElement = document.getElementById('ginsertResultMsg');
+
+    if (responseData.success) {
+        messageElement.textContent = "Data inserted successfully!";
+        loadTable({endpoint: '/gardentable', tableId: 'gardentable'});
     } else {
         messageElement.textContent = "Error inserting data!";
     }
@@ -109,6 +138,32 @@ async function insertDemotable(event) {
 
 
 
+// Generic function - Fetches data from a table and displays it.
+// tableID is string ex 'persontable', endpoint is string ex. '/persontable'
+async function loadTable({endpoint, tableId}) {
+    const tableElement = document.getElementById(tableId);
+    const tableBody = tableElement.querySelector('tbody');
+
+    const response = await fetch(endpoint, {
+        method: 'GET'
+    });
+
+    const responseData = await response.json();
+    const tableIdContent = responseData.data;
+
+    // Always clear old, already fetched data before new fetching process.
+    if (tableBody) {
+        tableBody.innerHTML = '';
+    }
+
+    tableIdContent.forEach(user => {
+        const row = tableBody.insertRow();
+        user.forEach((field, index) => {
+            const cell = row.insertCell(index);
+            cell.textContent = field;
+        });
+    });
+}
 
 // Updates names in the demotable.
 async function updateNameDemotable(event) {
@@ -165,58 +220,12 @@ window.onload = function() {
     checkDbConnection();
     fetchTableData();
 
-    loadTable({
-        endpoint: '/persontable',
-        tableId: 'persontable' });
-    loadTable({
-        endpoint: '/postalcodetable',
-        tableId: 'postalcodetable'});
-    loadTable({
-        endpoint: '/tooltypetable',
-        tableId: 'tooltypetable' });
-    loadTable({
-        endpoint: '/planttypetable',
-        tableId: 'planttypetable'});
-    loadTable({
-        endpoint: '/sectiondimensionstable',
-        tableId: 'sectiondimensionstable' });
-    loadTable({
-        endpoint: '/locationtable',
-        tableId: 'locationtable'});
-    loadTable({
-        endpoint: '/gardentable',
-        tableId: 'gardentable' });
-    loadTable({
-        endpoint: '/tooltable',
-        tableId: 'tooltable'});
-    loadTable({
-        endpoint: '/hasaccesstable',
-        tableId: 'hasaccesstable' });
-    loadTable({
-        endpoint: '/sectiontable',
-        tableId: 'sectiontable'});
-    loadTable({
-        endpoint: '/planttable',
-        tableId: 'planttable' });
-    loadTable({
-        endpoint: '/environmentaldatapointtable',
-        tableId: 'environmentaldatapointtable'});
-    loadTable({
-        endpoint: '/maintenancelogtable',
-        tableId: 'maintenancelogtable' });
-    loadTable({
-        endpoint: '/watertable',
-        tableId: 'watertable'});
-    loadTable({
-        endpoint: '/nutrienttable',
-        tableId: 'nutrienttable' });
-    loadTable({
-        endpoint: '/lighttable',
-        tableId: 'lighttable'});
-
-
     document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
+    document.getElementById("resetGardentable").addEventListener("click", resetGardentable);
+
     document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
+    document.getElementById("insertGardentable").addEventListener("submit", insertGarden);
+
     document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
     document.getElementById("countDemotable").addEventListener("click", countDemotable);
     document.getElementById("tableSelector").addEventListener("change", selectTable);
@@ -225,7 +234,27 @@ window.onload = function() {
 // General function to refresh the displayed table data. 
 // You can invoke this after any table-modifying operation to keep consistency.
 function fetchTableData() {
-    fetchAndDisplayUsers();
+    const tables = [
+    {endpoint: '/demotable', tableId: 'demotable' },
+    {endpoint: '/persontable', tableId: 'persontable' },
+    {endpoint: '/postalcodetable', tableId: 'postalcodetable'},
+    {endpoint: '/tooltypetable', tableId: 'tooltypetable' },
+    {endpoint: '/planttypetable', tableId: 'planttypetable'},
+    {endpoint: '/sectiondimensionstable', tableId: 'sectiondimensionstable' },
+    {endpoint: '/locationtable', tableId: 'locationtable'},
+    {endpoint: '/gardentable', tableId: 'gardentable' },
+    {endpoint: '/tooltable', tableId: 'tooltable'},
+    {endpoint: '/hasaccesstable', tableId: 'hasaccesstable' },
+    {endpoint: '/sectiontable', tableId: 'sectiontable'},
+    {endpoint: '/planttable', tableId: 'planttable' },
+    {endpoint: '/environmentaldatapointtable', tableId: 'environmentaldatapointtable'},
+    {endpoint: '/maintenancelogtable', tableId: 'maintenancelogtable' },
+    {endpoint: '/watertable', tableId: 'watertable'},
+    {endpoint: '/nutrienttable', tableId: 'nutrienttable' },
+    {endpoint: '/lighttable', tableId: 'lighttable'}
+    ];
+
+    tables.forEach(t => loadTable(t));
 }
 
 // Selects a table from dropdown and displays it
@@ -255,31 +284,6 @@ async function selectTable(event) {
         });
 }
 
-// Generic function - Fetches data from a table and displays it.
-// tableID is string ex 'persontable', endpoint is string ex. '/persontable'
-async function loadTable({endpoint, tableId}) {
-    const tableElement = document.getElementById(tableId);
-    const tableBody = tableElement.querySelector('tbody');
 
-    const response = await fetch(endpoint, {
-        method: 'GET'
-    });
-
-    const responseData = await response.json();
-    const tableIdContent = responseData.data;
-
-    // Always clear old, already fetched data before new fetching process.
-    if (tableBody) {
-        tableBody.innerHTML = '';
-    }
-
-    tableIdContent.forEach(user => {
-        const row = tableBody.insertRow();
-        user.forEach((field, index) => {
-            const cell = row.insertCell(index);
-            cell.textContent = field;
-        });
-    });
-}
 
 

@@ -329,6 +329,12 @@
     <!-- A placeholder to display messages related to the reset operation. -->
     <div id="resetResultMsg"></div>
 
+    <h2>Reset Garden</h2>
+    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
+    <button id="resetGardentable"> reset </button> <br>
+    <!-- A placeholder to display messages related to the reset operation. -->
+    <div id="gresetResultMsg"></div>
+
     <br><hr><br> <!-- ========================================================================= -->
 
     <h2> Insert Values into DemoTable </h2>
@@ -339,6 +345,20 @@
         <button type="submit"> insert </button> <br>
     </form>
     <div id="insertResultMsg"></div>
+
+    <h2> Insert New Garden </h2>
+    <form id="insertGardentable">
+
+        Garden ID: <input type="number" id="insertgId" placeholder="Garden ID" required> <br><br>
+        Name: <input type="text" id="insertgName" placeholder="Garden Name" maxlength="20"> <br><br>
+        Postal Code: <input type="text" id="insertgPostalCode" placeholder="Postal Code" maxlength="20"> <br><br>
+        Street Name: <input type="text" id="insertgStreetName" placeholder="Street Name" maxlength="20"> <br><br>
+        House Number: <input type="number" id="insertgHouseNumber" placeholder="House Number"> <br><br>
+        Owner ID: <input type="number" id="insertgOwnerId" placeholder="Owner ID"> <br><br>
+
+        <button type="submit"> insert </button> <br>
+    </form>
+    <div id="ginsertResultMsg"></div>
 
     <br><hr><br> <!-- ========================================================================= -->
 

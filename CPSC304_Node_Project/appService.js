@@ -85,6 +85,15 @@ async function fetchDemotableFromDb() {
     });
 }
 
+async function fetchGardentableFromDb() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM GARDEN');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
 async function initiateDemotable() {
     return await withOracleDB(async (connection) => {
         try {
@@ -105,11 +114,50 @@ async function initiateDemotable() {
     });
 }
 
+async function initiateGardentable() {
+    return await withOracleDB(async (connection) => {
+        try {
+            await connection.execute(`DROP TABLE GARDEN`);
+        } catch(err) {
+            console.log('Table might not exist, proceeding to create...');
+        }
+
+            const result = await connection.execute(`
+                CREATE TABLE GARDEN (
+                    garden_id NUMBER PRIMARY KEY,
+                    name VARCHAR2(200) NOT NULL,
+                    postal_code CHAR(6) NOT NULL,
+                    street_name VARCHAR2(200) NOT NULL,
+                    house_number NUMBER NOT NULL,
+                    owner_id NUMBER NOT NULL
+                    )
+            `);
+        return true;
+    }).catch(() => {
+        return false;
+    });
+}
+
+
 async function insertDemotable(id, name) {
     return await withOracleDB(async (connection) => {
         const result = await connection.execute(
             `INSERT INTO DEMOTABLE (id, name) VALUES (:id, :name)`,
             [id, name],
+            { autoCommit: true }
+        );
+
+        return result.rowsAffected && result.rowsAffected > 0;
+    }).catch(() => {
+        return false;
+    });
+}
+
+async function insertGardentable(garden_id, name, postal_code, street_name, house_number, owner_id) {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(
+            `INSERT INTO GARDEN (garden_id, name, postal_code, street_name, house_number, owner_id) VALUES (:garden_id, :name, :postal_code, :street_name, :house_number, :owner_id)`,
+            [garden_id, name, postal_code, street_name, house_number, owner_id],
             { autoCommit: true }
         );
 
@@ -148,5 +196,11 @@ module.exports = {
     initiateDemotable, 
     insertDemotable, 
     updateNameDemotable, 
-    countDemotable
+    countDemotable,
+
+    fetchGardentableFromDb,
+    initiateGardentable,
+    insertGardentable,
 };
+
+

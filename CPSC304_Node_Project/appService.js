@@ -190,6 +190,151 @@ async function countDemotable() {
     });
 }
 
+async function fetchPersonFromDb() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM PERSON');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchPostalCodeFromDb() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM POSTALCODE');
+
+        const rows = result.rows.map(row => {
+            const obj = {};
+            result.metaData.forEach((col, idx) => {
+                obj[col.name.toLowerCase()] = row[idx];
+            });
+            return obj;
+        });
+        return rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchToolTypeFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM TOOLTYPE');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchPlantTypeFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM PLANTTYPE');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+
+async function fetchSectionDimensionsFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM SECTIONDIMENSIONS');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchLocationFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM LOCATION');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchToolFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM TOOL');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchHasAccessFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM HASACCESS');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchSectionFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM SECTION');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchPlantFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM PLANT');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+
+async function fetchEnvironmentalDataPointFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM ENVIRONMENTALDATAPOINT');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchMaintenanceLogFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM MAINTENANCELOG');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchWaterFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM WATER');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchNutrientFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM NUTRIENT');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchLightFromDb() {
+        return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM LIGHT');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
@@ -201,6 +346,22 @@ module.exports = {
     fetchGardentableFromDb,
     initiateGardentable,
     insertGardentable,
+
+    fetchPersonFromDb,
+    fetchPostalCodeFromDb,
+    fetchToolTypeFromDb,
+    fetchPlantTypeFromDb,
+    fetchSectionDimensionsFromDb,
+    fetchLocationFromDb,
+    fetchToolFromDb,
+    fetchHasAccessFromDb,
+    fetchSectionFromDb,
+    fetchPlantFromDb,
+    fetchEnvironmentalDataPointFromDb,
+    fetchMaintenanceLogFromDb,
+    fetchWaterFromDb,
+    fetchNutrientFromDb,
+    fetchLightFromDb,
 };
 
 

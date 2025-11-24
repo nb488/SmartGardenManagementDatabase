@@ -157,9 +157,9 @@ async function insertGarden(event) {
 }
 
 
-
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
+// adjusted to handle database info as objects instead of arrays
 async function loadTable({endpoint, tableId}) {
     const tableElement = document.getElementById(tableId);
     const tableBody = tableElement.querySelector('tbody');
@@ -178,7 +178,8 @@ async function loadTable({endpoint, tableId}) {
 
     tableIdContent.forEach(user => {
         const row = tableBody.insertRow();
-        user.forEach((field, index) => {
+        const fields = Object.values(user);
+        fields.forEach((field, index) => {
             const cell = row.insertCell(index);
             cell.textContent = field;
         });

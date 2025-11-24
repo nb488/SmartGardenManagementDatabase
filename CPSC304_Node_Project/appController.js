@@ -25,6 +25,88 @@ router.get('/gardentable', async (req, res) => {
     res.json({data: tableContent});
 });
 
+router.get('/persontable', async (req, res) => {
+    const tableContent = await appService.fetchPersonFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/postalcodetable', async (req, res) => {
+    const tableContent = await appService.fetchPostalCodeFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/postalcodetable', async (req, res) => {
+    const tableContent = await appService.fetchPostalCodeFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/tooltypetable', async (req, res) => {
+    const tableContent = await appService.fetchToolTypeFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/planttypetable', async (req, res) => {
+    const tableContent = await appService.fetchPlantTypeFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/sectiondimensionstable', async (req, res) => {
+    const tableContent = await appService.fetchSectionDimensionsFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/locationtable', async (req, res) => {
+    const tableContent = await appService.fetchLocationFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/tooltable', async (req, res) => {
+    const tableContent = await appService.fetchToolFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/hasaccesstable', async (req, res) => {
+    const tableContent = await appService.fetchHasAccessFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/sectiontable', async (req, res) => {
+    const tableContent = await appService.fetchSectionFromDb();
+    res.json({data: tableContent});
+});
+
+
+router.get('/planttable', async (req, res) => {
+    const tableContent = await appService.fetchPlantFromDb();
+    res.json({data: tableContent});
+});
+
+
+router.get('/environmentaldatapointtable', async (req, res) => {
+    const tableContent = await appService.fetchEnvironmentalDataPointFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/maintenancelogtable', async (req, res) => {
+    const tableContent = await appService.fetchMaintenanceLogFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/watertable', async (req, res) => {
+    const tableContent = await appService.fetchWaterFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/nutrienttable', async (req, res) => {
+    const tableContent = await appService.fetchNutrientFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/lighttable', async (req, res) => {
+    const tableContent = await appService.fetchLightFromDb();
+    res.json({data: tableContent});
+});
+
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
     if (initiateResult) {

@@ -190,6 +190,32 @@ async function countDemotable() {
     });
 }
 
+async function fetchPersonFromDb() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM PERSON');
+        return result.rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
+async function fetchPostalCodeFromDb() {
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute('SELECT * FROM POSTALCODE');
+
+        const rows = result.rows.map(row => {
+            const obj = {};
+            result.metaData.forEach((col, idx) => {
+                obj[col.name.toLowerCase()] = row[idx];
+            });
+            return obj;
+        });
+        return rows;
+    }).catch(() => {
+        return [];
+    });
+}
+
 module.exports = {
     testOracleConnection,
     fetchDemotableFromDb,
@@ -201,6 +227,9 @@ module.exports = {
     fetchGardentableFromDb,
     initiateGardentable,
     insertGardentable,
+
+    fetchPersonFromDb,
+    fetchPostalCodeFromDb,
 };
 
 

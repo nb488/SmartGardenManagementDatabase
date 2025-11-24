@@ -25,6 +25,16 @@ router.get('/gardentable', async (req, res) => {
     res.json({data: tableContent});
 });
 
+router.get('/persontable', async (req, res) => {
+    const tableContent = await appService.fetchPersonFromDb();
+    res.json({data: tableContent});
+});
+
+router.get('/postalcodetable', async (req, res) => {
+    const tableContent = await appService.fetchPostalCodeFromDb();
+    res.json({data: tableContent});
+});
+
 router.post("/initiate-demotable", async (req, res) => {
     const initiateResult = await appService.initiateDemotable();
     if (initiateResult) {

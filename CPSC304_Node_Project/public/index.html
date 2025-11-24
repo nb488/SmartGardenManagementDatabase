@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
-    <!-- <link rel="stylesheet" href="styles.css">   -->
+    <link rel="stylesheet" href="styles.css">
 
     <title>Database Application</title>
 </head>
@@ -24,30 +24,33 @@
 
     <br><hr><br> <!-- ========================================================================= -->
 
-    <label for="tableSelector">Select Table:</label>
-    <select id="tableSelector">
-        <option value="">--Choose a Table--</option>
-        <option value="persontable">Person</option>
-        <option value="postalcodetable">PostalCode</option>
-        <option value="tooltypetable">Tool Type</option>
-        <option value="planttypetable">Plant Type</option>
-        <option value="sectiondimensionstable">SectionDimensions</option>
-        <option value="locationtable">Location</option>
-        <option value="gardentable">Garden</option>
-        <option value="tooltable">Tool</option>
-        <option value="hasaccesstable">HasAccess</option>
-        <option value="sectiontable">Section</option>
-        <option value="planttable">Plant</option>
-        <option value="environmentaldatapointtable">EnvironmentalDataPoint</option>
-        <option value="maintenancelogtable">MaintenanceLog</option>
-        <option value="watertable">Water</option>
-        <option value="nutrienttable">Nutrient</option>
-        <option value="lighttable">Light</option>
-    </select>
+    <div id = "tableContainer">
+    <div id = "sidebar">
+        <label><strong>SELECT TABLES :</strong></label><br><br>
+            <div id="tableSelector">
+                <label><input type="checkbox" value="persontable"> Person</label>
+                <label><input type="checkbox" value="postalcodetable">PostalCode</label>
+                <label><input type="checkbox" value="tooltypetable">Tool Type</label>
+                <label><input type="checkbox" value="planttypetable">Plant Type</label>
+                <label><input type="checkbox" value="sectiondimensionstable">SectionDimensions</label>
+                <label><input type="checkbox" value="locationtable">Location</label>
+                <label><input type="checkbox" value="gardentable">Garden</label>
+                <label><input type="checkbox" value="tooltable">Tool</label>
+                <label><input type="checkbox" value="hasaccesstable">HasAccess</label>
+                <label><input type="checkbox" value="sectiontable">Section</label>
+                <label><input type="checkbox" value="planttable">Plant</label>
+                <label><input type="checkbox" value="environmentaldatapointtable">EnvironmentalDataPoint</label>
+                <label><input type="checkbox" value="maintenancelogtable">MaintenanceLog</label>
+                <label><input type="checkbox" value="watertable">Water</label>
+                <label><input type="checkbox" value="nutrienttable">Nutrient</label>
+                <label><input type="checkbox" value="lighttable">Light</label>
+            </div>
+    </div>
 
 
     <!-- Show 'Demotable'. 
         Data will be fetched and inserted here dynamically using JavaScript. -->
+    <div id="mainTables">
     <h2>Demotable</h2>
     <table id="demotable" border="1">
         <thead>
@@ -317,6 +320,8 @@
         <tbody>
         </tbody>
     </table>
+    </div>
+    </div>
     </div>
 
 

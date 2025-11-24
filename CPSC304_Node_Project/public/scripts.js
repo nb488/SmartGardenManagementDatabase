@@ -12,6 +12,25 @@
  * 
  */
 
+// global array
+const containers = [
+        "persontableContainer",
+        "postalcodetableContainer",
+        "tooltypetableContainer",
+        "planttypetableContainer",
+        "sectiondimensionstableContainer",
+        "locationtableContainer",
+        "gardentableContainer",
+        "tooltableContainer",
+        "hasaccesstableContainer",
+        "sectiontableContainer",
+        "planttableContainer",
+        "environmentaldatapointtableContainer",
+        "maintenancelogtableContainer",
+        "watertableContainer",
+        "nutrienttableContainer",
+        "lighttableContainer"
+];
 
 // This function checks the database connection and updates its status on the frontend.
 async function checkDbConnection() {
@@ -53,7 +72,7 @@ async function resetDemotable() {
     }
 }
 
-// This function resets or initializes the demotable.
+// This function resets or initializes the gardentable.
 async function resetGardentable() {
     const response = await fetch("/initiate-gardentable", {
         method: 'POST'
@@ -138,8 +157,8 @@ async function insertGarden(event) {
 
 
 
-// Generic function - Fetches data from a table and displays it.
-// tableID is string ex 'persontable', endpoint is string ex. '/persontable'
+// Fetches data from a table and displays it.
+// tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 async function loadTable({endpoint, tableId}) {
     const tableElement = document.getElementById(tableId);
     const tableBody = tableElement.querySelector('tbody');
@@ -228,7 +247,18 @@ window.onload = function() {
 
     document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
     document.getElementById("countDemotable").addEventListener("click", countDemotable);
-    document.getElementById("tableSelector").addEventListener("change", selectTable);
+
+    // hide all tables by default
+    containers.forEach(id => {
+        const element= document.getElementById(id);
+        element.style.display = 'none';
+    });
+
+    // toggle event listeners
+    const checkboxes = document.querySelectorAll("#tableSelector input[type=checkbox]");
+    checkboxes.forEach(cb => {
+        cb.addEventListener("change", toggleTables);
+    });
 };
 
 // General function to refresh the displayed table data. 
@@ -259,28 +289,11 @@ function fetchTableData() {
 
 // Selects a table from dropdown and displays it
 //
-async function selectTable(event) {
-    const selected = event.target.value;
-    const containers = ["persontableContainer",
-    "postalcodetableContainer",
-    "tooltypetableContainer",
-    "planttypetableContainer",
-    "sectiondimensionstableContainer",
-    "locationtableContainer",
-    "gardentableContainer",
-    "tooltableContainer",
-    "hasaccesstableContainer",
-    "sectiontableContainer",
-    "planttableContainer",
-    "environmentaldatapointtableContainer",
-    "maintenancelogtableContainer",
-    "watertableContainer",
-    "nutrienttableContainer",
-    "lighttableContainer"];
-
+async function toggleTables() {
     containers.forEach(id => {
         const element = document.getElementById(id);
-        element.style.display = (id === selected + 'Container') ? 'block' : 'none';
+        const checkbox = document.querySelector(`#tableSelector input[value=${id.replace("Container","")}]`);
+        element.style.display = checkbox.checked ? 'block' : 'none';
         });
 }
 

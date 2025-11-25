@@ -146,45 +146,38 @@ window.onload = function () {
   checkDbConnection();
   fetchTableData();
 
-  // HOME
-  // displays all tables in the database
-  const homeButton = document.getElementById('homebutton');
-  homeButton.addEventListener('click', () => {
-    HideAllQueryComponents();
-    // TODO: Home tab can show all the tables
-  });
   document
     .getElementById('resetDatabase')
     .addEventListener('click', resetDatabase);
 
-  // INSERT QUERY
-  // displays the query box and the required tables for insertion query
-  const insertButton = document.getElementById('insertbutton');
-  insertButton.addEventListener('click', () => {
-    HideAllQueryComponents();
+  document
+    .getElementById('insertGardentable')
+    .addEventListener('submit', insertGarden);
 
-    document.getElementById('insertGardentable').classList.add('active');
-    document
-      .getElementById('insertGardentable')
-      .addEventListener('submit', insertGarden);
-    // show garden, person, location table when button is clicked
-    document.getElementById('gardentableContainer').classList.add('active');
-    document.getElementById('persontableContainer').classList.add('active');
-    document.getElementById('locationtableContainer').classList.add('active');
+  const queryButtons = document.querySelectorAll('.queryButtons button');
+  queryButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const queryType = button.dataset.query;
+      const container = document.getElementById(`${queryType}-container`);
+
+      // Toggle if clicking again
+      if (button.classList.contains('selected')) {
+        button.classList.remove('selected');
+        container.style.display = 'none';
+      } else {
+        // Remove selected class from all buttons and hide all containers
+        queryButtons.forEach((btn) => btn.classList.remove('selected'));
+        document
+          .querySelectorAll('.query-container')
+          .forEach((cont) => (cont.style.display = 'none'));
+
+        // Show selected button and container
+        button.classList.add('selected');
+        container.style.display = 'block';
+      }
+    });
   });
-
-  // NEXT QUERY
 };
-
-// Hides all the query components, used to reset the view of the window.
-function HideAllQueryComponents() {
-  document.querySelectorAll('.queryTable').forEach((element) => {
-    element.classList.remove('active');
-  });
-  document.querySelectorAll('.queryinputContainer').forEach((element) => {
-    element.classList.remove('active');
-  });
-}
 
 // General function to refresh the displayed table data.
 // You can invoke this after any table-modifying operation to keep consistency.

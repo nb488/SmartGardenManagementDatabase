@@ -47,23 +47,23 @@ hr {
 
 .queryButtons button:hover {
   background-color: #15803d;
+  color: white;
 }
 
-/* TAB/QUERY COMPONENTS */
-.queryTable {
-  display: none;
+.queryButtons button.selected {
+  background-color: #15803d;
+  color: white;
+  border: 2px solid #0f5a2a;
 }
 
-.queryTable.active {
-  display: block;
-}
-
-.queryinputContainer {
-  display: none;
-}
-
-.queryinputContainer.active {
-  display: block;
+/* QUERY CONTAINER STYLES */
+.query-container {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* TABLE STYLES */

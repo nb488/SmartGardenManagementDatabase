@@ -36,61 +36,152 @@
 
     <!--Displays Query Buttons under titleContainer-->
     <div class="queryButtons">
-      <button id="homebutton" type="button">Home</button>
-      <button id="insertbutton" type="button">Insert</button>
-      <button id="updatebutton" type="button">Update</button>
-      <button id="deletebutton" type="button">Delete</button>
-      <button id="selectionbutton" type="button">Selection</button>
-      <button id="projectionbutton" type="button">Projection</button>
-      <button id="joinbutton" type="button">Join</button>
-      <button id="groupbybutton" type="button">Group By</button>
-      <button id="havingbutton" type="button">Having</button>
-      <button id="nestedaggbutton" type="button">Nested Agg</button>
-      <button id="divisionbutton" type="button">Division</button>
+      <button id="insertbutton" type="button" data-query="insert">
+        Insert
+      </button>
+      <button id="updatebutton" type="button" data-query="update">
+        Update
+      </button>
+      <button id="deletebutton" type="button" data-query="delete">
+        Delete
+      </button>
+      <button id="selectionbutton" type="button" data-query="selection">
+        Selection
+      </button>
+      <button id="projectionbutton" type="button" data-query="projection">
+        Projection
+      </button>
+      <button id="joinbutton" type="button" data-query="join">Join</button>
+      <button id="groupbybutton" type="button" data-query="groupby">
+        Group By
+      </button>
+      <button id="havingbutton" type="button" data-query="having">
+        Having
+      </button>
+      <button id="nestedaggbutton" type="button" data-query="nestedagg">
+        Nested Agg
+      </button>
+      <button id="divisionbutton" type="button" data-query="division">
+        Division
+      </button>
     </div>
 
     <br /><br />
     <!-- ========================================================================= -->
 
-    <form id="insertGardentable" class="queryinputContainer">
-      <h2>Insert New Garden</h2>
-      Garden ID:
-      <input type="number" id="insertgId" placeholder="Garden ID" required />
-      <br /><br />
-      Name:
-      <input
-        type="text"
-        id="insertgName"
-        placeholder="Garden Name"
-        maxlength="20"
-      />
-      <br /><br />
-      Postal Code:
-      <input
-        type="text"
-        id="insertgPostalCode"
-        placeholder="Postal Code"
-        maxlength="20"
-      />
-      <br /><br />
-      Street Name:
-      <input
-        type="text"
-        id="insertgStreetName"
-        placeholder="Street Name"
-        maxlength="20"
-      />
-      <br /><br />
-      House Number:
-      <input type="number" id="insertgHouseNumber" placeholder="House Number" />
-      <br /><br />
-      Owner ID:
-      <input type="number" id="insertgOwnerId" placeholder="Owner ID" />
-      <br /><br />
+    <div id="insert-container" class="query-container" style="display: none">
+      <form id="insertGardentable" class="queryinputContainer">
+        <h2>Insert New Garden</h2>
+        Garden ID:
+        <input type="number" id="insertgId" placeholder="Garden ID" required />
+        <br /><br />
+        Name:
+        <input
+          type="text"
+          id="insertgName"
+          placeholder="Garden Name"
+          maxlength="20"
+        />
+        <br /><br />
+        Postal Code:
+        <input
+          type="text"
+          id="insertgPostalCode"
+          placeholder="Postal Code"
+          maxlength="20"
+        />
+        <br /><br />
+        Street Name:
+        <input
+          type="text"
+          id="insertgStreetName"
+          placeholder="Street Name"
+          maxlength="20"
+        />
+        <br /><br />
+        House Number:
+        <input
+          type="number"
+          id="insertgHouseNumber"
+          placeholder="House Number"
+        />
+        <br /><br />
+        Owner ID:
+        <input type="number" id="insertgOwnerId" placeholder="Owner ID" />
+        <br /><br />
 
-      <button type="submit">insert</button> <br />
-      <div id="ginsertResultMsg"></div>
-    </form>
+        <button type="submit">insert</button> <br />
+        <div id="ginsertResultMsg"></div>
+      </form>
+    </div>
+
+    <div id="update-container" class="query-container" style="display: none">
+      <h2>Update Query</h2>
+      <p>Update functionality coming soon...</p>
+    </div>
+
+    <div id="delete-container" class="query-container" style="display: none">
+      <h2>Delete Query</h2>
+      <p>Delete functionality coming soon...</p>
+    </div>
+
+    <div
+      id="selection-container"
+      class="query-container"
+      style="display: none"
+    >
+      <h2>Selection Query</h2>
+      <p>Selection functionality coming soon...</p>
+    </div>
+
+    <div
+      id="projection-container"
+      class="query-container"
+      style="display: none"
+    >
+      <h2>Projection Query</h2>
+      <p>Projection functionality coming soon...</p>
+    </div>
+
+    <div id="join-container" class="query-container" style="display: none">
+      <h2>Join Query</h2>
+      <p>Join functionality coming soon...</p>
+    </div>
+
+    <div id="groupby-container" class="query-container" style="display: none">
+      <h2>Group By Query</h2>
+      <p>Group By functionality coming soon...</p>
+    </div>
+
+    <div id="having-container" class="query-container" style="display: none">
+      <h2>Having Query</h2>
+      <p>Having functionality coming soon...</p>
+    </div>
+
+    <div
+      id="nestedagg-container"
+      class="query-container"
+      style="display: none"
+    >
+      <h2>Nested Aggregation Query</h2>
+      <p>Nested Aggregation functionality coming soon...</p>
+    </div>
+
+    <div id="division-container" class="query-container" style="display: none">
+      <h2>Division Query</h2>
+      <p>Division functionality coming soon...</p>
+    </div>
+
+    <!-- ========================================================================= -->
+
+    <h2>Reset + Populate Database</h2>
+    <p>
+      If this is the first time you're running this page, you MUST use reset
+    </p>
+    <button id="resetDatabase">reset</button> <br />
+    <div id="resetResultMsg"></div>
+
+    <!-- ========================================================================= -->
 
     <div id="mainTables">
       <div id="persontableContainer" class="queryTable">
@@ -335,20 +426,6 @@
         </table>
       </div>
     </div>
-
-    <br />
-    <hr />
-    <br />
-    <!-- ========================================================================= -->
-
-    <h2>Reset + Populate Database</h2>
-    <p>
-      If you wish to reset the database press on the reset button. If this is
-      the first time you're running this page, you MUST use reset
-    </p>
-    <button id="resetDatabase">reset</button> <br />
-    <div id="resetResultMsg"></div>
-
     <!-- ===================================================================================== -->
     <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
     <script src="scripts.js"></script>

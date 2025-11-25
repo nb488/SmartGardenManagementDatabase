@@ -8,8 +8,16 @@
     "name": "Zoe Yuan"
   },
   "license": "ISC",
+  "scripts": {
+    "format": "prettier --write .",
+    "prepare": "husky"
+  },
   "dependencies": {
     "express": "^4.17.3",
     "oracledb": "^5.2.0"
+  },
+  "devDependencies": {
+    "husky": "^9.1.7",
+    "prettier": "^3.6.2"
   }
 }

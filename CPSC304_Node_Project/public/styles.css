@@ -64,6 +64,30 @@ hr {
   padding: 20px;
   margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+}
+
+.queryinputContainer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap:20px;
+  width:100%;
+}
+
+.queryinputContainer button {
+  grid-column: 1;
+  width: fit-content;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.column-select,
+.logic-select {
+  font-size: 16px;
+  background-color: transparent;
 }
 
 /* TABLE STYLES */
@@ -126,7 +150,7 @@ tr:hover {
 }
 
 button {
-  background-color: rgb(32, 107, 227);
+  background-color: #15803d;
   color: #fff;
   padding: 10px 20px;
   font-size: 16px;

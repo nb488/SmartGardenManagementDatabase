@@ -72,45 +72,42 @@
     <div id="insert-container" class="query-container" style="display: none">
       <form id="insertGardentable" class="queryinputContainer">
         <h2>Insert New Garden</h2>
-        Garden ID:
-        <input type="number" id="insertgId" placeholder="Garden ID" required />
-        <br /><br />
-        Name:
-        <input
-          type="text"
-          id="insertgName"
-          placeholder="Garden Name"
-          maxlength="20"
-        />
-        <br /><br />
-        Postal Code:
-        <input
-          type="text"
-          id="insertgPostalCode"
-          placeholder="Postal Code"
-          maxlength="20"
-        />
-        <br /><br />
-        Street Name:
-        <input
-          type="text"
-          id="insertgStreetName"
-          placeholder="Street Name"
-          maxlength="20"
-        />
-        <br /><br />
-        House Number:
-        <input
-          type="number"
-          id="insertgHouseNumber"
-          placeholder="House Number"
-        />
-        <br /><br />
-        Owner ID:
-        <input type="number" id="insertgOwnerId" placeholder="Owner ID" />
-        <br /><br />
-
-        <button type="submit">insert</button> <br />
+          <br /><br />
+          <div class="field">
+              <input type="number" id="insertgId" placeholder="Garden ID" required />
+          </div>
+          <div class="field">
+              <input
+                      type="text"
+                      id="insertgName"
+                      placeholder="Garden Name"
+                      maxlength="20"
+              />
+          </div>
+          <div class="field">
+              <input
+                      type="text"
+                      id="insertgPostalCode"
+                      placeholder="Postal Code"
+                      maxlength="20"
+              /></div>
+          <div class="field">
+              <input
+                      type="text"
+                      id="insertgStreetName"
+                      placeholder="Street Name"
+                      maxlength="20"
+              /></div>
+          <div class="field">
+              <input
+                      type="number"
+                      id="insertgHouseNumber"
+                      placeholder="House Number"
+              /></div>
+          <div class="field">
+              <input type="number" id="insertgOwnerId" placeholder="Owner ID"
+              /></div>
+        <button type="submit">Insert Garden</button> <br />
         <div id="ginsertResultMsg"></div>
       </form>
     </div>
@@ -125,13 +122,31 @@
       <p>Delete functionality coming soon...</p>
     </div>
 
-    <div
-      id="selection-container"
-      class="query-container"
-      style="display: none"
-    >
-      <h2>Selection Query</h2>
-      <p>Selection functionality coming soon...</p>
+    <div id="selection-container" class="query-container" style="display: none">
+        <form id="selectionPlanttable" class="queryinputContainer">
+            <h2>Selection Query</h2>
+            <br /><br />
+            <div id="filters-container">
+                <div class="filter-row">
+                    <select class="column-select">
+                        <option value="plant_id">Plant ID</option>
+                        <option value="latitude">Latitude</option>
+                        <option value="longitude">Longitude</option>
+                        <option value="radius">Radius</option>
+                        <option value="is_ready">Status</option>
+                        <option value="type_name">Type</option>
+                        <option value="section_id">Section ID</option>
+                    </select>
+
+                    <input class = "filter-value" placeholder="Value" required/>
+                </div>
+            </div>
+
+            <button type="button" id="addFilterButton">Add Filter</button>
+            <button type="submit">Search Plant Table</button><br />
+            <div id="selectionResultMsg"></div>
+            <div id="selectionResult"></div>
+        </form>
     </div>
 
     <div

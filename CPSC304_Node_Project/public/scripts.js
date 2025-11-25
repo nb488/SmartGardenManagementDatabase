@@ -110,6 +110,85 @@ async function insertGarden(event) {
   }
 }
 
+// Display select tuples from planttable.
+async function selectPlant(event) {
+    event.preventDefault();
+
+    const filterRows = document.querySelectorAll('#filters-container .filter-row');
+    const filters = Array.from(filterRows).map((row, i) => {
+        const logicSel = row.querySelector('.logic-select');
+        const columnSel = row.querySelector('.column-select');
+        const inputVal = row.querySelector('.filter-value');
+
+
+
+        return {
+            logic: i === 0 ? null : logicSel.value, // first input does not have logic value
+            column: columnSel.value,
+            value: inputVal.value
+        };
+    });
+
+    console.log(filters);
+    console.log(rows);
+
+    const response = await fetch('/select-planttable', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({filters}),
+      });
+
+      const responseData = await response.json();
+      const messageElement = document.getElementById('selectionResultMsg');
+      const resultContainer = document.getElementById('selectionResult')
+
+      if (responseData.success) {
+        messageElement.textContent = 'Select query executed successfully!';
+        resultContainer.textContent = JSON.stringify(responseData.data, null, 2)
+      } else {
+        messageElement.textContent = 'Error executing select query!';
+      }
+}
+
+// Dynamically create filter option-menus for logic (AND/OR) and column selection
+async function addSelectFilter(event) {
+    event.preventDefault();
+    const filtersContainer = document.getElementById('filters-container');
+    const filterRow = document.createElement('div');
+    filterRow.className = 'filter-row';
+
+    // AND/OR
+    const logicSel = document.createElement('select');
+    logicSel.className = 'logic-select';
+    logicSel.innerHTML = `
+        <option value="AND">AND</option>
+        <option value="OR">OR</option>`;
+
+    const columnSel = document.createElement('select');
+    columnSel.className = 'column-select';
+    columnSel.innerHTML = `
+        <option value="plant_id">Plant ID</option>
+        <option value="latitude">Latitude</option>
+        <option value="longitude">Longitude</option>
+        <option value="radius">Radius</option>
+        <option value="is_ready">Status</option>
+        <option value="type_name">Type</option>
+        <option value="section_id">Section ID</option>`;
+
+    const inputBox = document.createElement('input');
+    inputBox.className = 'filter-value';
+    inputBox.placeholder = 'Value';
+    inputBox.required = true;
+
+    filterRow.appendChild(logicSel);
+    filterRow.appendChild(columnSel);
+    filterRow.appendChild(inputBox);
+
+    filtersContainer.appendChild(filterRow);
+}
+
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 // adjusted to handle database info as objects instead of arrays
@@ -158,6 +237,13 @@ window.onload = function () {
   document
     .getElementById('insertGardentable')
     .addEventListener('submit', insertGarden);
+
+  document
+    .getElementById('addFilterButton')
+    .addEventListener('click', addSelectFilter)
+  document
+    .getElementById('selectionPlanttable')
+    .addEventListener('submit', selectPlant);
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
   queryButtons.forEach((button) => {

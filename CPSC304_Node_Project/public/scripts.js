@@ -134,7 +134,12 @@ async function loadTable({ endpoint, tableId }) {
     const fields = Object.values(user);
     fields.forEach((field, index) => {
       const cell = row.insertCell(index);
-      cell.textContent = field;
+      // Format decimal numbers to 3 decimal places
+      if (typeof field === 'number' && !Number.isInteger(field)) {
+        cell.textContent = field.toFixed(3);
+      } else {
+        cell.textContent = field;
+      }
     });
   });
 }

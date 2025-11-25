@@ -15,11 +15,6 @@ router.get('/check-db-connection', async (req, res) => {
   }
 });
 
-router.get('/demotable', async (req, res) => {
-  const tableContent = await appService.fetchDemotableFromDb();
-  res.json({ data: tableContent });
-});
-
 router.get('/gardentable', async (req, res) => {
   const tableContent = await appService.fetchGardentableFromDb();
   res.json({ data: tableContent });
@@ -105,28 +100,9 @@ router.get('/lighttable', async (req, res) => {
   res.json({ data: tableContent });
 });
 
-router.post('/initiate-demotable', async (req, res) => {
-  const initiateResult = await appService.initiateDemotable();
+router.post('/reset-database', async (req, res) => {
+  const initiateResult = await appService.resetDatabase();
   if (initiateResult) {
-    res.json({ success: true });
-  } else {
-    res.status(500).json({ success: false });
-  }
-});
-
-router.post('/initiate-gardentable', async (req, res) => {
-  const initiateResult = await appService.initiateGardentable();
-  if (initiateResult) {
-    res.json({ success: true });
-  } else {
-    res.status(500).json({ success: false });
-  }
-});
-
-router.post('/insert-demotable', async (req, res) => {
-  const { id, name } = req.body;
-  const insertResult = await appService.insertDemotable(id, name);
-  if (insertResult) {
     res.json({ success: true });
   } else {
     res.status(500).json({ success: false });
@@ -148,31 +124,6 @@ router.post('/insert-gardentable', async (req, res) => {
     res.json({ success: true });
   } else {
     res.status(500).json({ success: false });
-  }
-});
-
-router.post('/update-name-demotable', async (req, res) => {
-  const { oldName, newName } = req.body;
-  const updateResult = await appService.updateNameDemotable(oldName, newName);
-  if (updateResult) {
-    res.json({ success: true });
-  } else {
-    res.status(500).json({ success: false });
-  }
-});
-
-router.get('/count-demotable', async (req, res) => {
-  const tableCount = await appService.countDemotable();
-  if (tableCount >= 0) {
-    res.json({
-      success: true,
-      count: tableCount,
-    });
-  } else {
-    res.status(500).json({
-      success: false,
-      count: tableCount,
-    });
   }
 });
 

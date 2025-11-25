@@ -92,21 +92,7 @@
       <div id="ginsertResultMsg"></div>
     </form>
 
-    <!-- Show all the tables. Note that demotable was not changed.
-        Data will be fetched and inserted here dynamically using JavaScript. -->
     <div id="mainTables">
-      <h2>Demotable</h2>
-      <table id="demotable" border="1">
-        <thead>
-          <tr>
-            <!--Table head, need to be adjusted accordingly to align with your own.-->
-            <th>ID</th>
-            <th>Name</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-
       <div id="persontableContainer" class="queryTable">
         <h2>Person</h2>
         <table id="persontable" border="1">
@@ -355,89 +341,13 @@
     <br />
     <!-- ========================================================================= -->
 
-    <h2>Reset Demotable</h2>
+    <h2>Reset + Populate Database</h2>
     <p>
-      If you wish to reset the table press on the reset button. If this is the
-      first time you're running this page, you MUST use reset
+      If you wish to reset the database press on the reset button. If this is
+      the first time you're running this page, you MUST use reset
     </p>
-    <button id="resetDemotable">reset</button> <br />
-    <!-- A placeholder to display messages related to the reset operation. -->
+    <button id="resetDatabase">reset</button> <br />
     <div id="resetResultMsg"></div>
-
-    <h2>Reset Garden</h2>
-    <p>
-      If you wish to reset the table press on the reset button. If this is the
-      first time you're running this page, you MUST use reset
-    </p>
-    <button id="resetGardentable">reset</button> <br />
-    <!-- A placeholder to display messages related to the reset operation. -->
-    <div id="gresetResultMsg"></div>
-
-    <br />
-    <hr />
-    <br />
-    <!-- ========================================================================= -->
-
-    <h2>Insert Values into DemoTable</h2>
-    <form id="insertDemotable">
-      ID: <input type="number" id="insertId" placeholder="Enter ID" required />
-      <br /><br />
-      Name:
-      <input
-        type="text"
-        id="insertName"
-        placeholder="Enter Name"
-        maxlength="20"
-      />
-      <br /><br />
-
-      <button type="submit">insert</button> <br />
-    </form>
-    <div id="insertResultMsg"></div>
-
-    <br />
-    <hr />
-    <br />
-    <!-- ========================================================================= -->
-
-    <h2>Update Name in DemoTable</h2>
-    <p>
-      The values are case sensitive and if you enter in the wrong case, the
-      update statement will not do anything.
-    </p>
-    <form id="updataNameDemotable">
-      Old Name:
-      <input
-        type="text"
-        id="updateOldName"
-        placeholder="Enter Old Name"
-        required
-      />
-      <br /><br />
-      New Name:
-      <input
-        type="text"
-        id="updateNewName"
-        placeholder="Enter New Name"
-        maxlength="20"
-      />
-      <br /><br />
-
-      <button type="submit">update</button> <br />
-    </form>
-    <!-- A placeholder to display messages related to the update operation. -->
-    <div id="updateNameResultMsg"></div>
-
-    <br />
-    <hr />
-    <br />
-    <!-- ========================================================================= -->
-
-    <h2>Count the Tuples in DemoTable</h2>
-    <button id="countDemotable">count</button> <br /><br />
-    <!-- A placeholder to display the count result. -->
-    <div id="countResultMsg"></div>
-    <br />
 
     <!-- ===================================================================================== -->
     <!-- External JavaScript file that contains the functionality/logic for the operations above. -->

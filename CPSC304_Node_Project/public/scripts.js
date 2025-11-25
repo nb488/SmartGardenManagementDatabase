@@ -56,64 +56,20 @@ async function checkDbConnection() {
     });
 }
 
-// This function resets or initializes the demotable.
-async function resetDemotable() {
-  const response = await fetch('/initiate-demotable', {
+// This function resets and populates the database.
+async function resetDatabase() {
+  const response = await fetch('/reset-database', {
     method: 'POST',
   });
   const responseData = await response.json();
 
   if (responseData.success) {
     const messageElement = document.getElementById('resetResultMsg');
-    messageElement.textContent = 'demotable initiated successfully!';
+    messageElement.textContent =
+      'smart garden database initiated successfully!';
     fetchTableData();
   } else {
     alert('Error initiating table!');
-  }
-}
-
-// This function resets or initializes the gardentable.
-async function resetGardentable() {
-  const response = await fetch('/initiate-gardentable', {
-    method: 'POST',
-  });
-  const responseData = await response.json();
-
-  if (responseData.success) {
-    const messageElement = document.getElementById('gresetResultMsg');
-    messageElement.textContent = 'gardentable initiated successfully!';
-    fetchTableData();
-  } else {
-    alert('Error initiating table!');
-  }
-}
-
-// Inserts new records into the demotable.
-async function insertDemotable(event) {
-  event.preventDefault();
-
-  const idValue = document.getElementById('insertId').value;
-  const nameValue = document.getElementById('insertName').value;
-
-  const response = await fetch('/insert-demotable', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      id: idValue,
-      name: nameValue,
-    }),
-  });
-
-  const responseData = await response.json();
-  const messageElement = document.getElementById('insertResultMsg');
-
-  if (responseData.success) {
-    messageElement.textContent = 'Data inserted successfully!';
-    loadTable({ endpoint: '/demotable', tableId: 'demotable' });
-  } else {
-    messageElement.textContent = 'Error inserting data!';
   }
 }
 
@@ -183,53 +139,6 @@ async function loadTable({ endpoint, tableId }) {
   });
 }
 
-// Updates names in the demotable.
-async function updateNameDemotable(event) {
-  event.preventDefault();
-
-  const oldNameValue = document.getElementById('updateOldName').value;
-  const newNameValue = document.getElementById('updateNewName').value;
-
-  const response = await fetch('/update-name-demotable', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      oldName: oldNameValue,
-      newName: newNameValue,
-    }),
-  });
-
-  const responseData = await response.json();
-  const messageElement = document.getElementById('updateNameResultMsg');
-
-  if (responseData.success) {
-    messageElement.textContent = 'Name updated successfully!';
-    fetchTableData();
-  } else {
-    messageElement.textContent = 'Error updating name!';
-  }
-}
-
-// Counts rows in the demotable.
-// Modify the function accordingly if using different aggregate functions or procedures.
-async function countDemotable() {
-  const response = await fetch('/count-demotable', {
-    method: 'GET',
-  });
-
-  const responseData = await response.json();
-  const messageElement = document.getElementById('countResultMsg');
-
-  if (responseData.success) {
-    const tupleCount = responseData.count;
-    messageElement.textContent = `The number of tuples in demotable: ${tupleCount}`;
-  } else {
-    alert('Error in count demotable!');
-  }
-}
-
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
@@ -238,31 +147,15 @@ window.onload = function () {
   fetchTableData();
 
   // HOME
-  // displays all tables in the database?
+  // displays all tables in the database
   const homeButton = document.getElementById('homebutton');
   homeButton.addEventListener('click', () => {
     HideAllQueryComponents();
-    // TODO: Make function to intialize/reset all the tables (currently only resets garden and demotable)?
-    // TODO: Remove demotable later
     // TODO: Home tab can show all the tables
-    document
-      .getElementById('resetDemotable')
-      .addEventListener('click', resetDemotable);
-    document
-      .getElementById('resetGardentable')
-      .addEventListener('click', resetGardentable);
-
-    document
-      .getElementById('insertDemotable')
-      .addEventListener('submit', insertDemotable);
-
-    document
-      .getElementById('updataNameDemotable')
-      .addEventListener('submit', updateNameDemotable);
-    document
-      .getElementById('countDemotable')
-      .addEventListener('click', countDemotable);
   });
+  document
+    .getElementById('resetDatabase')
+    .addEventListener('click', resetDatabase);
 
   // INSERT QUERY
   // displays the query box and the required tables for insertion query
@@ -297,7 +190,6 @@ function HideAllQueryComponents() {
 // You can invoke this after any table-modifying operation to keep consistency.
 function fetchTableData() {
   const tables = [
-    { endpoint: '/demotable', tableId: 'demotable' },
     { endpoint: '/persontable', tableId: 'persontable' },
     { endpoint: '/postalcodetable', tableId: 'postalcodetable' },
     { endpoint: '/tooltypetable', tableId: 'tooltypetable' },

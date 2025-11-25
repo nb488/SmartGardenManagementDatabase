@@ -72,81 +72,56 @@ async function testOracleConnection() {
   });
 }
 
-async function fetchDemotableFromDb() {
+async function resetDatabase() {
   return await withOracleDB(async (connection) => {
-    const result = await connection.execute('SELECT * FROM DEMOTABLE');
-    return result.rows;
-  }).catch(() => {
-    return [];
-  });
-}
+    const fs = require('fs').promises;
+    const path = require('path');
 
-async function fetchGardentableFromDb() {
-  return await withOracleDB(async (connection) => {
-    const result = await connection.execute('SELECT * FROM GARDEN');
-    return result.rows;
-  }).catch(() => {
-    return [];
-  });
-}
-
-async function initiateDemotable() {
-  return await withOracleDB(async (connection) => {
     try {
-      await connection.execute(`DROP TABLE DEMOTABLE`);
+      const sqlFilePath = path.join(
+        __dirname,
+        '../database_initialization.sql',
+      );
+      const sqlContent = await fs.readFile(sqlFilePath, 'utf-8');
+
+      const statements = sqlContent
+        .split(';')
+        .map((stmt) => {
+          // Remove comment lines from each statement
+          const lines = stmt.split('\n').filter((line) => {
+            const trimmed = line.trim();
+            return trimmed.length > 0 && !trimmed.startsWith('--');
+          });
+          return lines.join('\n').trim();
+        })
+        .filter((stmt) => stmt.length > 0);
+
+      for (let i = 0; i < statements.length; i++) {
+        const statement = statements[i];
+        try {
+          await connection.execute(statement, [], { autoCommit: true });
+        } catch (err) {
+          if (statement.trim().toUpperCase().startsWith('DROP')) {
+            console.log('Table might not exist, continuing...');
+          } else {
+            console.error(`Error executing statement ${i + 1}:`, err.message);
+            throw err;
+          }
+        }
+      }
+      return true;
     } catch (err) {
-      console.log('Table might not exist, proceeding to create...');
+      console.error('Error resetting database:', err);
+      return false;
     }
-
-    const result = await connection.execute(`
-            CREATE TABLE DEMOTABLE (
-                id NUMBER PRIMARY KEY,
-                name VARCHAR2(20)
-            )
-        `);
-    return true;
   }).catch(() => {
     return false;
   });
 }
 
-async function initiateGardentable() {
-  return await withOracleDB(async (connection) => {
-    try {
-      await connection.execute(`DROP TABLE GARDEN`);
-    } catch (err) {
-      console.log('Table might not exist, proceeding to create...');
-    }
-
-    const result = await connection.execute(`
-                CREATE TABLE GARDEN (
-                    garden_id NUMBER PRIMARY KEY,
-                    name VARCHAR2(200) NOT NULL,
-                    postal_code CHAR(6) NOT NULL,
-                    street_name VARCHAR2(200) NOT NULL,
-                    house_number NUMBER NOT NULL,
-                    owner_id NUMBER NOT NULL
-                    )
-            `);
-    return true;
-  }).catch(() => {
-    return false;
-  });
-}
-
-async function insertDemotable(id, name) {
-  return await withOracleDB(async (connection) => {
-    const result = await connection.execute(
-      `INSERT INTO DEMOTABLE (id, name) VALUES (:id, :name)`,
-      [id, name],
-      { autoCommit: true },
-    );
-
-    return result.rowsAffected && result.rowsAffected > 0;
-  }).catch(() => {
-    return false;
-  });
-}
+// ---------------------------------------------------------------
+// QUERY COMMANDS
+// ---------------------------------------------------------------
 
 async function insertGardentable(
   garden_id,
@@ -169,26 +144,16 @@ async function insertGardentable(
   });
 }
 
-async function updateNameDemotable(oldName, newName) {
-  return await withOracleDB(async (connection) => {
-    const result = await connection.execute(
-      `UPDATE DEMOTABLE SET name=:newName where name=:oldName`,
-      [newName, oldName],
-      { autoCommit: true },
-    );
+// ---------------------------------------------------------------
+// FETCH COMMANDS
+// ---------------------------------------------------------------
 
-    return result.rowsAffected && result.rowsAffected > 0;
-  }).catch(() => {
-    return false;
-  });
-}
-
-async function countDemotable() {
+async function fetchGardentableFromDb() {
   return await withOracleDB(async (connection) => {
-    const result = await connection.execute('SELECT Count(*) FROM DEMOTABLE');
-    return result.rows[0][0];
+    const result = await connection.execute('SELECT * FROM GARDEN');
+    return result.rows;
   }).catch(() => {
-    return -1;
+    return [];
   });
 }
 
@@ -339,15 +304,10 @@ async function fetchLightFromDb() {
 
 module.exports = {
   testOracleConnection,
-  fetchDemotableFromDb,
-  initiateDemotable,
-  insertDemotable,
-  updateNameDemotable,
-  countDemotable,
 
   fetchGardentableFromDb,
-  initiateGardentable,
   insertGardentable,
+  resetDatabase,
 
   fetchPersonFromDb,
   fetchPostalCodeFromDb,

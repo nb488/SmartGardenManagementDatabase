@@ -120,17 +120,12 @@ async function selectPlant(event) {
         const columnSel = row.querySelector('.column-select');
         const inputVal = row.querySelector('.filter-value');
 
-
-
         return {
             logic: i === 0 ? null : logicSel.value, // first input does not have logic value
             column: columnSel.value,
             value: inputVal.value
         };
     });
-
-    console.log(filters);
-    console.log(rows);
 
     const response = await fetch('/select-planttable', {
         method: 'POST',
@@ -142,11 +137,11 @@ async function selectPlant(event) {
 
       const responseData = await response.json();
       const messageElement = document.getElementById('selectionResultMsg');
-      const resultContainer = document.getElementById('selectionResult')
+      const resultContainer = document.getElementById('selectionResult');
 
       if (responseData.success) {
         messageElement.textContent = 'Select query executed successfully!';
-        resultContainer.textContent = JSON.stringify(responseData.data, null, 2)
+        resultContainer.textContent = JSON.stringify(responseData.data)
       } else {
         messageElement.textContent = 'Error executing select query!';
       }

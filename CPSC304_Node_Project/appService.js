@@ -144,6 +144,27 @@ async function insertGardentable(
   });
 }
 
+async function selectPlanttable(filters) {
+    let sql = 'SELECT * FROM PLANT WHERE ';
+    const vals = [];
+
+
+    filters.forEach((f, index) => {
+        if (index > 0) sql += ` ${f.logic} `; // note spaces required
+        sql += `${f.column} = :${index}`;
+        vals.push(f.value);
+    });
+
+    //console.log(sql);
+
+    return await withOracleDB(async (connection) => {
+        const result = await connection.execute(sql, vals, { autoCommit: true });
+        return result.rows;
+    }).catch(() => {
+        return false;
+    });
+}
+
 // ---------------------------------------------------------------
 // FETCH COMMANDS
 // ---------------------------------------------------------------
@@ -305,10 +326,12 @@ async function fetchLightFromDb() {
 module.exports = {
   testOracleConnection,
 
-  fetchGardentableFromDb,
-  insertGardentable,
   resetDatabase,
 
+  insertGardentable,
+  selectPlanttable,
+
+  fetchGardentableFromDb,
   fetchPersonFromDb,
   fetchPostalCodeFromDb,
   fetchToolTypeFromDb,

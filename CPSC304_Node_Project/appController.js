@@ -127,4 +127,15 @@ router.post('/insert-gardentable', async (req, res) => {
   }
 });
 
+router.post('/select-planttable', async (req, res) => {
+  const { filters } = req.body;
+  const selectRows = await appService.selectPlanttable(filters);
+
+  if (selectRows) {
+    res.json({ success: true, data: selectRows });
+  } else {
+    res.status(500).json({ success: false });
+  }
+});
+
 module.exports = router;

@@ -112,6 +112,12 @@ router.get('/sections-with-all-plant-types', async (req, res) => {
   res.json({ success: true, data: divisionData });
 });
 
+// for nested aggregation query (sections with above-average plant diversity)
+router.get('/sections-above-avg-diversity', async (req, res) => {
+  const nestedAggData = await appService.nestedAggregationSectionDiversity();
+  res.json({ success: true, data: nestedAggData });
+});
+
 router.post('/reset-database', async (req, res) => {
   const initiateResult = await appService.resetDatabase();
   if (initiateResult) {
@@ -135,12 +141,10 @@ router.post('/insert-gardentable', async (req, res) => {
   if (insertResult.success) {
     res.json({ success: true });
   } else {
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: insertResult.message || 'Failed to insert Garden',
-      });
+    res.status(500).json({
+      success: false,
+      message: insertResult.message || 'Failed to insert Garden',
+    });
   }
 });
 

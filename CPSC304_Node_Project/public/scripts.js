@@ -262,6 +262,44 @@ async function divisionQuery() {
   }
 }
 
+async function nestedAggregationQuery() {
+  const tableBody = document.querySelector('#nestedAggResultTable tbody');
+  const resultMsg = document.getElementById('nestedAggResultMsg');
+
+  tableBody.innerHTML = '';
+  resultMsg.textContent = '';
+
+  try {
+    const response = await fetch('/sections-above-avg-diversity');
+    const data = await response.json();
+
+    if (data.success && data.data.length > 0) {
+      data.data.forEach((row) => {
+        const tr = document.createElement('tr');
+        const sectionIdCell = document.createElement('td');
+        sectionIdCell.textContent = row.section_id;
+        const gardenIdCell = document.createElement('td');
+        gardenIdCell.textContent = row.garden_id;
+        const gardenNameCell = document.createElement('td');
+        gardenNameCell.textContent = row.garden_name;
+        const diversityCell = document.createElement('td');
+        diversityCell.textContent = row.diversity;
+        tr.appendChild(sectionIdCell);
+        tr.appendChild(gardenIdCell);
+        tr.appendChild(gardenNameCell);
+        tr.appendChild(diversityCell);
+        tableBody.appendChild(tr);
+      });
+      resultMsg.textContent =
+        'Sections with above-average diversity loaded successfully.';
+    } else {
+      resultMsg.textContent = 'No sections above average diversity found.';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error fetching data';
+  }
+}
+
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 // adjusted to handle database info as objects instead of arrays
@@ -326,6 +364,9 @@ window.onload = function () {
   document
     .getElementById('divisionBtn')
     .addEventListener('click', divisionQuery);
+  document
+    .getElementById('nestedAggBtn')
+    .addEventListener('click', nestedAggregationQuery);
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
   queryButtons.forEach((button) => {

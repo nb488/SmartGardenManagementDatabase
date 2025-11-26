@@ -255,6 +255,39 @@ async function divisionSectionsWithAllPlantTypes() {
   });
 }
 
+async function nestedAggregationSectionDiversity() {
+  return await withOracleDB(async (connection) => {
+    const sql = `
+      SELECT s.section_id, s.garden_id, g.name as garden_name,
+             COUNT(DISTINCT p.type_name) as diversity
+      FROM Section s
+      JOIN Garden g ON s.garden_id = g.garden_id
+      JOIN Plant p ON s.section_id = p.section_id
+      GROUP BY s.section_id, s.garden_id, g.name
+      HAVING COUNT(DISTINCT p.type_name) > (
+        SELECT AVG(diversity_count)
+        FROM (
+          SELECT COUNT(DISTINCT p2.type_name) as diversity_count
+          FROM Plant p2
+          GROUP BY p2.section_id
+        )
+      )
+      ORDER BY diversity DESC, s.section_id`;
+
+    const result = await connection.execute(sql);
+    return result.rows.map((row) => {
+      return {
+        section_id: row[0],
+        garden_id: row[1],
+        garden_name: row[2],
+        diversity: row[3],
+      };
+    });
+  }).catch(() => {
+    return [];
+  });
+}
+
 // ---------------------------------------------------------------
 // FETCH COMMANDS
 // ---------------------------------------------------------------
@@ -422,6 +455,7 @@ module.exports = {
   selectPlanttable,
   groupByPlantType,
   divisionSectionsWithAllPlantTypes,
+  nestedAggregationSectionDiversity,
 
   fetchGardentableFromDb,
   fetchPersonFromDb,

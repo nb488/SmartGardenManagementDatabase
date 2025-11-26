@@ -145,15 +145,18 @@ async function insertGardentable(
 }
 
 async function selectPlanttable(filters) {
-    let sql = 'SELECT * FROM PLANT WHERE ';
+    let sql = 'SELECT * FROM PLANT';
     const vals = [];
 
+    if(filters[0].value != '') { // check if no user input -> output all tuples
+        sql += ` WHERE `;
 
-    filters.forEach((f, index) => {
-        if (index > 0) sql += ` ${f.logic} `; // note spaces required
-        sql += `${f.column} = :${index}`;
-        vals.push(f.value);
-    });
+        filters.forEach((f, index) => {
+            if (index > 0) sql += ` ${f.logic} `; // note spaces required
+            sql += `${f.column} = :${index}`;
+            vals.push(f.value);
+        })
+    };
 
     //console.log(sql);
 

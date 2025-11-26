@@ -56,6 +56,14 @@ hr {
   border: 2px solid #0f5a2a;
 }
 
+/* SELECT QUERY OPTIONS */
+.logic-select,
+.column-select {
+  margin-right: 15px;
+  font-size: 16px;
+  background-color: transparent;
+}
+
 /* QUERY CONTAINER STYLES */
 .query-container {
   background-color: #f9f9f9;
@@ -79,20 +87,10 @@ hr {
   width: fit-content;
 }
 
+/* Insert query fields */
 .field {
   display: flex;
   flex-direction: column;
-}
-
-.logic-select,
-.column-select {
-  margin-right: 15px;
-}
-
-.column-select,
-.logic-select {
-  font-size: 16px;
-  background-color: transparent;
 }
 
 /* TABLE STYLES */

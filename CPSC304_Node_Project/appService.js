@@ -303,6 +303,31 @@ async function updatePlant(plant_id, fieldsToUpdate) {
   });
 }
 
+async function projectGarden(columns) {
+  return await withOracleDB(async (connection) => {
+    if (!columns || columns.length === 0) {
+      return {
+        success: false,
+        message: 'At least one column must be selected',
+      };
+    }
+
+    // Build column list
+    const columnList = columns.join(', ');
+    const sql = `SELECT ${columnList} FROM GARDEN ORDER BY garden_id`;
+
+    const result = await connection.execute(sql);
+
+    return {
+      success: true,
+      columns: columns,
+      rows: result.rows,
+    };
+  }).catch((err) => {
+    return { success: false, message: err.message };
+  });
+}
+
 async function groupByPlantType() {
   return await withOracleDB(async (connection) => {
     const sql =
@@ -576,6 +601,7 @@ module.exports = {
   insertGardentable,
   updatePlant,
   selectPlanttable,
+  projectGarden,
   groupByPlantType,
   divisionSectionsWithAllPlantTypes,
   nestedAggregationSectionDiversity,

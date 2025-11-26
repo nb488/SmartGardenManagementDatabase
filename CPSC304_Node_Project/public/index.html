@@ -232,7 +232,37 @@
       style="display: none"
     >
       <h2>Projection Query</h2>
-      <p>Projection functionality coming soon...</p>
+      <form id="projectionGardenForm" class="queryinputContainer">
+        <p>Select which columns to display from the Garden table:</p>
+        <div class="field">
+          <input type="checkbox" id="projGardenId" value="garden_id" />
+          <label for="projGardenId">Garden ID</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projName" value="name" />
+          <label for="projName">Name</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projPostalCode" value="postal_code" />
+          <label for="projPostalCode">Postal Code</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projStreetName" value="street_name" />
+          <label for="projStreetName">Street Name</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projHouseNumber" value="house_number" />
+          <label for="projHouseNumber">House Number</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projOwnerId" value="owner_id" />
+          <label for="projOwnerId">Owner ID</label>
+        </div>
+        <br />
+        <button type="submit">Show Selected Columns</button>
+        <div id="projectionResultMsg"></div>
+        <div id="projectionResult"></div>
+      </form>
     </div>
 
     <div id="join-container" class="query-container" style="display: none">

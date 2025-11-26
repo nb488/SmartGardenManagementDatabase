@@ -178,4 +178,17 @@ router.post('/select-planttable', async (req, res) => {
   }
 });
 
+router.post('/project-garden', async (req, res) => {
+  const { columns } = req.body;
+  const projectionResult = await appService.projectGarden(columns);
+  if (projectionResult.success) {
+    res.json(projectionResult);
+  } else {
+    res.status(500).json({
+      success: false,
+      message: projectionResult.message || 'Failed to project garden data',
+    });
+  }
+});
+
 module.exports = router;

@@ -501,6 +501,85 @@ async function havingQuery() {
   }
 }
 
+async function projectionGarden(event) {
+  event.preventDefault();
+
+  const resultMsg = document.getElementById('projectionResultMsg');
+  const resultContainer = document.getElementById('projectionResult');
+
+  resultMsg.textContent = '';
+  resultContainer.innerHTML = '';
+
+  const checkboxes = [
+    'projGardenId',
+    'projName',
+    'projPostalCode',
+    'projStreetName',
+    'projHouseNumber',
+    'projOwnerId',
+  ];
+
+  const selectedColumns = checkboxes
+    .map((id) => {
+      const checkbox = document.getElementById(id);
+      return checkbox.checked ? checkbox.value : null;
+    })
+    .filter((val) => val !== null);
+
+  if (selectedColumns.length === 0) {
+    resultMsg.textContent = 'Please select at least one column!';
+    return;
+  }
+
+  try {
+    const response = await fetch('/project-garden', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ columns: selectedColumns }),
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.rows.length > 0) {
+      const table = document.createElement('table');
+      table.border = '1';
+
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      data.columns.forEach((col) => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      // Create body
+      const tbody = document.createElement('tbody');
+      data.rows.forEach((row) => {
+        const tr = document.createElement('tr');
+        row.forEach((cell) => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+
+      resultContainer.appendChild(table);
+      resultMsg.textContent = 'Projection query executed successfully!';
+    } else {
+      resultMsg.textContent = data.message || 'No data found.';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error executing projection query!';
+    console.error('Projection error:', err);
+  }
+}
+
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 // adjusted to handle database info as objects instead of arrays
@@ -569,6 +648,9 @@ window.onload = function () {
     .getElementById('nestedAggBtn')
     .addEventListener('click', nestedAggregationQuery);
   document.getElementById('havingBtn').addEventListener('click', havingQuery);
+  document
+    .getElementById('projectionGardenForm')
+    .addEventListener('submit', projectionGarden);
 
   document
     .getElementById('updatePlantForm')

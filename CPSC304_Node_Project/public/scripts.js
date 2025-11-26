@@ -181,16 +181,65 @@ function handlePlantSelection() {
   }
 }
 
+function setupCheckboxListeners() {
+  const checkboxes = [
+    { check: 'checkLatitude', field: 'updateLatitude' },
+    { check: 'checkLongitude', field: 'updateLongitude' },
+    { check: 'checkRadius', field: 'updateRadius' },
+    { check: 'checkIsReady', field: 'updateIsReady' },
+    { check: 'checkTypeName', field: 'updateTypeName' },
+    { check: 'checkSectionId', field: 'updateSectionId' },
+  ];
+
+  checkboxes.forEach(({ check, field }) => {
+    document.getElementById(check).addEventListener('change', function () {
+      document.getElementById(field).disabled = !this.checked;
+    });
+  });
+}
+
 async function updatePlant(event) {
   event.preventDefault();
 
   const plantId = document.getElementById('updatePlantSelect').value;
-  const latitude = document.getElementById('updateLatitude').value;
-  const longitude = document.getElementById('updateLongitude').value;
-  const radius = document.getElementById('updateRadius').value;
-  const isReady = document.getElementById('updateIsReady').value;
-  const typeName = document.getElementById('updateTypeName').value;
-  const sectionId = document.getElementById('updateSectionId').value;
+  const fieldsToUpdate = {};
+
+  // Only include checked fields
+  if (document.getElementById('checkLatitude').checked) {
+    fieldsToUpdate.latitude = parseFloat(
+      document.getElementById('updateLatitude').value,
+    );
+  }
+  if (document.getElementById('checkLongitude').checked) {
+    fieldsToUpdate.longitude = parseFloat(
+      document.getElementById('updateLongitude').value,
+    );
+  }
+  if (document.getElementById('checkRadius').checked) {
+    fieldsToUpdate.radius = parseFloat(
+      document.getElementById('updateRadius').value,
+    );
+  }
+  if (document.getElementById('checkIsReady').checked) {
+    fieldsToUpdate.is_ready = parseInt(
+      document.getElementById('updateIsReady').value,
+    );
+  }
+  if (document.getElementById('checkTypeName').checked) {
+    fieldsToUpdate.type_name = document.getElementById('updateTypeName').value;
+  }
+  if (document.getElementById('checkSectionId').checked) {
+    fieldsToUpdate.section_id = parseInt(
+      document.getElementById('updateSectionId').value,
+    );
+  }
+
+  // Validate at least one field is selected
+  if (Object.keys(fieldsToUpdate).length === 0) {
+    document.getElementById('updateResultMsg').textContent =
+      'Please select at least one field to update!';
+    return;
+  }
 
   const response = await fetch('/update-plant', {
     method: 'POST',
@@ -199,12 +248,7 @@ async function updatePlant(event) {
     },
     body: JSON.stringify({
       plant_id: plantId,
-      latitude: parseFloat(latitude),
-      longitude: parseFloat(longitude),
-      radius: parseFloat(radius),
-      is_ready: parseInt(isReady),
-      type_name: typeName,
-      section_id: parseInt(sectionId),
+      fieldsToUpdate: fieldsToUpdate,
     }),
   });
 
@@ -216,6 +260,16 @@ async function updatePlant(event) {
     loadTable({ endpoint: '/planttable', tableId: 'planttable' });
     document.getElementById('updatePlantForm').reset();
     document.getElementById('updatePlantFields').style.display = 'none';
+    // Uncheck all checkboxes and disable all fields
+    document.querySelectorAll('.field-checkbox').forEach((cb) => {
+      cb.checked = false;
+    });
+    document.getElementById('updateLatitude').disabled = true;
+    document.getElementById('updateLongitude').disabled = true;
+    document.getElementById('updateRadius').disabled = true;
+    document.getElementById('updateIsReady').disabled = true;
+    document.getElementById('updateTypeName').disabled = true;
+    document.getElementById('updateSectionId').disabled = true;
   } else {
     messageElement.textContent =
       responseData.message || 'Error updating plant!';
@@ -522,6 +576,7 @@ window.onload = function () {
   document
     .getElementById('updatePlantSelect')
     .addEventListener('change', handlePlantSelection);
+  setupCheckboxListeners();
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
   queryButtons.forEach((button) => {

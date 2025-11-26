@@ -155,24 +155,8 @@ router.post('/insert-gardentable', async (req, res) => {
 });
 
 router.post('/update-plant', async (req, res) => {
-  const {
-    plant_id,
-    latitude,
-    longitude,
-    radius,
-    is_ready,
-    type_name,
-    section_id,
-  } = req.body;
-  const updateResult = await appService.updatePlant(
-    plant_id,
-    latitude,
-    longitude,
-    radius,
-    is_ready,
-    type_name,
-    section_id,
-  );
+  const { plant_id, fieldsToUpdate } = req.body;
+  const updateResult = await appService.updatePlant(plant_id, fieldsToUpdate);
   if (updateResult.success) {
     res.json({ success: true });
   } else {

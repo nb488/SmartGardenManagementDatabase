@@ -207,62 +207,90 @@ async function selectPlanttable(filters) {
   });
 }
 
-async function updatePlant(
-  plant_id,
-  latitude,
-  longitude,
-  radius,
-  is_ready,
-  type_name,
-  section_id,
-) {
+async function updatePlant(plant_id, fieldsToUpdate) {
   return await withOracleDB(async (connection) => {
-    // Validate type_name exists in PlantType
-    const typeCheck = await connection.execute(
-      `SELECT * FROM PLANTTYPE WHERE name = :type_name`,
-      [type_name],
-    );
-    if (typeCheck.rows.length === 0) {
+    // Validate at least one field is being updated
+    if (Object.keys(fieldsToUpdate).length === 0) {
       return {
         success: false,
-        message: 'Plant type does not exist in PlantType table',
+        message: 'At least one field must be selected for update',
       };
     }
 
-    // Validate section_id exists in Section
-    const sectionCheck = await connection.execute(
-      `SELECT * FROM SECTION WHERE section_id = :section_id`,
-      [section_id],
-    );
-    if (sectionCheck.rows.length === 0) {
-      return {
-        success: false,
-        message: 'Section ID does not exist in Section table',
-      };
+    // Validate type_name if being updated
+    if (fieldsToUpdate.type_name !== undefined) {
+      const typeCheck = await connection.execute(
+        `SELECT * FROM PLANTTYPE WHERE name = :type_name`,
+        [fieldsToUpdate.type_name],
+      );
+      if (typeCheck.rows.length === 0) {
+        return {
+          success: false,
+          message: 'Plant type does not exist in PlantType table',
+        };
+      }
     }
+
+    // Validate section_id if being updated
+    if (fieldsToUpdate.section_id !== undefined) {
+      const sectionCheck = await connection.execute(
+        `SELECT * FROM SECTION WHERE section_id = :section_id`,
+        [fieldsToUpdate.section_id],
+      );
+      if (sectionCheck.rows.length === 0) {
+        return {
+          success: false,
+          message: 'Section ID does not exist in Section table',
+        };
+      }
+    }
+
+    // Build dynamic UPDATE query
+    const setClauses = [];
+    const values = [];
+    let bindIndex = 0;
+
+    if (fieldsToUpdate.latitude !== undefined) {
+      setClauses.push(`latitude = :${bindIndex}`);
+      values.push(fieldsToUpdate.latitude);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.longitude !== undefined) {
+      setClauses.push(`longitude = :${bindIndex}`);
+      values.push(fieldsToUpdate.longitude);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.radius !== undefined) {
+      setClauses.push(`radius = :${bindIndex}`);
+      values.push(fieldsToUpdate.radius);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.is_ready !== undefined) {
+      setClauses.push(`is_ready = :${bindIndex}`);
+      values.push(fieldsToUpdate.is_ready);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.type_name !== undefined) {
+      setClauses.push(`type_name = :${bindIndex}`);
+      values.push(fieldsToUpdate.type_name);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.section_id !== undefined) {
+      setClauses.push(`section_id = :${bindIndex}`);
+      values.push(fieldsToUpdate.section_id);
+      bindIndex++;
+    }
+
+    // Add plant_id to values
+    values.push(plant_id);
+
+    const sql = `UPDATE PLANT SET ${setClauses.join(', ')} WHERE plant_id = :${bindIndex}`;
 
     // Update the plant
     try {
-      const result = await connection.execute(
-        `UPDATE PLANT
-         SET latitude = :latitude,
-             longitude = :longitude,
-             radius = :radius,
-             is_ready = :is_ready,
-             type_name = :type_name,
-             section_id = :section_id
-         WHERE plant_id = :plant_id`,
-        [
-          latitude,
-          longitude,
-          radius,
-          is_ready,
-          type_name,
-          section_id,
-          plant_id,
-        ],
-        { autoCommit: true },
-      );
+      const result = await connection.execute(sql, values, {
+        autoCommit: true,
+      });
 
       if (result.rowsAffected && result.rowsAffected > 0) {
         return { success: true };

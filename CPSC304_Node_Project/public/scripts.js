@@ -107,64 +107,67 @@ async function insertGarden(event) {
     loadTable({ endpoint: '/gardentable', tableId: 'gardentable' });
     loadTable({ endpoint: '/locationtable', tableId: 'locationtable' });
   } else {
-    messageElement.textContent = responseData.message || 'Error inserting data!';
+    messageElement.textContent =
+      responseData.message || 'Error inserting data!';
   }
 }
 
 // Display select tuples from planttable.
 async function selectPlant(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const filterRows = document.querySelectorAll('#filters-container .filter-row');
-    const filters = Array.from(filterRows).map((row, i) => {
-        const logicSel = row.querySelector('.logic-select');
-        const columnSel = row.querySelector('.column-select');
-        const inputVal = row.querySelector('.filter-value');
+  const filterRows = document.querySelectorAll(
+    '#filters-container .filter-row',
+  );
+  const filters = Array.from(filterRows).map((row, i) => {
+    const logicSel = row.querySelector('.logic-select');
+    const columnSel = row.querySelector('.column-select');
+    const inputVal = row.querySelector('.filter-value');
 
-        return {
-            logic: i === 0 ? null : logicSel.value, // first input does not have logic value
-            column: columnSel.value,
-            value: inputVal.value
-        };
-    });
+    return {
+      logic: i === 0 ? null : logicSel.value, // first input does not have logic value
+      column: columnSel.value,
+      value: inputVal.value,
+    };
+  });
 
-    const response = await fetch('/select-planttable', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({filters}),
-      });
+  const response = await fetch('/select-planttable', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ filters }),
+  });
 
-      const responseData = await response.json();
-      const messageElement = document.getElementById('selectionResultMsg');
-      const resultContainer = document.getElementById('selectionResult');
+  const responseData = await response.json();
+  const messageElement = document.getElementById('selectionResultMsg');
+  const resultContainer = document.getElementById('selectionResult');
 
-      if (responseData.success) {
-        messageElement.textContent = 'Select query executed successfully!';
-        resultContainer.textContent = JSON.stringify(responseData.data)
-      } else {
-        messageElement.textContent = 'Error executing select query!';
-      }
+  if (responseData.success) {
+    messageElement.textContent = 'Select query executed successfully!';
+    resultContainer.textContent = JSON.stringify(responseData.data);
+  } else {
+    messageElement.textContent = 'Error executing select query!';
+  }
 }
 
 // Dynamically create filter option-menus for logic (AND/OR) and column selection
 async function addSelectFilter(event) {
-    event.preventDefault();
-    const filtersContainer = document.getElementById('filters-container');
-    const filterRow = document.createElement('div');
-    filterRow.className = 'filter-row';
+  event.preventDefault();
+  const filtersContainer = document.getElementById('filters-container');
+  const filterRow = document.createElement('div');
+  filterRow.className = 'filter-row';
 
-    // AND/OR
-    const logicSel = document.createElement('select');
-    logicSel.className = 'logic-select';
-    logicSel.innerHTML = `
+  // AND/OR
+  const logicSel = document.createElement('select');
+  logicSel.className = 'logic-select';
+  logicSel.innerHTML = `
         <option value="AND">AND</option>
         <option value="OR">OR</option>`;
 
-    const columnSel = document.createElement('select');
-    columnSel.className = 'column-select';
-    columnSel.innerHTML = `
+  const columnSel = document.createElement('select');
+  columnSel.className = 'column-select';
+  columnSel.innerHTML = `
         <option value="plant_id">Plant ID</option>
         <option value="latitude">Latitude</option>
         <option value="longitude">Longitude</option>
@@ -173,24 +176,24 @@ async function addSelectFilter(event) {
         <option value="type_name">Type</option>
         <option value="section_id">Section ID</option>`;
 
-    const inputBox = document.createElement('input');
-    inputBox.className = 'filter-value';
-    inputBox.placeholder = 'Value';
-    inputBox.required = true;
+  const inputBox = document.createElement('input');
+  inputBox.className = 'filter-value';
+  inputBox.placeholder = 'Value';
+  inputBox.required = true;
 
-    filterRow.appendChild(logicSel);
-    filterRow.appendChild(columnSel);
-    filterRow.appendChild(inputBox);
+  filterRow.appendChild(logicSel);
+  filterRow.appendChild(columnSel);
+  filterRow.appendChild(inputBox);
 
-    filtersContainer.appendChild(filterRow);
+  filtersContainer.appendChild(filterRow);
 }
 
 async function removeSelectFilter(event) {
-    event.preventDefault();
-    const filtersContainer = document.getElementById('filters-container');
-    if (filtersContainer.lastElementChild != filtersContainer.firstElementChild) {
-        filtersContainer.removeChild(filtersContainer.lastElementChild);
-    }
+  event.preventDefault();
+  const filtersContainer = document.getElementById('filters-container');
+  if (filtersContainer.lastElementChild != filtersContainer.firstElementChild) {
+    filtersContainer.removeChild(filtersContainer.lastElementChild);
+  }
 }
 
 async function groupByPlantType() {
@@ -218,6 +221,41 @@ async function groupByPlantType() {
       resultMsg.textContent = 'Plant count by type loaded sucessfully.';
     } else {
       resultMsg.textContent = 'No data available';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error fetching data';
+  }
+}
+
+async function divisionQuery() {
+  const tableBody = document.querySelector('#divisionResultTable tbody');
+  const resultMsg = document.getElementById('divisionResultMsg');
+
+  tableBody.innerHTML = '';
+  resultMsg.textContent = '';
+
+  try {
+    const response = await fetch('/sections-with-all-plant-types');
+    const data = await response.json();
+
+    if (data.success && data.data.length > 0) {
+      data.data.forEach((row) => {
+        const tr = document.createElement('tr');
+        const sectionCell = document.createElement('td');
+        sectionCell.textContent = row.section_id;
+        const gardenIdCell = document.createElement('td');
+        gardenIdCell.textContent = row.garden_id;
+        const gardenNameCell = document.createElement('td');
+        gardenNameCell.textContent = row.garden_name;
+        tr.appendChild(sectionCell);
+        tr.appendChild(gardenIdCell);
+        tr.appendChild(gardenNameCell);
+        tableBody.appendChild(tr);
+      });
+      resultMsg.textContent =
+        'Sections with all plant types loaded successfully.';
+    } else {
+      resultMsg.textContent = 'No sections have grown all plant types yet.';
     }
   } catch (err) {
     resultMsg.textContent = 'Error fetching data';
@@ -275,14 +313,19 @@ window.onload = function () {
 
   document
     .getElementById('addFilterButton')
-    .addEventListener('click', addSelectFilter)
+    .addEventListener('click', addSelectFilter);
   document
     .getElementById('removeFilterButton')
     .addEventListener('click', removeSelectFilter);
   document
     .getElementById('selectionPlanttable')
     .addEventListener('submit', selectPlant);
-    document.getElementById('groupByTypeBtn').addEventListener('click', groupByPlantType);
+  document
+    .getElementById('groupByTypeBtn')
+    .addEventListener('click', groupByPlantType);
+  document
+    .getElementById('divisionBtn')
+    .addEventListener('click', divisionQuery);
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
   queryButtons.forEach((button) => {

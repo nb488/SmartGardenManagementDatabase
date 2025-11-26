@@ -132,83 +132,124 @@ async function insertGardentable(
   owner_id,
 ) {
   return await withOracleDB(async (connection) => {
-
     // check 1: if foreign key to Person table does not exist, reject insertion
     const ownerCheck = await connection.execute(
-        `SELECT * FROM PERSON WHERE person_id = :owner_id`,
-        [owner_id]);
+      `SELECT * FROM PERSON WHERE person_id = :owner_id`,
+      [owner_id],
+    );
 
-    if (ownerCheck.rows.length === 0) {return {success: false, message: "Owner ID does not exist in Person Table"}}
+    if (ownerCheck.rows.length === 0) {
+      return {
+        success: false,
+        message: 'Owner ID does not exist in Person Table',
+      };
+    }
 
     // check 2: if foreign key to location table does not exist, insert it (note that location contains foreign key to Postal Code)
     const locationCheck = await connection.execute(
-        `SELECT * FROM LOCATION WHERE postal_code = :postal_code AND house_number = :house_number AND street_name = :street_name`,
-        [postal_code, house_number, street_name]);
+      `SELECT * FROM LOCATION WHERE postal_code = :postal_code AND house_number = :house_number AND street_name = :street_name`,
+      [postal_code, house_number, street_name],
+    );
 
     if (locationCheck.rows.length === 0) {
-        try {
-            const locationUpdate = await connection.execute(
-            `INSERT INTO LOCATION (postal_code, house_number, street_name) VALUES (:postal_code, :house_number, :street_name)`,
-            [postal_code, house_number, street_name],
-            { autoCommit: true })
-            //console.log("try!");
-        } catch (err) {
-            return { success:false, message: "Postal Code does not exist in the Postal Code Table" } // TODO: assumes error always due to postal code
-        }
+      try {
+        const locationUpdate = await connection.execute(
+          `INSERT INTO LOCATION (postal_code, house_number, street_name) VALUES (:postal_code, :house_number, :street_name)`,
+          [postal_code, house_number, street_name],
+          { autoCommit: true },
+        );
+        //console.log("try!");
+      } catch (err) {
+        return {
+          success: false,
+          message: 'Postal Code does not exist in the Postal Code Table',
+        }; // TODO: assumes error always due to postal code
+      }
     }
 
     // try insertion to Garden table
     try {
-    const result = await connection.execute(
-      `INSERT INTO GARDEN (garden_id, name, postal_code, street_name, house_number, owner_id) VALUES (:garden_id, :name, :postal_code, :street_name, :house_number, :owner_id)`,
-      [garden_id, name, postal_code, street_name, house_number, owner_id],
-      { autoCommit: true },
-    );
-    return {success: true}; //original :  return result.rowsAffected && result.rowsAffected > 0
-  } catch(err) {
-    return {success: false, message: err.message};
-  };
-  })
+      const result = await connection.execute(
+        `INSERT INTO GARDEN (garden_id, name, postal_code, street_name, house_number, owner_id) VALUES (:garden_id, :name, :postal_code, :street_name, :house_number, :owner_id)`,
+        [garden_id, name, postal_code, street_name, house_number, owner_id],
+        { autoCommit: true },
+      );
+      return { success: true }; //original :  return result.rowsAffected && result.rowsAffected > 0
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  });
 }
 
 async function selectPlanttable(filters) {
-    let sql = 'SELECT * FROM PLANT';
-    const vals = [];
+  let sql = 'SELECT * FROM PLANT';
+  const vals = [];
 
-    // assemble sql query with binding
-    if(filters[0].value != '') { // check if no user input -> output all tuples
-        sql += ` WHERE `;
+  // assemble sql query with binding
+  if (filters[0].value != '') {
+    // check if no user input -> output all tuples
+    sql += ` WHERE `;
 
-        filters.forEach((f, index) => {
-            if (index > 0) sql += ` ${f.logic} `; // concatenate OR/AND after first attribute
-            sql += `${f.column} = :${index}`;
-            vals.push(f.value);
-        })
-    };
-
-    //console.log(sql);
-
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(sql, vals, { autoCommit: true });
-        return result.rows;
-    }).catch(() => {
-        return false;
+    filters.forEach((f, index) => {
+      if (index > 0) sql += ` ${f.logic} `; // concatenate OR/AND after first attribute
+      sql += `${f.column} = :${index}`;
+      vals.push(f.value);
     });
+  }
+
+  //console.log(sql);
+
+  return await withOracleDB(async (connection) => {
+    const result = await connection.execute(sql, vals, { autoCommit: true });
+    return result.rows;
+  }).catch(() => {
+    return false;
+  });
 }
 
 async function groupByPlantType() {
-
   return await withOracleDB(async (connection) => {
-
-    const sql = 'SELECT type_name, count(*) as plant_count FROM PLANT GROUP BY type_name ORDER BY type_name';
+    const sql =
+      'SELECT type_name, count(*) as plant_count FROM PLANT GROUP BY type_name ORDER BY type_name';
 
     const result = await connection.execute(sql);
-    return result.rows.map(row => {
+    return result.rows.map((row) => {
       return {
         type_name: row[0],
-        plant_count: row[1]
+        plant_count: row[1],
       };
-    })
+    });
+  }).catch(() => {
+    return [];
+  });
+}
+
+async function divisionSectionsWithAllPlantTypes() {
+  return await withOracleDB(async (connection) => {
+    const sql = `
+      SELECT s.section_id, s.garden_id, g.name as garden_name
+      FROM Section s
+      JOIN Garden g ON s.garden_id = g.garden_id
+      WHERE NOT EXISTS (
+        SELECT pt.name
+        FROM PlantType pt
+        WHERE NOT EXISTS (
+          SELECT p.plant_id
+          FROM Plant p
+          WHERE p.section_id = s.section_id
+          AND p.type_name = pt.name
+        )
+      )
+      ORDER BY s.section_id`;
+
+    const result = await connection.execute(sql);
+    return result.rows.map((row) => {
+      return {
+        section_id: row[0],
+        garden_id: row[1],
+        garden_name: row[2],
+      };
+    });
   }).catch(() => {
     return [];
   });
@@ -380,6 +421,7 @@ module.exports = {
   insertGardentable,
   selectPlanttable,
   groupByPlantType,
+  divisionSectionsWithAllPlantTypes,
 
   fetchGardentableFromDb,
   fetchPersonFromDb,

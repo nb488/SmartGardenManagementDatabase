@@ -72,41 +72,57 @@
     <div id="insert-container" class="query-container" style="display: none">
       <form id="insertGardentable" class="queryinputContainer">
         <h2>Insert New Garden</h2>
-          <br /><br />
-          <div class="field">
-              <input type="number" id="insertgId" placeholder="Garden ID" required />
-          </div>
-          <div class="field">
-              <input
-                      type="text"
-                      id="insertgName"
-                      placeholder="Garden Name"
-                      maxlength="20"
-              />
-          </div>
-          <div class="field">
-              <input
-                      type="text"
-                      id="insertgPostalCode"
-                      placeholder="Postal Code"
-                      maxlength="20"
-              required/></div>
-          <div class="field">
-              <input
-                      type="text"
-                      id="insertgStreetName"
-                      placeholder="Street Name"
-                      maxlength="20"
-              required/></div>
-          <div class="field">
-              <input
-                      type="number"
-                      id="insertgHouseNumber"
-                      placeholder="House Number"
-              required/></div>
-          <div class="field">
-              <input type="number" id="insertgOwnerId" placeholder="Owner ID"
-              required/></div>
+        <br /><br />
+        <div class="field">
+          <input
+            type="number"
+            id="insertgId"
+            placeholder="Garden ID"
+            required
+          />
+        </div>
+        <div class="field">
+          <input
+            type="text"
+            id="insertgName"
+            placeholder="Garden Name"
+            maxlength="20"
+          />
+        </div>
+        <div class="field">
+          <input
+            type="text"
+            id="insertgPostalCode"
+            placeholder="Postal Code"
+            maxlength="20"
+            required
+          />
+        </div>
+        <div class="field">
+          <input
+            type="text"
+            id="insertgStreetName"
+            placeholder="Street Name"
+            maxlength="20"
+            required
+          />
+        </div>
+        <div class="field">
+          <input
+            type="number"
+            id="insertgHouseNumber"
+            placeholder="House Number"
+            required
+          />
+        </div>
+        <div class="field">
+          <input
+            type="number"
+            id="insertgOwnerId"
+            placeholder="Owner ID"
+            required
+          />
+        </div>
         <button type="submit">Insert Garden</button> <br />
         <div id="ginsertResultMsg"></div>
       </form>
@@ -123,35 +139,35 @@
     </div>
 
     <div id="selection-container" class="query-container" style="display: none">
-        <form id="selectionPlanttable" class="queryinputContainer">
-            <h2>Selection Query</h2>
-            <br /><br />
-            <div id="filters-container">
-                <div class="filter-row">
-                    <select class="column-select">
-                        <option value="plant_id">Plant ID</option>
-                        <option value="latitude">Latitude</option>
-                        <option value="longitude">Longitude</option>
-                        <option value="radius">Radius</option>
-                        <option value="is_ready">Status</option>
-                        <option value="type_name">Type</option>
-                        <option value="section_id">Section ID</option>
-                    </select>
+      <form id="selectionPlanttable" class="queryinputContainer">
+        <h2>Selection Query</h2>
+        <br /><br />
+        <div id="filters-container">
+          <div class="filter-row">
+            <select class="column-select">
+              <option value="plant_id">Plant ID</option>
+              <option value="latitude">Latitude</option>
+              <option value="longitude">Longitude</option>
+              <option value="radius">Radius</option>
+              <option value="is_ready">Status</option>
+              <option value="type_name">Type</option>
+              <option value="section_id">Section ID</option>
+            </select>
 
-                    <input class = "filter-value" placeholder="Value" required/>
-                </div>
-            </div>
-            <div id="selection-buttons">
-                <button type="button" id="addFilterButton">Add Filter</button>
-                <button type="button" id="removeFilterButton">Remove Filter</button>
-                <br />
-                <br />
-                <button type="submit">Search Plant Table</button>
-            </div>
-            <br />
-            <div id="selectionResultMsg"></div>
-            <div id="selectionResult"></div>
-        </form>
+            <input class="filter-value" placeholder="Value" required />
+          </div>
+        </div>
+        <div id="selection-buttons">
+          <button type="button" id="addFilterButton">Add Filter</button>
+          <button type="button" id="removeFilterButton">Remove Filter</button>
+          <br />
+          <br />
+          <button type="submit">Search Plant Table</button>
+        </div>
+        <br />
+        <div id="selectionResultMsg"></div>
+        <div id="selectionResult"></div>
+      </form>
     </div>
 
     <div
@@ -168,12 +184,12 @@
       <p>Join functionality coming soon...</p>
     </div>
 
-  <div id="groupby-container" class="query-container" style="display: none">
+    <div id="groupby-container" class="query-container" style="display: none">
       <h2>Group By Query</h2>
-        <p>See how many plants of each type exist across all gardens:</p>
+      <p>See how many plants of each type exist across all gardens:</p>
       <button id="groupByTypeBtn">Show Plant Count By Type</button>
       <div id="groupByResultMsg"></div>
-      <table id ="groupByResultTable" border="1">
+      <table id="groupByResultTable" border="1">
         <thead>
           <tr>
             <th>Type</th>
@@ -181,7 +197,7 @@
           </tr>
         </thead>
         <tbody></tbody>
-        </table>
+      </table>
     </div>
 
     <div id="having-container" class="query-container" style="display: none">
@@ -189,18 +205,26 @@
       <p>Having functionality coming soon...</p>
     </div>
 
-    <div
-      id="nestedagg-container"
-      class="query-container"
-      style="display: none"
-    >
+    <div id="nestedagg-container" class="query-container" style="display: none">
       <h2>Nested Aggregation Query</h2>
       <p>Nested Aggregation functionality coming soon...</p>
     </div>
 
     <div id="division-container" class="query-container" style="display: none">
       <h2>Division Query</h2>
-      <p>Division functionality coming soon...</p>
+      <p>Find sections that have grown ALL available plant types:</p>
+      <button id="divisionBtn">Show Sections With All Plant Types</button>
+      <div id="divisionResultMsg"></div>
+      <table id="divisionResultTable" border="1">
+        <thead>
+          <tr>
+            <th>Section ID</th>
+            <th>Garden ID</th>
+            <th>Garden Name</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
     <!-- ========================================================================= -->

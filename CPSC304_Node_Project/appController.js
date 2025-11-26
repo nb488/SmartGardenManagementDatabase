@@ -106,6 +106,12 @@ router.get('/plant-groupby-type', async (req, res) => {
   res.json({ success: true, data: groupedData });
 });
 
+// for division query (sections that have grown all available plant types)
+router.get('/sections-with-all-plant-types', async (req, res) => {
+  const divisionData = await appService.divisionSectionsWithAllPlantTypes();
+  res.json({ success: true, data: divisionData });
+});
+
 router.post('/reset-database', async (req, res) => {
   const initiateResult = await appService.resetDatabase();
   if (initiateResult) {
@@ -129,7 +135,12 @@ router.post('/insert-gardentable', async (req, res) => {
   if (insertResult.success) {
     res.json({ success: true });
   } else {
-    res.status(500).json({ success: false, message: insertResult.message || "Failed to insert Garden" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: insertResult.message || 'Failed to insert Garden',
+      });
   }
 });
 

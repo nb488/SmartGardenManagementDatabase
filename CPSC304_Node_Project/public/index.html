@@ -129,8 +129,52 @@
     </div>
 
     <div id="update-container" class="query-container" style="display: none">
-      <h2>Update Query</h2>
-      <p>Update functionality coming soon...</p>
+      <h2>Update Plant</h2>
+      <form id="updatePlantForm" class="queryinputContainer">
+        <p>Select a plant to update its information:</p>
+        <div class="field">
+          <label for="updatePlantSelect">Select Plant:</label>
+          <select id="updatePlantSelect" required>
+            <option value="">-- Select a Plant --</option>
+          </select>
+        </div>
+        <div id="updatePlantFields" style="display: none">
+          <br />
+          <div class="field">
+            <label for="updateLatitude">Latitude:</label>
+            <input type="number" id="updateLatitude" step="0.0001" required />
+          </div>
+          <div class="field">
+            <label for="updateLongitude">Longitude:</label>
+            <input type="number" id="updateLongitude" step="0.0001" required />
+          </div>
+          <div class="field">
+            <label for="updateRadius">Radius:</label>
+            <input type="number" id="updateRadius" step="0.01" required />
+          </div>
+          <div class="field">
+            <label for="updateIsReady">Status:</label>
+            <select id="updateIsReady" required>
+              <option value="0">Not Ready</option>
+              <option value="1">Ready</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="updateTypeName">Plant Type:</label>
+            <select id="updateTypeName" required>
+              <option value="">-- Select Type --</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="updateSectionId">Section:</label>
+            <select id="updateSectionId" required>
+              <option value="">-- Select Section --</option>
+            </select>
+          </div>
+          <button type="submit">Update Plant</button>
+        </div>
+        <div id="updateResultMsg"></div>
+      </form>
     </div>
 
     <div id="delete-container" class="query-container" style="display: none">

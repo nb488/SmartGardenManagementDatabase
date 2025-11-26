@@ -112,6 +112,116 @@ async function insertGarden(event) {
   }
 }
 
+let plantsData = [];
+let plantTypesData = [];
+let sectionsData = [];
+
+async function populateUpdatePlantDropdowns() {
+  try {
+    const plantsResponse = await fetch('/planttable');
+    const plantsResult = await plantsResponse.json();
+    plantsData = plantsResult.data;
+
+    const typesResponse = await fetch('/planttypetable');
+    const typesResult = await typesResponse.json();
+    plantTypesData = typesResult.data;
+
+    const sectionsResponse = await fetch('/sectiontable');
+    const sectionsResult = await sectionsResponse.json();
+    sectionsData = sectionsResult.data;
+
+    const plantSelect = document.getElementById('updatePlantSelect');
+    plantSelect.innerHTML = '<option value="">-- Select a Plant --</option>';
+    plantsData.forEach((plant) => {
+      const option = document.createElement('option');
+      option.value = plant[0]; // plant_id
+      option.textContent = `Plant ${plant[0]} - ${plant[5]} in Section ${plant[6]}`;
+      plantSelect.appendChild(option);
+    });
+
+    const typeSelect = document.getElementById('updateTypeName');
+    typeSelect.innerHTML = '<option value="">-- Select Type --</option>';
+    plantTypesData.forEach((type) => {
+      const option = document.createElement('option');
+      option.value = type[0]; // name
+      option.textContent = type[0];
+      typeSelect.appendChild(option);
+    });
+
+    const sectionSelect = document.getElementById('updateSectionId');
+    sectionSelect.innerHTML = '<option value="">-- Select Section --</option>';
+    sectionsData.forEach((section) => {
+      const option = document.createElement('option');
+      option.value = section[0]; // section_id
+      option.textContent = `Section ${section[0]} (Garden ${section[1]})`;
+      sectionSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error populating update dropdowns:', error);
+  }
+}
+
+function handlePlantSelection() {
+  const plantId = document.getElementById('updatePlantSelect').value;
+  const fieldsDiv = document.getElementById('updatePlantFields');
+
+  if (plantId) {
+    const plant = plantsData.find((p) => p[0] == plantId);
+    if (plant) {
+      document.getElementById('updateLatitude').value = plant[1];
+      document.getElementById('updateLongitude').value = plant[2];
+      document.getElementById('updateRadius').value = plant[3];
+      document.getElementById('updateIsReady').value = plant[4];
+      document.getElementById('updateTypeName').value = plant[5];
+      document.getElementById('updateSectionId').value = plant[6];
+      fieldsDiv.style.display = 'block';
+    }
+  } else {
+    fieldsDiv.style.display = 'none';
+  }
+}
+
+async function updatePlant(event) {
+  event.preventDefault();
+
+  const plantId = document.getElementById('updatePlantSelect').value;
+  const latitude = document.getElementById('updateLatitude').value;
+  const longitude = document.getElementById('updateLongitude').value;
+  const radius = document.getElementById('updateRadius').value;
+  const isReady = document.getElementById('updateIsReady').value;
+  const typeName = document.getElementById('updateTypeName').value;
+  const sectionId = document.getElementById('updateSectionId').value;
+
+  const response = await fetch('/update-plant', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      plant_id: plantId,
+      latitude: parseFloat(latitude),
+      longitude: parseFloat(longitude),
+      radius: parseFloat(radius),
+      is_ready: parseInt(isReady),
+      type_name: typeName,
+      section_id: parseInt(sectionId),
+    }),
+  });
+
+  const responseData = await response.json();
+  const messageElement = document.getElementById('updateResultMsg');
+
+  if (responseData.success) {
+    messageElement.textContent = 'Plant updated successfully!';
+    loadTable({ endpoint: '/planttable', tableId: 'planttable' });
+    document.getElementById('updatePlantForm').reset();
+    document.getElementById('updatePlantFields').style.display = 'none';
+  } else {
+    messageElement.textContent =
+      responseData.message || 'Error updating plant!';
+  }
+}
+
 // Display select tuples from planttable.
 async function selectPlant(event) {
   event.preventDefault();
@@ -406,6 +516,13 @@ window.onload = function () {
     .addEventListener('click', nestedAggregationQuery);
   document.getElementById('havingBtn').addEventListener('click', havingQuery);
 
+  document
+    .getElementById('updatePlantForm')
+    .addEventListener('submit', updatePlant);
+  document
+    .getElementById('updatePlantSelect')
+    .addEventListener('change', handlePlantSelection);
+
   const queryButtons = document.querySelectorAll('.queryButtons button');
   queryButtons.forEach((button) => {
     button.addEventListener('click', () => {
@@ -426,6 +543,11 @@ window.onload = function () {
         // Show selected button and container
         button.classList.add('selected');
         container.style.display = 'block';
+
+        // Populate update dropdowns when update container is shown
+        if (queryType === 'update') {
+          populateUpdatePlantDropdowns();
+        }
       }
     });
   });

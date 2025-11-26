@@ -154,6 +154,35 @@ router.post('/insert-gardentable', async (req, res) => {
   }
 });
 
+router.post('/update-plant', async (req, res) => {
+  const {
+    plant_id,
+    latitude,
+    longitude,
+    radius,
+    is_ready,
+    type_name,
+    section_id,
+  } = req.body;
+  const updateResult = await appService.updatePlant(
+    plant_id,
+    latitude,
+    longitude,
+    radius,
+    is_ready,
+    type_name,
+    section_id,
+  );
+  if (updateResult.success) {
+    res.json({ success: true });
+  } else {
+    res.status(500).json({
+      success: false,
+      message: updateResult.message || 'Failed to update Plant',
+    });
+  }
+});
+
 router.post('/select-planttable', async (req, res) => {
   const { filters } = req.body;
   const selectRows = await appService.selectPlanttable(filters);

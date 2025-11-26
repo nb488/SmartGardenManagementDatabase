@@ -207,6 +207,74 @@ async function selectPlanttable(filters) {
   });
 }
 
+async function updatePlant(
+  plant_id,
+  latitude,
+  longitude,
+  radius,
+  is_ready,
+  type_name,
+  section_id,
+) {
+  return await withOracleDB(async (connection) => {
+    // Validate type_name exists in PlantType
+    const typeCheck = await connection.execute(
+      `SELECT * FROM PLANTTYPE WHERE name = :type_name`,
+      [type_name],
+    );
+    if (typeCheck.rows.length === 0) {
+      return {
+        success: false,
+        message: 'Plant type does not exist in PlantType table',
+      };
+    }
+
+    // Validate section_id exists in Section
+    const sectionCheck = await connection.execute(
+      `SELECT * FROM SECTION WHERE section_id = :section_id`,
+      [section_id],
+    );
+    if (sectionCheck.rows.length === 0) {
+      return {
+        success: false,
+        message: 'Section ID does not exist in Section table',
+      };
+    }
+
+    // Update the plant
+    try {
+      const result = await connection.execute(
+        `UPDATE PLANT
+         SET latitude = :latitude,
+             longitude = :longitude,
+             radius = :radius,
+             is_ready = :is_ready,
+             type_name = :type_name,
+             section_id = :section_id
+         WHERE plant_id = :plant_id`,
+        [
+          latitude,
+          longitude,
+          radius,
+          is_ready,
+          type_name,
+          section_id,
+          plant_id,
+        ],
+        { autoCommit: true },
+      );
+
+      if (result.rowsAffected && result.rowsAffected > 0) {
+        return { success: true };
+      } else {
+        return { success: false, message: 'Plant not found' };
+      }
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  });
+}
+
 async function groupByPlantType() {
   return await withOracleDB(async (connection) => {
     const sql =
@@ -478,6 +546,7 @@ module.exports = {
   resetDatabase,
 
   insertGardentable,
+  updatePlant,
   selectPlanttable,
   groupByPlantType,
   divisionSectionsWithAllPlantTypes,

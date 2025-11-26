@@ -288,6 +288,32 @@ async function nestedAggregationSectionDiversity() {
   });
 }
 
+async function havingSectionsHighWaterUsage() {
+  return await withOracleDB(async (connection) => {
+    const sql = `
+      SELECT s.section_id, s.garden_id, g.name as garden_name,
+             SUM(w.volume_litres) as total_water
+      FROM Section s
+      JOIN Garden g ON s.garden_id = g.garden_id
+      JOIN Water w ON s.section_id = w.section_id
+      GROUP BY s.section_id, s.garden_id, g.name
+      HAVING SUM(w.volume_litres) > 50
+      ORDER BY total_water DESC`;
+
+    const result = await connection.execute(sql);
+    return result.rows.map((row) => {
+      return {
+        section_id: row[0],
+        garden_id: row[1],
+        garden_name: row[2],
+        total_water: row[3],
+      };
+    });
+  }).catch(() => {
+    return [];
+  });
+}
+
 // ---------------------------------------------------------------
 // FETCH COMMANDS
 // ---------------------------------------------------------------
@@ -456,6 +482,7 @@ module.exports = {
   groupByPlantType,
   divisionSectionsWithAllPlantTypes,
   nestedAggregationSectionDiversity,
+  havingSectionsHighWaterUsage,
 
   fetchGardentableFromDb,
   fetchPersonFromDb,

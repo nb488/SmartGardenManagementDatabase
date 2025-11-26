@@ -118,6 +118,12 @@ router.get('/sections-above-avg-diversity', async (req, res) => {
   res.json({ success: true, data: nestedAggData });
 });
 
+// for having query (sections with high water usage)
+router.get('/sections-high-water-usage', async (req, res) => {
+  const havingData = await appService.havingSectionsHighWaterUsage();
+  res.json({ success: true, data: havingData });
+});
+
 router.post('/reset-database', async (req, res) => {
   const initiateResult = await appService.resetDatabase();
   if (initiateResult) {

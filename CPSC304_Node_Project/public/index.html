@@ -202,7 +202,20 @@
 
     <div id="having-container" class="query-container" style="display: none">
       <h2>Having Query</h2>
-      <p>Having functionality coming soon...</p>
+      <p>Find sections with high water consumption (more than 50 litres):</p>
+      <button id="havingBtn">Show High Water Usage Sections</button>
+      <div id="havingResultMsg"></div>
+      <table id="havingResultTable" border="1">
+        <thead>
+          <tr>
+            <th>Section ID</th>
+            <th>Garden ID</th>
+            <th>Garden Name</th>
+            <th>Total Water (litres)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
     <div id="nestedagg-container" class="query-container" style="display: none">

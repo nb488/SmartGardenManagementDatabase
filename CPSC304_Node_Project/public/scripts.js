@@ -300,6 +300,43 @@ async function nestedAggregationQuery() {
   }
 }
 
+async function havingQuery() {
+  const tableBody = document.querySelector('#havingResultTable tbody');
+  const resultMsg = document.getElementById('havingResultMsg');
+
+  tableBody.innerHTML = '';
+  resultMsg.textContent = '';
+
+  try {
+    const response = await fetch('/sections-high-water-usage');
+    const data = await response.json();
+
+    if (data.success && data.data.length > 0) {
+      data.data.forEach((row) => {
+        const tr = document.createElement('tr');
+        const sectionIdCell = document.createElement('td');
+        sectionIdCell.textContent = row.section_id;
+        const gardenIdCell = document.createElement('td');
+        gardenIdCell.textContent = row.garden_id;
+        const gardenNameCell = document.createElement('td');
+        gardenNameCell.textContent = row.garden_name;
+        const waterCell = document.createElement('td');
+        waterCell.textContent = row.total_water.toFixed(1);
+        tr.appendChild(sectionIdCell);
+        tr.appendChild(gardenIdCell);
+        tr.appendChild(gardenNameCell);
+        tr.appendChild(waterCell);
+        tableBody.appendChild(tr);
+      });
+      resultMsg.textContent = 'High water usage sections loaded successfully.';
+    } else {
+      resultMsg.textContent = 'No sections with high water usage found.';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error fetching data';
+  }
+}
+
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 // adjusted to handle database info as objects instead of arrays
@@ -367,6 +404,7 @@ window.onload = function () {
   document
     .getElementById('nestedAggBtn')
     .addEventListener('click', nestedAggregationQuery);
+  document.getElementById('havingBtn').addEventListener('click', havingQuery);
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
   queryButtons.forEach((button) => {

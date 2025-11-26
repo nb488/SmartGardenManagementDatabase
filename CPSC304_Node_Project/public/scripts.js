@@ -184,6 +184,14 @@ async function addSelectFilter(event) {
     filtersContainer.appendChild(filterRow);
 }
 
+async function removeSelectFilter(event) {
+    event.preventDefault();
+    const filtersContainer = document.getElementById('filters-container');
+    if (filtersContainer.lastElementChild != filtersContainer.firstElementChild) {
+        filtersContainer.removeChild(filtersContainer.lastElementChild);
+    }
+}
+
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 // adjusted to handle database info as objects instead of arrays
@@ -236,6 +244,9 @@ window.onload = function () {
   document
     .getElementById('addFilterButton')
     .addEventListener('click', addSelectFilter)
+  document
+    .getElementById('removeFilterButton')
+    .addEventListener('click', removeSelectFilter);
   document
     .getElementById('selectionPlanttable')
     .addEventListener('submit', selectPlant);

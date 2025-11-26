@@ -84,6 +84,11 @@ hr {
   flex-direction: column;
 }
 
+.logic-select,
+.column-select {
+  margin-right: 15px;
+}
+
 .column-select,
 .logic-select {
   font-size: 16px;

@@ -196,6 +196,24 @@ async function selectPlanttable(filters) {
     });
 }
 
+async function groupByPlantType() {
+
+  return await withOracleDB(async (connection) => {
+
+    const sql = 'SELECT type_name, count(*) as plant_count FROM PLANT GROUP BY type_name ORDER BY type_name';
+
+    const result = await connection.execute(sql);
+    return result.rows.map(row => {
+      return {
+        type_name: row[0],
+        plant_count: row[1]
+      };
+    })
+  }).catch(() => {
+    return [];
+  });
+}
+
 // ---------------------------------------------------------------
 // FETCH COMMANDS
 // ---------------------------------------------------------------
@@ -361,6 +379,7 @@ module.exports = {
 
   insertGardentable,
   selectPlanttable,
+  groupByPlantType,
 
   fetchGardentableFromDb,
   fetchPersonFromDb,

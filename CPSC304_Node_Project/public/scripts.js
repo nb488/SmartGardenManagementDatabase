@@ -193,6 +193,37 @@ async function removeSelectFilter(event) {
     }
 }
 
+async function groupByPlantType() {
+  const tableBody = document.querySelector('#groupByResultTable tbody');
+  const resultMsg = document.getElementById('groupByResultMsg');
+
+  tableBody.innerHTML = '';
+  resultMsg.textContent = '';
+
+  try {
+    const response = await fetch('/plant-groupby-type');
+    const data = await response.json();
+
+    if (data.success && data.data.length > 0) {
+      data.data.forEach((row) => {
+        const tr = document.createElement('tr');
+        const typeCell = document.createElement('td');
+        typeCell.textContent = row.type_name;
+        const countCell = document.createElement('td');
+        countCell.textContent = row.plant_count;
+        tr.appendChild(typeCell);
+        tr.appendChild(countCell);
+        tableBody.appendChild(tr);
+      });
+      resultMsg.textContent = 'Plant count by type loaded sucessfully.';
+    } else {
+      resultMsg.textContent = 'No data available';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error fetching data';
+  }
+}
+
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 // adjusted to handle database info as objects instead of arrays
@@ -251,6 +282,7 @@ window.onload = function () {
   document
     .getElementById('selectionPlanttable')
     .addEventListener('submit', selectPlant);
+    document.getElementById('groupByTypeBtn').addEventListener('click', groupByPlantType);
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
   queryButtons.forEach((button) => {

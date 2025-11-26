@@ -100,6 +100,12 @@ router.get('/lighttable', async (req, res) => {
   res.json({ data: tableContent });
 });
 
+// for group by query (counts number of plants by plant type)
+router.get('/plant-groupby-type', async (req, res) => {
+  const groupedData = await appService.groupByPlantType();
+  res.json({ success: true, data: groupedData });
+});
+
 router.post('/reset-database', async (req, res) => {
   const initiateResult = await appService.resetDatabase();
   if (initiateResult) {

@@ -168,9 +168,20 @@
       <p>Join functionality coming soon...</p>
     </div>
 
-    <div id="groupby-container" class="query-container" style="display: none">
+  <div id="groupby-container" class="query-container" style="display: none">
       <h2>Group By Query</h2>
-      <p>Group By functionality coming soon...</p>
+        <p>See how many plants of each type exist across all gardens:</p>
+      <button id="groupByTypeBtn">Show Plant Count By Type</button>
+      <div id="groupByResultMsg"></div>
+      <table id ="groupByResultTable" border="1">
+        <thead>
+          <tr>
+            <th>Type</th>
+            <th>Number of Plants</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+        </table>
     </div>
 
     <div id="having-container" class="query-container" style="display: none">

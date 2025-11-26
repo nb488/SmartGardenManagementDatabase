@@ -1,392 +1,453 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
+  <head>
+    <meta charset="UTF-8" />
     <!-- This meta tag ensures that the website renders correctly across different device sizes, enhancing mobile responsiveness. -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     <!-- Link to the external CSS stylesheet. Uncomment if you wish to customize or add styling. -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css" />
 
     <title>Database Application</title>
-</head>
-<body>
+  </head>
+  <body>
     <!-- ===================================================================================== -->
-    <!-- Display the current status of the database connection. 
+    <!-- Display the current status of the database connection.
          !!HERE TO HELP U DEBUGGING, NOT REQUIRED IN YOUR OWN PROJECT!!
          -->
-    <h1>Database Connection Status:
+    <!--Displays title and connection status-->
+    <div class="titleContainer">
+      <h1 class="title">
+        <strong>Smart Gardening System</strong> : Database Management Interface
+      </h1>
+      <h3 class="title">
+        Connection Status:
         <!-- An in-line placeholder to display connection status. -->
         <span id="dbStatus"> </span>
         <!-- A loading GIF, will be hided once get the status. -->
-        <img id="loadingGif" class="loading-gif" src="loading_100px.gif" alt="Loading...">
-    </h1>
+        <img
+          id="loadingGif"
+          class="loading-gif"
+          src="loading_100px.gif"
+          alt="Loading..."
+        />
+      </h3>
+    </div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <!--Displays Query Buttons under titleContainer-->
+    <div class="queryButtons">
+      <button id="insertbutton" type="button" data-query="insert">
+        Insert
+      </button>
+      <button id="updatebutton" type="button" data-query="update">
+        Update
+      </button>
+      <button id="deletebutton" type="button" data-query="delete">
+        Delete
+      </button>
+      <button id="selectionbutton" type="button" data-query="selection">
+        Selection
+      </button>
+      <button id="projectionbutton" type="button" data-query="projection">
+        Projection
+      </button>
+      <button id="joinbutton" type="button" data-query="join">Join</button>
+      <button id="groupbybutton" type="button" data-query="groupby">
+        Group By
+      </button>
+      <button id="havingbutton" type="button" data-query="having">
+        Having
+      </button>
+      <button id="nestedaggbutton" type="button" data-query="nestedagg">
+        Nested Agg
+      </button>
+      <button id="divisionbutton" type="button" data-query="division">
+        Division
+      </button>
+    </div>
 
-    <div id = "tableContainer">
-    <div id = "sidebar">
-        <label><strong>SELECT TABLES :</strong></label><br><br>
-            <div id="tableSelector">
-                <label><input type="checkbox" value="persontable"> Person</label>
-                <label><input type="checkbox" value="postalcodetable">PostalCode</label>
-                <label><input type="checkbox" value="tooltypetable">Tool Type</label>
-                <label><input type="checkbox" value="planttypetable">Plant Type</label>
-                <label><input type="checkbox" value="sectiondimensionstable">SectionDimensions</label>
-                <label><input type="checkbox" value="locationtable">Location</label>
-                <label><input type="checkbox" value="gardentable">Garden</label>
-                <label><input type="checkbox" value="tooltable">Tool</label>
-                <label><input type="checkbox" value="hasaccesstable">HasAccess</label>
-                <label><input type="checkbox" value="sectiontable">Section</label>
-                <label><input type="checkbox" value="planttable">Plant</label>
-                <label><input type="checkbox" value="environmentaldatapointtable">EnvironmentalDataPoint</label>
-                <label><input type="checkbox" value="maintenancelogtable">MaintenanceLog</label>
-                <label><input type="checkbox" value="watertable">Water</label>
-                <label><input type="checkbox" value="nutrienttable">Nutrient</label>
-                <label><input type="checkbox" value="lighttable">Light</label>
+    <br /><br />
+    <!-- ========================================================================= -->
+
+    <div id="insert-container" class="query-container" style="display: none">
+      <form id="insertGardentable" class="queryinputContainer">
+        <h2>Insert New Garden</h2>
+          <br /><br />
+          <div class="field">
+              <input type="number" id="insertgId" placeholder="Garden ID" required />
+          </div>
+          <div class="field">
+              <input
+                      type="text"
+                      id="insertgName"
+                      placeholder="Garden Name"
+                      maxlength="20"
+              />
+          </div>
+          <div class="field">
+              <input
+                      type="text"
+                      id="insertgPostalCode"
+                      placeholder="Postal Code"
+                      maxlength="20"
+              required/></div>
+          <div class="field">
+              <input
+                      type="text"
+                      id="insertgStreetName"
+                      placeholder="Street Name"
+                      maxlength="20"
+              required/></div>
+          <div class="field">
+              <input
+                      type="number"
+                      id="insertgHouseNumber"
+                      placeholder="House Number"
+              required/></div>
+          <div class="field">
+              <input type="number" id="insertgOwnerId" placeholder="Owner ID"
+              required/></div>
+        <button type="submit">Insert Garden</button> <br />
+        <div id="ginsertResultMsg"></div>
+      </form>
+    </div>
+
+    <div id="update-container" class="query-container" style="display: none">
+      <h2>Update Query</h2>
+      <p>Update functionality coming soon...</p>
+    </div>
+
+    <div id="delete-container" class="query-container" style="display: none">
+      <h2>Delete Query</h2>
+      <p>Delete functionality coming soon...</p>
+    </div>
+
+    <div id="selection-container" class="query-container" style="display: none">
+        <form id="selectionPlanttable" class="queryinputContainer">
+            <h2>Selection Query</h2>
+            <br /><br />
+            <div id="filters-container">
+                <div class="filter-row">
+                    <select class="column-select">
+                        <option value="plant_id">Plant ID</option>
+                        <option value="latitude">Latitude</option>
+                        <option value="longitude">Longitude</option>
+                        <option value="radius">Radius</option>
+                        <option value="is_ready">Status</option>
+                        <option value="type_name">Type</option>
+                        <option value="section_id">Section ID</option>
+                    </select>
+
+                    <input class = "filter-value" placeholder="Value" required/>
+                </div>
             </div>
+            <div id="selection-buttons">
+                <button type="button" id="addFilterButton">Add Filter</button>
+                <button type="button" id="removeFilterButton">Remove Filter</button>
+                <br />
+                <br />
+                <button type="submit">Search Plant Table</button>
+            </div>
+            <br />
+            <div id="selectionResultMsg"></div>
+            <div id="selectionResult"></div>
+        </form>
     </div>
 
-
-    <!-- Show 'Demotable'. 
-        Data will be fetched and inserted here dynamically using JavaScript. -->
-    <div id="mainTables">
-    <h2>Demotable</h2>
-    <table id="demotable" border="1">
-        <thead>
-            <tr>
-                <!--Table head, need to be adjusted accordingly to align with your own.-->
-                <th>ID</th>
-                <th>Name</th>
-            </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-
-    <div id="persontableContainer">
-    <h2>Person</h2>
-    <table id="persontable" border="1">
-        <thead>
-        <tr>
-            <th>person_id</th>
-            <th>name</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div
+      id="projection-container"
+      class="query-container"
+      style="display: none"
+    >
+      <h2>Projection Query</h2>
+      <p>Projection functionality coming soon...</p>
     </div>
 
-    <div id="postalcodetableContainer">
-    <h2>PostalCode</h2>
-    <table id="postalcodetable" border="1">
-        <thead>
-        <tr>
-            <th>postalcode</th>
-            <th>province</th>
-            <th>city</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div id="join-container" class="query-container" style="display: none">
+      <h2>Join Query</h2>
+      <p>Join functionality coming soon...</p>
     </div>
 
-    <div id="tooltypetableContainer">
-    <h2>ToolType</h2>
-    <table id="tooltypetable" border="1">
-        <thead>
-        <tr>
-            <th>name</th>
-            <th>function</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div id="groupby-container" class="query-container" style="display: none">
+      <h2>Group By Query</h2>
+      <p>Group By functionality coming soon...</p>
     </div>
 
-    <div id="planttypetableContainer">
-    <h2>Planttype</h2>
-    <table id="planttypetable" border="1">
-        <thead>
-        <tr>
-            <th>name</th>
-            <th>requirements</th>
-            <th>description</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div id="having-container" class="query-container" style="display: none">
+      <h2>Having Query</h2>
+      <p>Having functionality coming soon...</p>
     </div>
 
-    <div id="sectiondimensionstableContainer">
-    <h2>SectionDimensions</h2>
-    <table id="sectiondimensionstable" border="1">
-        <thead>
-        <tr>
-            <th>length</th>
-            <th>width</th>
-            <th>area</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div
+      id="nestedagg-container"
+      class="query-container"
+      style="display: none"
+    >
+      <h2>Nested Aggregation Query</h2>
+      <p>Nested Aggregation functionality coming soon...</p>
     </div>
 
-    <div id="locationtableContainer">
-    <h2>Location</h2>
-    <table id="locationtable" border="1">
-        <thead>
-        <tr>
-            <th>postal_code</th>
-            <th>house_number</th>
-            <th>street_name</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
+    <div id="division-container" class="query-container" style="display: none">
+      <h2>Division Query</h2>
+      <p>Division functionality coming soon...</p>
     </div>
 
-    <div id="gardentableContainer">
-    <h2>Garden</h2>
-    <table id="gardentable" border="1">
-        <thead>
-        <tr>
-            <th>garden_id</th>
-            <th>name</th>
-            <th>postal_code</th>
-            <th>street_name</th>
-            <th>house_number</th>
-            <th>owner_id</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
+    <!-- ========================================================================= -->
 
-    <div id="tooltableContainer">
-    <h2>Tool</h2>
-    <table id="tooltable" border="1">
-        <thead>
-        <tr>
-            <th>tool_id</th>
-            <th>date_added</th>
-            <th>garden_id</th>
-            <th>type_name</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-
-    <div id="hasaccesstableContainer">
-    <h2>HasAccess</h2>
-    <table id="hasaccesstable" border="1">
-        <thead>
-        <tr>
-            <th>garden_id</th>
-            <th>person_id</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-
-    <div id="sectiontableContainer">
-    <h2>Section</h2>
-    <table id="sectiontable" border="1">
-        <thead>
-        <tr>
-            <th>section_id</th>
-            <th>garden_id</th>
-            <th>latitude</th>
-            <th>longitude</th>
-            <th>length</th>
-            <th>width</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-
-    <div id="planttableContainer">
-    <h2>Plant</h2>
-    <table id="planttable" border="1">
-        <thead>
-        <tr>
-            <th>plant_id</th>
-            <th>latitude</th>
-            <th>longitude</th>
-            <th>radius</th>
-            <th>is_ready</th>
-            <th>type_name</th>
-            <th>section_id</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-
-    <div id="environmentaldatapointtableContainer">
-    <h2>EnvironmentalDataPoint</h2>
-    <table id="environmentaldatapointtable" border="1">
-        <thead>
-        <tr>
-            <th>timestamp</th>
-            <th>section_id</th>
-            <th>temperature</th>
-            <th>moisture</th>
-            <th>pH</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-
-    <div id="maintenancelogtableContainer">
-    <h2>MaintenanceLog</h2>
-    <table id="maintenancelogtable" border="1">
-        <thead>
-        <tr>
-            <th>maintenance_log_id</th>
-            <th>timestamp</th>
-            <th>entry</th>
-            <th>section_id</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-
-    <div id="watertableContainer">
-    <h2>Water</h2>
-    <table id="watertable" border="1">
-        <thead>
-        <tr>
-            <th>resource_usage_data_point_id</th>
-            <th>timestamp</th>
-            <th>volume_litres</th>
-            <th>section_id</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-
-    <div id="nutrienttableContainer">
-    <h2>Nutrient</h2>
-    <table id="nutrienttable" border="1">
-        <thead>
-        <tr>
-            <th>resource_usage_data_point_id</th>
-            <th>timestamp</th>
-            <th>nitrogen_grams</th>
-            <th>potassium_grams</th>
-            <th>phosphorus_grams</th>
-            <th>section_id</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-
-    <div id="lighttableContainer">
-    <h2>Light</h2>
-    <table id="lighttable" border="1">
-        <thead>
-        <tr>
-            <th>resource_usage_data_point_id</th>
-            <th>timestamp</th>
-            <th>intensity_lux</th>
-            <th>duration_mins</th>
-            <th>type</th>
-            <th>section_id</th>
-        </tr>
-        </thead>
-        <tbody>
-        </tbody>
-    </table>
-    </div>
-    </div>
-    </div>
-
-
-
-    <br><hr><br> <!-- ========================================================================= -->
-
-    <h2>Reset Demotable</h2>
-    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
-    <button id="resetDemotable"> reset </button> <br>
-    <!-- A placeholder to display messages related to the reset operation. -->
+    <h2>Reset + Populate Database</h2>
+    <p>
+      If this is the first time you're running this page, you MUST use reset
+    </p>
+    <button id="resetDatabase">reset</button> <br />
     <div id="resetResultMsg"></div>
 
-    <h2>Reset Garden</h2>
-    <p>If you wish to reset the table press on the reset button. If this is the first time you're running this page, you MUST use reset</p>
-    <button id="resetGardentable"> reset </button> <br>
-    <!-- A placeholder to display messages related to the reset operation. -->
-    <div id="gresetResultMsg"></div>
+    <!-- ========================================================================= -->
 
-    <br><hr><br> <!-- ========================================================================= -->
+    <div id="mainTables">
+      <div id="persontableContainer" class="queryTable">
+        <h2>Person</h2>
+        <table id="persontable" border="1">
+          <thead>
+            <tr>
+              <th>person_id</th>
+              <th>name</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-    <h2> Insert Values into DemoTable </h2>
-    <form id="insertDemotable">
-        ID: <input type="number" id="insertId" placeholder="Enter ID" required> <br><br>
-        Name: <input type="text" id="insertName" placeholder="Enter Name" maxlength="20"> <br><br>
+      <div id="postalcodetableContainer" class="queryTable">
+        <h2>PostalCode</h2>
+        <table id="postalcodetable" border="1">
+          <thead>
+            <tr>
+              <th>postalcode</th>
+              <th>province</th>
+              <th>city</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-        <button type="submit"> insert </button> <br>
-    </form>
-    <div id="insertResultMsg"></div>
+      <div id="tooltypetableContainer" class="queryTable">
+        <h2>ToolType</h2>
+        <table id="tooltypetable" border="1">
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>function</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-    <h2> Insert New Garden </h2>
-    <form id="insertGardentable">
+      <div id="planttypetableContainer" class="queryTable">
+        <h2>Planttype</h2>
+        <table id="planttypetable" border="1">
+          <thead>
+            <tr>
+              <th>name</th>
+              <th>requirements</th>
+              <th>description</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-        Garden ID: <input type="number" id="insertgId" placeholder="Garden ID" required> <br><br>
-        Name: <input type="text" id="insertgName" placeholder="Garden Name" maxlength="20"> <br><br>
-        Postal Code: <input type="text" id="insertgPostalCode" placeholder="Postal Code" maxlength="20"> <br><br>
-        Street Name: <input type="text" id="insertgStreetName" placeholder="Street Name" maxlength="20"> <br><br>
-        House Number: <input type="number" id="insertgHouseNumber" placeholder="House Number"> <br><br>
-        Owner ID: <input type="number" id="insertgOwnerId" placeholder="Owner ID"> <br><br>
+      <div id="sectiondimensionstableContainer" class="queryTable">
+        <h2>SectionDimensions</h2>
+        <table id="sectiondimensionstable" border="1">
+          <thead>
+            <tr>
+              <th>length</th>
+              <th>width</th>
+              <th>area</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-        <button type="submit"> insert </button> <br>
-    </form>
-    <div id="ginsertResultMsg"></div>
+      <div id="locationtableContainer" class="queryTable">
+        <h2>Location</h2>
+        <table id="locationtable" border="1">
+          <thead>
+            <tr>
+              <th>postal_code</th>
+              <th>house_number</th>
+              <th>street_name</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+      <div id="gardentableContainer" class="queryTable">
+        <h2>Garden</h2>
+        <table id="gardentable" border="1">
+          <thead>
+            <tr>
+              <th>garden_id</th>
+              <th>name</th>
+              <th>postal_code</th>
+              <th>street_name</th>
+              <th>house_number</th>
+              <th>owner_id</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-    <h2>Update Name in DemoTable</h2>
-    <p>The values are case sensitive and if you enter in the wrong case, the update statement will not do anything.</p>
-    <form id="updataNameDemotable">
-        Old Name: <input type="text" id="updateOldName" placeholder="Enter Old Name" required> <br><br>
-        New Name: <input type="text" id="updateNewName" placeholder="Enter New Name" maxlength="20"> <br><br>
+      <div id="tooltableContainer" class="queryTable">
+        <h2>Tool</h2>
+        <table id="tooltable" border="1">
+          <thead>
+            <tr>
+              <th>tool_id</th>
+              <th>date_added</th>
+              <th>garden_id</th>
+              <th>type_name</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-        <button type="submit"> update </button> <br>
-    </form>
-    <!-- A placeholder to display messages related to the update operation. -->
-    <div id="updateNameResultMsg"></div>
+      <div id="hasaccesstableContainer" class="queryTable">
+        <h2>HasAccess</h2>
+        <table id="hasaccesstable" border="1">
+          <thead>
+            <tr>
+              <th>garden_id</th>
+              <th>person_id</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-    <br><hr><br> <!-- ========================================================================= -->
+      <div id="sectiontableContainer" class="queryTable">
+        <h2>Section</h2>
+        <table id="sectiontable" border="1">
+          <thead>
+            <tr>
+              <th>section_id</th>
+              <th>garden_id</th>
+              <th>latitude</th>
+              <th>longitude</th>
+              <th>length</th>
+              <th>width</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
-    <h2>Count the Tuples in DemoTable</h2>
-    <button id="countDemotable"> count </button> <br><br>
-    <!-- A placeholder to display the count result. -->
-    <div id="countResultMsg"></div> <br>
+      <div id="planttableContainer" class="queryTable">
+        <h2>Plant</h2>
+        <table id="planttable" border="1">
+          <thead>
+            <tr>
+              <th>plant_id</th>
+              <th>latitude</th>
+              <th>longitude</th>
+              <th>radius</th>
+              <th>is_ready</th>
+              <th>type_name</th>
+              <th>section_id</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
 
+      <div id="environmentaldatapointtableContainer" class="queryTable">
+        <h2>EnvironmentalDataPoint</h2>
+        <table id="environmentaldatapointtable" border="1">
+          <thead>
+            <tr>
+              <th>timestamp</th>
+              <th>section_id</th>
+              <th>temperature</th>
+              <th>moisture</th>
+              <th>pH</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="maintenancelogtableContainer" class="queryTable">
+        <h2>MaintenanceLog</h2>
+        <table id="maintenancelogtable" border="1">
+          <thead>
+            <tr>
+              <th>maintenance_log_id</th>
+              <th>timestamp</th>
+              <th>entry</th>
+              <th>section_id</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="watertableContainer" class="queryTable">
+        <h2>Water</h2>
+        <table id="watertable" border="1">
+          <thead>
+            <tr>
+              <th>resource_usage_data_point_id</th>
+              <th>timestamp</th>
+              <th>volume_litres</th>
+              <th>section_id</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="nutrienttableContainer" class="queryTable">
+        <h2>Nutrient</h2>
+        <table id="nutrienttable" border="1">
+          <thead>
+            <tr>
+              <th>resource_usage_data_point_id</th>
+              <th>timestamp</th>
+              <th>nitrogen_grams</th>
+              <th>potassium_grams</th>
+              <th>phosphorus_grams</th>
+              <th>section_id</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div id="lighttableContainer" class="queryTable">
+        <h2>Light</h2>
+        <table id="lighttable" border="1">
+          <thead>
+            <tr>
+              <th>resource_usage_data_point_id</th>
+              <th>timestamp</th>
+              <th>intensity_lux</th>
+              <th>duration_mins</th>
+              <th>type</th>
+              <th>section_id</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
     <!-- ===================================================================================== -->
     <!-- External JavaScript file that contains the functionality/logic for the operations above. -->
     <script src="scripts.js"></script>
-</body>
+  </body>
 </html>

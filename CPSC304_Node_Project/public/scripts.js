@@ -1,303 +1,306 @@
 /*
- * These functions below are for various webpage functionalities. 
+ * These functions below are for various webpage functionalities.
  * Each function serves to process data on the frontend:
  *      - Before sending requests to the backend.
  *      - After receiving responses from the backend.
- * 
+ *
  * To tailor them to your specific needs,
- * adjust or expand these functions to match both your 
- *   backend endpoints 
- * and 
+ * adjust or expand these functions to match both your
+ *   backend endpoints
+ * and
  *   HTML structure.
- * 
+ *
  */
 
-// global array
+// global array of all table containers
 const containers = [
-        "persontableContainer",
-        "postalcodetableContainer",
-        "tooltypetableContainer",
-        "planttypetableContainer",
-        "sectiondimensionstableContainer",
-        "locationtableContainer",
-        "gardentableContainer",
-        "tooltableContainer",
-        "hasaccesstableContainer",
-        "sectiontableContainer",
-        "planttableContainer",
-        "environmentaldatapointtableContainer",
-        "maintenancelogtableContainer",
-        "watertableContainer",
-        "nutrienttableContainer",
-        "lighttableContainer"
+  'persontableContainer',
+  'postalcodetableContainer',
+  'tooltypetableContainer',
+  'planttypetableContainer',
+  'sectiondimensionstableContainer',
+  'locationtableContainer',
+  'gardentableContainer',
+  'tooltableContainer',
+  'hasaccesstableContainer',
+  'sectiontableContainer',
+  'planttableContainer',
+  'environmentaldatapointtableContainer',
+  'maintenancelogtableContainer',
+  'watertableContainer',
+  'nutrienttableContainer',
+  'lighttableContainer',
 ];
 
 // This function checks the database connection and updates its status on the frontend.
 async function checkDbConnection() {
-    const statusElem = document.getElementById('dbStatus');
-    const loadingGifElem = document.getElementById('loadingGif');
+  const statusElem = document.getElementById('dbStatus');
+  const loadingGifElem = document.getElementById('loadingGif');
 
-    const response = await fetch('/check-db-connection', {
-        method: "GET"
-    });
+  const response = await fetch('/check-db-connection', {
+    method: 'GET',
+  });
 
-    // Hide the loading GIF once the response is received.
-    loadingGifElem.style.display = 'none';
-    // Display the statusElem's text in the placeholder.
-    statusElem.style.display = 'inline';
+  // Hide the loading GIF once the response is received.
+  loadingGifElem.style.display = 'none';
+  // Display the statusElem's text in the placeholder.
+  statusElem.style.display = 'inline';
 
-    response.text()
+  response
+    .text()
     .then((text) => {
-        statusElem.textContent = text;
+      statusElem.textContent = text;
     })
     .catch((error) => {
-        statusElem.textContent = 'connection timed out';  // Adjust error handling if required.
+      statusElem.textContent = 'connection timed out'; // Adjust error handling if required.
     });
 }
 
+// This function resets and populates the database.
+async function resetDatabase() {
+  const response = await fetch('/reset-database', {
+    method: 'POST',
+  });
+  const responseData = await response.json();
 
-// This function resets or initializes the demotable.
-async function resetDemotable() {
-    const response = await fetch("/initiate-demotable", {
-        method: 'POST'
-    });
-    const responseData = await response.json();
-
-    if (responseData.success) {
-        const messageElement = document.getElementById('resetResultMsg');
-        messageElement.textContent = "demotable initiated successfully!";
-        fetchTableData();
-    } else {
-        alert("Error initiating table!");
-    }
+  if (responseData.success) {
+    const messageElement = document.getElementById('resetResultMsg');
+    messageElement.textContent =
+      'smart garden database initiated successfully!';
+    fetchTableData();
+  } else {
+    alert('Error initiating table!');
+  }
 }
-
-// This function resets or initializes the gardentable.
-async function resetGardentable() {
-    const response = await fetch("/initiate-gardentable", {
-        method: 'POST'
-    });
-    const responseData = await response.json();
-
-    if (responseData.success) {
-        const messageElement = document.getElementById('gresetResultMsg');
-        messageElement.textContent = "gardentable initiated successfully!";
-        fetchTableData();
-    } else {
-        alert("Error initiating table!");
-    }
-}
-
-// Inserts new records into the demotable.
-async function insertDemotable(event) {
-    event.preventDefault();
-
-    const idValue = document.getElementById('insertId').value;
-    const nameValue = document.getElementById('insertName').value;
-
-    const response = await fetch('/insert-demotable', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            id: idValue,
-            name: nameValue
-        })
-    });
-
-    const responseData = await response.json();
-    const messageElement = document.getElementById('insertResultMsg');
-
-    if (responseData.success) {
-        messageElement.textContent = "Data inserted successfully!";
-        loadTable({endpoint: '/demotable', tableId: 'demotable'});
-    } else {
-        messageElement.textContent = "Error inserting data!";
-    }
-}
-
 
 // Inserts new records into the gardentable.
 async function insertGarden(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const idValue = document.getElementById('insertgId').value;
-    const nameValue = document.getElementById('insertgName').value;
-    const postalcodeValue = document.getElementById('insertgPostalCode').value;
-    const streetnameValue = document.getElementById('insertgStreetName').value;
-    const housenumberValue = document.getElementById('insertgHouseNumber').value;
-    const owneridValue = document.getElementById('insertgOwnerId').value;
+  const idValue = document.getElementById('insertgId').value;
+  const nameValue = document.getElementById('insertgName').value;
+  const postalcodeValue = document.getElementById('insertgPostalCode').value;
+  const streetnameValue = document.getElementById('insertgStreetName').value;
+  const housenumberValue = document.getElementById('insertgHouseNumber').value;
+  const owneridValue = document.getElementById('insertgOwnerId').value;
 
-    const response = await fetch('/insert-gardentable', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            garden_id: idValue,
-            name: nameValue,
-            postal_code: postalcodeValue,
-            street_name: streetnameValue,
-            house_number: housenumberValue,
-            owner_id: owneridValue
-        })
-    });
+  const response = await fetch('/insert-gardentable', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      garden_id: idValue,
+      name: nameValue,
+      postal_code: postalcodeValue,
+      street_name: streetnameValue,
+      house_number: housenumberValue,
+      owner_id: owneridValue,
+    }),
+  });
 
-    const responseData = await response.json();
-    const messageElement = document.getElementById('ginsertResultMsg');
+  const responseData = await response.json();
+  const messageElement = document.getElementById('ginsertResultMsg');
 
-    if (responseData.success) {
-        messageElement.textContent = "Data inserted successfully!";
-        loadTable({endpoint: '/gardentable', tableId: 'gardentable'});
-    } else {
-        messageElement.textContent = "Error inserting data!";
-    }
+  if (responseData.success) {
+    messageElement.textContent = 'Data inserted successfully!';
+    loadTable({ endpoint: '/gardentable', tableId: 'gardentable' });
+    loadTable({ endpoint: '/locationtable', tableId: 'locationtable' });
+  } else {
+    messageElement.textContent = responseData.message || 'Error inserting data!';
+  }
 }
 
+// Display select tuples from planttable.
+async function selectPlant(event) {
+    event.preventDefault();
+
+    const filterRows = document.querySelectorAll('#filters-container .filter-row');
+    const filters = Array.from(filterRows).map((row, i) => {
+        const logicSel = row.querySelector('.logic-select');
+        const columnSel = row.querySelector('.column-select');
+        const inputVal = row.querySelector('.filter-value');
+
+        return {
+            logic: i === 0 ? null : logicSel.value, // first input does not have logic value
+            column: columnSel.value,
+            value: inputVal.value
+        };
+    });
+
+    const response = await fetch('/select-planttable', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({filters}),
+      });
+
+      const responseData = await response.json();
+      const messageElement = document.getElementById('selectionResultMsg');
+      const resultContainer = document.getElementById('selectionResult');
+
+      if (responseData.success) {
+        messageElement.textContent = 'Select query executed successfully!';
+        resultContainer.textContent = JSON.stringify(responseData.data)
+      } else {
+        messageElement.textContent = 'Error executing select query!';
+      }
+}
+
+// Dynamically create filter option-menus for logic (AND/OR) and column selection
+async function addSelectFilter(event) {
+    event.preventDefault();
+    const filtersContainer = document.getElementById('filters-container');
+    const filterRow = document.createElement('div');
+    filterRow.className = 'filter-row';
+
+    // AND/OR
+    const logicSel = document.createElement('select');
+    logicSel.className = 'logic-select';
+    logicSel.innerHTML = `
+        <option value="AND">AND</option>
+        <option value="OR">OR</option>`;
+
+    const columnSel = document.createElement('select');
+    columnSel.className = 'column-select';
+    columnSel.innerHTML = `
+        <option value="plant_id">Plant ID</option>
+        <option value="latitude">Latitude</option>
+        <option value="longitude">Longitude</option>
+        <option value="radius">Radius</option>
+        <option value="is_ready">Status</option>
+        <option value="type_name">Type</option>
+        <option value="section_id">Section ID</option>`;
+
+    const inputBox = document.createElement('input');
+    inputBox.className = 'filter-value';
+    inputBox.placeholder = 'Value';
+    inputBox.required = true;
+
+    filterRow.appendChild(logicSel);
+    filterRow.appendChild(columnSel);
+    filterRow.appendChild(inputBox);
+
+    filtersContainer.appendChild(filterRow);
+}
+
+async function removeSelectFilter(event) {
+    event.preventDefault();
+    const filtersContainer = document.getElementById('filters-container');
+    if (filtersContainer.lastElementChild != filtersContainer.firstElementChild) {
+        filtersContainer.removeChild(filtersContainer.lastElementChild);
+    }
+}
 
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 // adjusted to handle database info as objects instead of arrays
-async function loadTable({endpoint, tableId}) {
-    const tableElement = document.getElementById(tableId);
-    const tableBody = tableElement.querySelector('tbody');
+async function loadTable({ endpoint, tableId }) {
+  const tableElement = document.getElementById(tableId);
+  const tableBody = tableElement.querySelector('tbody');
 
-    const response = await fetch(endpoint, {
-        method: 'GET'
+  const response = await fetch(endpoint, {
+    method: 'GET',
+  });
+
+  const responseData = await response.json();
+  const tableIdContent = responseData.data;
+
+  // Always clear old, already fetched data before new fetching process.
+  if (tableBody) {
+    tableBody.innerHTML = '';
+  }
+
+  tableIdContent.forEach((user) => {
+    const row = tableBody.insertRow();
+    const fields = Object.values(user);
+    fields.forEach((field, index) => {
+      const cell = row.insertCell(index);
+      // Format decimal numbers to 3 decimal places
+      if (typeof field === 'number' && !Number.isInteger(field)) {
+        cell.textContent = field.toFixed(3);
+      } else {
+        cell.textContent = field;
+      }
     });
-
-    const responseData = await response.json();
-    const tableIdContent = responseData.data;
-
-    // Always clear old, already fetched data before new fetching process.
-    if (tableBody) {
-        tableBody.innerHTML = '';
-    }
-
-    tableIdContent.forEach(user => {
-        const row = tableBody.insertRow();
-        const fields = Object.values(user);
-        fields.forEach((field, index) => {
-            const cell = row.insertCell(index);
-            cell.textContent = field;
-        });
-    });
+  });
 }
-
-// Updates names in the demotable.
-async function updateNameDemotable(event) {
-    event.preventDefault();
-
-    const oldNameValue = document.getElementById('updateOldName').value;
-    const newNameValue = document.getElementById('updateNewName').value;
-
-    const response = await fetch('/update-name-demotable', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            oldName: oldNameValue,
-            newName: newNameValue
-        })
-    });
-
-    const responseData = await response.json();
-    const messageElement = document.getElementById('updateNameResultMsg');
-
-    if (responseData.success) {
-        messageElement.textContent = "Name updated successfully!";
-        fetchTableData();
-    } else {
-        messageElement.textContent = "Error updating name!";
-    }
-}
-
-// Counts rows in the demotable.
-// Modify the function accordingly if using different aggregate functions or procedures.
-async function countDemotable() {
-    const response = await fetch("/count-demotable", {
-        method: 'GET'
-    });
-
-    const responseData = await response.json();
-    const messageElement = document.getElementById('countResultMsg');
-
-    if (responseData.success) {
-        const tupleCount = responseData.count;
-        messageElement.textContent = `The number of tuples in demotable: ${tupleCount}`;
-    } else {
-        alert("Error in count demotable!");
-    }
-}
-
 
 // ---------------------------------------------------------------
 // Initializes the webpage functionalities.
 // Add or remove event listeners based on the desired functionalities.
-window.onload = function() {
-    checkDbConnection();
-    fetchTableData();
+window.onload = function () {
+  checkDbConnection();
+  fetchTableData();
 
-    document.getElementById("resetDemotable").addEventListener("click", resetDemotable);
-    document.getElementById("resetGardentable").addEventListener("click", resetGardentable);
+  document
+    .getElementById('resetDatabase')
+    .addEventListener('click', resetDatabase);
 
-    document.getElementById("insertDemotable").addEventListener("submit", insertDemotable);
-    document.getElementById("insertGardentable").addEventListener("submit", insertGarden);
+  document
+    .getElementById('insertGardentable')
+    .addEventListener('submit', insertGarden);
 
-    document.getElementById("updataNameDemotable").addEventListener("submit", updateNameDemotable);
-    document.getElementById("countDemotable").addEventListener("click", countDemotable);
+  document
+    .getElementById('addFilterButton')
+    .addEventListener('click', addSelectFilter)
+  document
+    .getElementById('removeFilterButton')
+    .addEventListener('click', removeSelectFilter);
+  document
+    .getElementById('selectionPlanttable')
+    .addEventListener('submit', selectPlant);
 
-    // hide all tables by default
-    containers.forEach(id => {
-        const element= document.getElementById(id);
-        element.style.display = 'none';
+  const queryButtons = document.querySelectorAll('.queryButtons button');
+  queryButtons.forEach((button) => {
+    button.addEventListener('click', () => {
+      const queryType = button.dataset.query;
+      const container = document.getElementById(`${queryType}-container`);
+
+      // Toggle if clicking again
+      if (button.classList.contains('selected')) {
+        button.classList.remove('selected');
+        container.style.display = 'none';
+      } else {
+        // Remove selected class from all buttons and hide all containers
+        queryButtons.forEach((btn) => btn.classList.remove('selected'));
+        document
+          .querySelectorAll('.query-container')
+          .forEach((cont) => (cont.style.display = 'none'));
+
+        // Show selected button and container
+        button.classList.add('selected');
+        container.style.display = 'block';
+      }
     });
-
-    // toggle event listeners
-    const checkboxes = document.querySelectorAll("#tableSelector input[type=checkbox]");
-    checkboxes.forEach(cb => {
-        cb.addEventListener("change", toggleTables);
-    });
+  });
 };
 
-// General function to refresh the displayed table data. 
+// General function to refresh the displayed table data.
 // You can invoke this after any table-modifying operation to keep consistency.
 function fetchTableData() {
-    const tables = [
-    {endpoint: '/demotable', tableId: 'demotable' },
-    {endpoint: '/persontable', tableId: 'persontable' },
-    {endpoint: '/postalcodetable', tableId: 'postalcodetable'},
-    {endpoint: '/tooltypetable', tableId: 'tooltypetable' },
-    {endpoint: '/planttypetable', tableId: 'planttypetable'},
-    {endpoint: '/sectiondimensionstable', tableId: 'sectiondimensionstable' },
-    {endpoint: '/locationtable', tableId: 'locationtable'},
-    {endpoint: '/gardentable', tableId: 'gardentable' },
-    {endpoint: '/tooltable', tableId: 'tooltable'},
-    {endpoint: '/hasaccesstable', tableId: 'hasaccesstable' },
-    {endpoint: '/sectiontable', tableId: 'sectiontable'},
-    {endpoint: '/planttable', tableId: 'planttable' },
-    {endpoint: '/environmentaldatapointtable', tableId: 'environmentaldatapointtable'},
-    {endpoint: '/maintenancelogtable', tableId: 'maintenancelogtable' },
-    {endpoint: '/watertable', tableId: 'watertable'},
-    {endpoint: '/nutrienttable', tableId: 'nutrienttable' },
-    {endpoint: '/lighttable', tableId: 'lighttable'}
-    ];
+  const tables = [
+    { endpoint: '/persontable', tableId: 'persontable' },
+    { endpoint: '/postalcodetable', tableId: 'postalcodetable' },
+    { endpoint: '/tooltypetable', tableId: 'tooltypetable' },
+    { endpoint: '/planttypetable', tableId: 'planttypetable' },
+    { endpoint: '/sectiondimensionstable', tableId: 'sectiondimensionstable' },
+    { endpoint: '/locationtable', tableId: 'locationtable' },
+    { endpoint: '/gardentable', tableId: 'gardentable' },
+    { endpoint: '/tooltable', tableId: 'tooltable' },
+    { endpoint: '/hasaccesstable', tableId: 'hasaccesstable' },
+    { endpoint: '/sectiontable', tableId: 'sectiontable' },
+    { endpoint: '/planttable', tableId: 'planttable' },
+    {
+      endpoint: '/environmentaldatapointtable',
+      tableId: 'environmentaldatapointtable',
+    },
+    { endpoint: '/maintenancelogtable', tableId: 'maintenancelogtable' },
+    { endpoint: '/watertable', tableId: 'watertable' },
+    { endpoint: '/nutrienttable', tableId: 'nutrienttable' },
+    { endpoint: '/lighttable', tableId: 'lighttable' },
+  ];
 
-    tables.forEach(t => loadTable(t));
+  tables.forEach((t) => loadTable(t));
 }
-
-// Selects a table from dropdown and displays it
-//
-async function toggleTables() {
-    containers.forEach(id => {
-        const element = document.getElementById(id);
-        const checkbox = document.querySelector(`#tableSelector input[value=${id.replace("Container","")}]`);
-        element.style.display = checkbox.checked ? 'block' : 'none';
-        });
-}
-
-
-
-

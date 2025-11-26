@@ -120,10 +120,10 @@ router.post('/insert-gardentable', async (req, res) => {
     house_number,
     owner_id,
   );
-  if (insertResult) {
+  if (insertResult.success) {
     res.json({ success: true });
   } else {
-    res.status(500).json({ success: false });
+    res.status(500).json({ success: false, message: insertResult.message || "Failed to insert Garden" });
   }
 });
 

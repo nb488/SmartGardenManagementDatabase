@@ -105,8 +105,9 @@ async function insertGarden(event) {
   if (responseData.success) {
     messageElement.textContent = 'Data inserted successfully!';
     loadTable({ endpoint: '/gardentable', tableId: 'gardentable' });
+    loadTable({ endpoint: '/locationtable', tableId: 'locationtable' });
   } else {
-    messageElement.textContent = 'Error inserting data!';
+    messageElement.textContent = responseData.message || 'Error inserting data!';
   }
 }
 

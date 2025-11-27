@@ -152,7 +152,18 @@ async function insertGardentable(
 
     if (postalcodeCheck.rows.length === 0) {return {success: false, message: "Postal Code does not exist in Postal Code Table"}}
 
-    // check 2: if foreign key to location table does not exist, insert it (note that location contains foreign key to Postal Code)
+
+    // check 4: if primary key (garden ID) already exists, reject insertion
+    const primarykeyCheck = await connection.execute(
+        `SELECT * FROM Garden WHERE garden_id = :garden_id`,
+        [garden_id],
+    );
+
+    if (primarykeyCheck.rows.length !== 0) {
+        return {success: false, message: 'Duplicate Garden ID, please enter a different Garden ID'}
+    }
+
+    // check 5: if foreign key to location table does not exist, insert it (note that location contains foreign key to Postal Code)
     const locationCheck = await connection.execute(
       `SELECT * FROM LOCATION WHERE postal_code = :postal_code AND house_number = :house_number AND street_name = :street_name`,
       [postal_code, house_number, street_name],
@@ -179,7 +190,7 @@ async function insertGardentable(
     );
     return {success: true}; //original :  return result.rowsAffected && result.rowsAffected > 0
   } catch(err) {
-    return {success: false, message: 'Insertion unsuccessful: Duplicate Garden ID, please enter a unique Garden ID'};
+    return {success: false, message: err.message};
   };
   })
 }

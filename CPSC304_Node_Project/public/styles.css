@@ -118,12 +118,6 @@ table {
   top: 20px;
 }
 
-#tableSelector {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
 .table-container {
   display: none;
 }
@@ -171,6 +165,8 @@ button:hover {
 button:active {
   background-color: rgb(12, 67, 187);
 }
+
+
 
 /* INPUT STYLES */
 input,

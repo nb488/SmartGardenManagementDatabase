@@ -299,6 +299,13 @@ async function selectPlant(event) {
     };
   });
 
+    const messageElement = document.getElementById('selectionResultMsg');
+    //const resultContainer = document.getElementById('selectionResult');
+    const resultContainer = document.getElementById('selectionResult');
+    const plantCol = ['Plant ID', 'Latitude', 'Longitude', 'Radius', 'Status', 'Type', 'Section ID'];
+    resultContainer.innerHTML = '';
+
+try {
   const response = await fetch('/select-planttable', {
     method: 'POST',
     headers: {
@@ -307,15 +314,45 @@ async function selectPlant(event) {
     body: JSON.stringify({ filters }),
   });
 
-  const responseData = await response.json();
-  const messageElement = document.getElementById('selectionResultMsg');
-  const resultContainer = document.getElementById('selectionResult');
+  const data = await response.json();
 
-  if (responseData.success) {
-    messageElement.textContent = 'Select query executed successfully!';
-    resultContainer.textContent = JSON.stringify(responseData.data);
-  } else {
-    messageElement.textContent = 'Error executing select query!';
+    if (data.success && data.rows.length > 0) {
+        const table = document.createElement('table');
+        table.border = '1';
+
+        const thead = document.createElement('thead');
+        const headerRow = document.createElement('tr');
+
+        plantCol.forEach(col => {
+            const th = document.createElement('th');
+            th.textContent = col;
+            headerRow.appendChild(th);
+        });
+
+        thead.appendChild(headerRow);
+        table.appendChild(thead);
+
+        const tbody = document.createElement('tbody');
+
+        data.rows.forEach((row) => {
+            const tr = document.createElement('tr');
+            row.forEach((cell) => {
+                const td = document.createElement('td');
+                td.textContent = cell;
+                tr.appendChild(td);
+            });
+
+            tbody.appendChild(tr);
+        });
+
+        table.appendChild(tbody);
+        resultContainer.appendChild(table);
+
+    } else {
+        messageElement.textContent = 'No results found';
+    }
+} catch (err) {
+        resultContainer.textContent = 'Error fetching data.';
   }
 }
 

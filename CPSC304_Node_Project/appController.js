@@ -169,10 +169,10 @@ router.post('/update-plant', async (req, res) => {
 
 router.post('/select-planttable', async (req, res) => {
   const { filters } = req.body;
-  const selectRows = await appService.selectPlanttable(filters);
+  const result = await appService.selectPlanttable(filters);
 
-  if (selectRows) {
-    res.json({ success: true, data: selectRows });
+  if (result) {
+    res.json(result);
   } else {
     res.status(500).json({ success: false });
   }

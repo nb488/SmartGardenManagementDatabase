@@ -704,6 +704,80 @@ async function joinPlantType(event) {
   }
 }
 
+async function populateDeleteToolTypeDropdown() {
+  try {
+    const response = await fetch('/tooltypetable');
+    const result = await response.json();
+    const toolTypes = result.data;
+
+    const select = document.getElementById('deleteToolTypeSelect');
+    select.innerHTML = '<option value="">-- Select a Tool Type to Delete --</option>';
+    
+    toolTypes.forEach((toolType) => {
+      const option = document.createElement('option');
+      option.value = toolType[0]; 
+      option.textContent = `${toolType[0]} (${toolType[1]})`;
+      select.appendChild(option);
+    });
+  } catch (err) {
+    console.error('Error populating tool type dropdown:', err);
+  }
+}
+
+async function deleteToolType(event) {
+  event.preventDefault();
+
+  const resultMsg = document.getElementById('deleteResultMsg');
+  resultMsg.textContent = '';
+
+  const toolTypeName = document.getElementById('deleteToolTypeSelect').value;
+
+  if (!toolTypeName) {
+    resultMsg.textContent = 'Please select a tool type to delete!';
+    return;
+  }
+
+ // confirm user wants to delete that tool type first
+  const toolTypeText = document.getElementById('deleteToolTypeSelect').selectedOptions[0].textContent;
+  const confirmDelete = confirm(
+    `Are you sure you want to delete this?`
+  );
+
+  if (!confirmDelete) {
+    resultMsg.textContent = 'Delete cancelled.';
+    return;
+  }
+
+  try {
+    const response = await fetch('/delete-tooltype', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ toolTypeName: toolTypeName }),
+    });
+
+    const data = await response.json();
+
+    if (data.success) {
+      resultMsg.textContent = data.message;
+      resultMsg.style.color = 'green';
+      
+      loadTable({ endpoint: '/tooltypetable', tableId: 'tooltypetable' });
+      loadTable({ endpoint: '/tooltable', tableId: 'tooltable' });
+      
+      document.getElementById('deleteToolTypeForm').reset();
+      populateDeleteToolTypeDropdown();
+    } else {
+      resultMsg.textContent = data.message || 'Error deleting tool type!';
+      resultMsg.style.color = 'red';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error deleting tool type!';
+    console.error('Delete error:', err);
+  }
+}
+
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 // adjusted to handle database info as objects instead of arrays
@@ -786,6 +860,9 @@ window.onload = function () {
   document
     .getElementById('joinPlantTypeForm')
     .addEventListener('submit', joinPlantType);
+    document
+  .getElementById('deleteToolTypeForm')
+  .addEventListener('submit', deleteToolType);
   setupCheckboxListeners();
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
@@ -816,6 +893,11 @@ window.onload = function () {
 
         if (queryType === 'join') {
           populateJoinTypeDropdown();
+        }
+
+        
+        if (queryType === 'delete') {
+          populateDeleteToolTypeDropdown();
         }
 
 

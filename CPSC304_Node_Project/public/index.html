@@ -176,9 +176,20 @@
     </div>
 
     <div id="delete-container" class="query-container" style="display: none">
-      <h2>Delete Query</h2>
-      <p>Delete functionality coming soon...</p>
+      <h2>Delete Tool Type Query</h2>
+      <form id="deleteToolTypeForm" class="queryinputContainer">
+    <p>Select a tool type. All tools of this type will be deleted from every garden.</p>
+    <div class="field">
+      <label for="deleteToolTypeSelect">Select Tool Type:</label>
+      <select id="deleteToolTypeSelect" required>
+        <option value="">-- Select a Tool Type --</option>
+      </select>
     </div>
+    <br />
+    <button type="submit">Delete Tool Type</button>
+    <div id="deleteResultMsg"></div>
+  </form>
+</div>
 
     <div id="selection-container" class="query-container" style="display: none">
       <form id="selectionPlanttable" class="queryinputContainer">
@@ -390,7 +401,7 @@
       </div>
 
       <div id="planttypetableContainer" class="queryTable">
-        <h2>Planttype</h2>
+        <h2>PlantType</h2>
         <table id="planttypetable" border="1">
           <thead>
             <tr>

@@ -477,6 +477,49 @@ async function joinPlantWithPlantType(plantTypeName) {
   });
 }
 
+async function deleteToolType(toolTypeName) {
+  return await withOracleDB(async (connection) => {
+
+    const checkResult = await connection.execute(
+      `SELECT name, function FROM TOOLTYPE WHERE name = :toolTypeName`,
+      [toolTypeName]
+    );
+
+    if (checkResult.rows.length === 0) {
+      return {
+        success: false,
+        message: 'Tool type not found'
+      };
+    }
+
+    try {
+      const result = await connection.execute(
+        `DELETE FROM TOOLTYPE WHERE name = :toolTypeName`,
+        [toolTypeName],
+        { autoCommit: true }
+      );
+
+      if (result.rowsAffected && result.rowsAffected > 0) {
+        return {
+          success: true,
+          message: `All "${toolTypeName}" tools have been successfully deleted!`
+        };
+      } else {
+        return {
+          success: false,
+          message: 'Failed to delete tool type'
+        };
+      }
+    } catch (err) {
+      return {
+        success: false,
+        message: err.message
+      };
+    }
+  });
+}
+
+
 // ---------------------------------------------------------------
 // FETCH COMMANDS
 // ---------------------------------------------------------------
@@ -649,6 +692,7 @@ module.exports = {
   nestedAggregationSectionDiversity,
   havingSectionsHighWaterUsage,
   joinPlantWithPlantType,
+  deleteToolType,
 
   fetchGardentableFromDb,
   fetchPersonFromDb,

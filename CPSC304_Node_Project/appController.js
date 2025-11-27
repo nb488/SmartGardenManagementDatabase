@@ -198,5 +198,17 @@ router.post('/join-plant-planttype', async (req, res) => {
   res.json({ success: true, data: joinData });
 });
 
+// for delete query
+router.post('/delete-tooltype', async (req, res) => {
+  const { toolTypeName } = req.body;
+  const deleteResult = await appService.deleteToolType(toolTypeName);
+  
+  if (deleteResult.success) {
+    res.json(deleteResult);
+  } else {
+    res.status(500).json(deleteResult);
+  }
+});
+
 
 module.exports = router;

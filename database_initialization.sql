@@ -84,7 +84,7 @@ CREATE TABLE Tool (
 	garden_id INT NOT NULL,
 	type_name VARCHAR(200) NOT NULL,
 	FOREIGN KEY (garden_id) REFERENCES Garden,
-	FOREIGN KEY (type_name) REFERENCES ToolType(name)
+	FOREIGN KEY (type_name) REFERENCES ToolType(name) ON DELETE CASCADE
 );
 
 CREATE TABLE HasAccess (

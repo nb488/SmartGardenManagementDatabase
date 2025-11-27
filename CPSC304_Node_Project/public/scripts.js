@@ -108,68 +108,234 @@ async function insertGarden(event) {
         loadTable({ endpoint: '/gardentable', tableId: 'gardentable' });
         loadTable({ endpoint: '/locationtable', tableId: 'locationtable' });
     } else {
-        messageElement.textContent = responseData.message || 'Data not inserted!'
+        messageElement.textContent =
+        responseData.message || 'Error inserting data!';
     }
-
   } catch (err) {
     messageElement.textContent = "Error inserting data!"
+    }
+}
+
+let plantsData = [];
+let plantTypesData = [];
+let sectionsData = [];
+
+async function populateUpdatePlantDropdowns() {
+  try {
+    const plantsResponse = await fetch('/planttable');
+    const plantsResult = await plantsResponse.json();
+    plantsData = plantsResult.data;
+
+    const typesResponse = await fetch('/planttypetable');
+    const typesResult = await typesResponse.json();
+    plantTypesData = typesResult.data;
+
+    const sectionsResponse = await fetch('/sectiontable');
+    const sectionsResult = await sectionsResponse.json();
+    sectionsData = sectionsResult.data;
+
+    const plantSelect = document.getElementById('updatePlantSelect');
+    plantSelect.innerHTML = '<option value="">-- Select a Plant --</option>';
+    plantsData.forEach((plant) => {
+      const option = document.createElement('option');
+      option.value = plant[0]; // plant_id
+      option.textContent = `Plant ${plant[0]} - ${plant[5]} in Section ${plant[6]}`;
+      plantSelect.appendChild(option);
+    });
+
+    const typeSelect = document.getElementById('updateTypeName');
+    typeSelect.innerHTML = '<option value="">-- Select Type --</option>';
+    plantTypesData.forEach((type) => {
+      const option = document.createElement('option');
+      option.value = type[0]; // name
+      option.textContent = type[0];
+      typeSelect.appendChild(option);
+    });
+
+    const sectionSelect = document.getElementById('updateSectionId');
+    sectionSelect.innerHTML = '<option value="">-- Select Section --</option>';
+    sectionsData.forEach((section) => {
+      const option = document.createElement('option');
+      option.value = section[0]; // section_id
+      option.textContent = `Section ${section[0]} (Garden ${section[1]})`;
+      sectionSelect.appendChild(option);
+    });
+  } catch (error) {
+    console.error('Error populating update dropdowns:', error);
+  }
+}
+
+function handlePlantSelection() {
+  const plantId = document.getElementById('updatePlantSelect').value;
+  const fieldsDiv = document.getElementById('updatePlantFields');
+
+  if (plantId) {
+    const plant = plantsData.find((p) => p[0] == plantId);
+    if (plant) {
+      document.getElementById('updateLatitude').value = plant[1];
+      document.getElementById('updateLongitude').value = plant[2];
+      document.getElementById('updateRadius').value = plant[3];
+      document.getElementById('updateIsReady').value = plant[4];
+      document.getElementById('updateTypeName').value = plant[5];
+      document.getElementById('updateSectionId').value = plant[6];
+      fieldsDiv.style.display = 'block';
+    }
+  } else {
+    fieldsDiv.style.display = 'none';
+  }
+}
+
+function setupCheckboxListeners() {
+  const checkboxes = [
+    { check: 'checkLatitude', field: 'updateLatitude' },
+    { check: 'checkLongitude', field: 'updateLongitude' },
+    { check: 'checkRadius', field: 'updateRadius' },
+    { check: 'checkIsReady', field: 'updateIsReady' },
+    { check: 'checkTypeName', field: 'updateTypeName' },
+    { check: 'checkSectionId', field: 'updateSectionId' },
+  ];
+
+  checkboxes.forEach(({ check, field }) => {
+    document.getElementById(check).addEventListener('change', function () {
+      document.getElementById(field).disabled = !this.checked;
+    });
+  });
+}
+
+async function updatePlant(event) {
+  event.preventDefault();
+
+  const plantId = document.getElementById('updatePlantSelect').value;
+  const fieldsToUpdate = {};
+
+  // Only include checked fields
+  if (document.getElementById('checkLatitude').checked) {
+    fieldsToUpdate.latitude = parseFloat(
+      document.getElementById('updateLatitude').value,
+    );
+  }
+  if (document.getElementById('checkLongitude').checked) {
+    fieldsToUpdate.longitude = parseFloat(
+      document.getElementById('updateLongitude').value,
+    );
+  }
+  if (document.getElementById('checkRadius').checked) {
+    fieldsToUpdate.radius = parseFloat(
+      document.getElementById('updateRadius').value,
+    );
+  }
+  if (document.getElementById('checkIsReady').checked) {
+    fieldsToUpdate.is_ready = parseInt(
+      document.getElementById('updateIsReady').value,
+    );
+  }
+  if (document.getElementById('checkTypeName').checked) {
+    fieldsToUpdate.type_name = document.getElementById('updateTypeName').value;
+  }
+  if (document.getElementById('checkSectionId').checked) {
+    fieldsToUpdate.section_id = parseInt(
+      document.getElementById('updateSectionId').value,
+    );
+  }
+
+  // Validate at least one field is selected
+  if (Object.keys(fieldsToUpdate).length === 0) {
+    document.getElementById('updateResultMsg').textContent =
+      'Please select at least one field to update!';
+    return;
+  }
+
+  const response = await fetch('/update-plant', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      plant_id: plantId,
+      fieldsToUpdate: fieldsToUpdate,
+    }),
+  });
+
+  const responseData = await response.json();
+  const messageElement = document.getElementById('updateResultMsg');
+
+  if (responseData.success) {
+    messageElement.textContent = 'Plant updated successfully!';
+    loadTable({ endpoint: '/planttable', tableId: 'planttable' });
+    document.getElementById('updatePlantForm').reset();
+    document.getElementById('updatePlantFields').style.display = 'none';
+    // Uncheck all checkboxes and disable all fields
+    document.querySelectorAll('.field-checkbox').forEach((cb) => {
+      cb.checked = false;
+    });
+    document.getElementById('updateLatitude').disabled = true;
+    document.getElementById('updateLongitude').disabled = true;
+    document.getElementById('updateRadius').disabled = true;
+    document.getElementById('updateIsReady').disabled = true;
+    document.getElementById('updateTypeName').disabled = true;
+    document.getElementById('updateSectionId').disabled = true;
+  } else {
+    messageElement.textContent =
+      responseData.message || 'Error updating plant!';
   }
 }
 
 // Display select tuples from planttable.
 async function selectPlant(event) {
-    event.preventDefault();
+  event.preventDefault();
 
-    const filterRows = document.querySelectorAll('#filters-container .filter-row');
-    const filters = Array.from(filterRows).map((row, i) => {
-        const logicSel = row.querySelector('.logic-select');
-        const columnSel = row.querySelector('.column-select');
-        const inputVal = row.querySelector('.filter-value');
+  const filterRows = document.querySelectorAll(
+    '#filters-container .filter-row',
+  );
+  const filters = Array.from(filterRows).map((row, i) => {
+    const logicSel = row.querySelector('.logic-select');
+    const columnSel = row.querySelector('.column-select');
+    const inputVal = row.querySelector('.filter-value');
 
-        return {
-            logic: i === 0 ? null : logicSel.value, // first input does not have logic value
-            column: columnSel.value,
-            value: inputVal.value
-        };
-    });
+    return {
+      logic: i === 0 ? null : logicSel.value, // first input does not have logic value
+      column: columnSel.value,
+      value: inputVal.value,
+    };
+  });
 
-    const response = await fetch('/select-planttable', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({filters}),
-      });
+  const response = await fetch('/select-planttable', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({ filters }),
+  });
 
-      const responseData = await response.json();
-      const messageElement = document.getElementById('selectionResultMsg');
-      const resultContainer = document.getElementById('selectionResult');
+  const responseData = await response.json();
+  const messageElement = document.getElementById('selectionResultMsg');
+  const resultContainer = document.getElementById('selectionResult');
 
-      if (responseData.success) {
-        messageElement.textContent = 'Select query executed successfully!';
-        resultContainer.textContent = JSON.stringify(responseData.data)
-      } else {
-        messageElement.textContent = 'Error executing select query!';
-      }
+  if (responseData.success) {
+    messageElement.textContent = 'Select query executed successfully!';
+    resultContainer.textContent = JSON.stringify(responseData.data);
+  } else {
+    messageElement.textContent = 'Error executing select query!';
+  }
 }
 
 // Dynamically create filter option-menus for logic (AND/OR) and column selection
 async function addSelectFilter(event) {
-    event.preventDefault();
-    const filtersContainer = document.getElementById('filters-container');
-    const filterRow = document.createElement('div');
-    filterRow.className = 'filter-row';
+  event.preventDefault();
+  const filtersContainer = document.getElementById('filters-container');
+  const filterRow = document.createElement('div');
+  filterRow.className = 'filter-row';
 
-    // AND/OR
-    const logicSel = document.createElement('select');
-    logicSel.className = 'logic-select';
-    logicSel.innerHTML = `
+  // AND/OR
+  const logicSel = document.createElement('select');
+  logicSel.className = 'logic-select';
+  logicSel.innerHTML = `
         <option value="AND">AND</option>
         <option value="OR">OR</option>`;
 
-    const columnSel = document.createElement('select');
-    columnSel.className = 'column-select';
-    columnSel.innerHTML = `
+  const columnSel = document.createElement('select');
+  columnSel.className = 'column-select';
+  columnSel.innerHTML = `
         <option value="plant_id">Plant ID</option>
         <option value="latitude">Latitude</option>
         <option value="longitude">Longitude</option>
@@ -178,25 +344,25 @@ async function addSelectFilter(event) {
         <option value="type_name">Type</option>
         <option value="section_id">Section ID</option>`;
 
-    const inputBox = document.createElement('input');
-    inputBox.className = 'filter-value';
-    inputBox.placeholder = 'Value';
-    inputBox.required = true;
+  const inputBox = document.createElement('input');
+  inputBox.className = 'filter-value';
+  inputBox.placeholder = 'Value';
+  inputBox.required = true;
 
-    filterRow.appendChild(logicSel);
-    filterRow.appendChild(columnSel);
-    filterRow.appendChild(inputBox);
+  filterRow.appendChild(logicSel);
+  filterRow.appendChild(columnSel);
+  filterRow.appendChild(inputBox);
 
-    filtersContainer.appendChild(filterRow);
+  filtersContainer.appendChild(filterRow);
 }
 
 // remove a selection-query filter from view
 async function removeSelectFilter(event) {
-    event.preventDefault();
-    const filtersContainer = document.getElementById('filters-container');
-    if (filtersContainer.lastElementChild != filtersContainer.firstElementChild) {
-        filtersContainer.removeChild(filtersContainer.lastElementChild);
-    }
+  event.preventDefault();
+  const filtersContainer = document.getElementById('filters-container');
+  if (filtersContainer.lastElementChild != filtersContainer.firstElementChild) {
+    filtersContainer.removeChild(filtersContainer.lastElementChild);
+  }
 }
 
 async function groupByPlantType() {
@@ -227,6 +393,195 @@ async function groupByPlantType() {
     }
   } catch (err) {
     resultMsg.textContent = 'Error fetching data';
+  }
+}
+
+async function divisionQuery() {
+  const tableBody = document.querySelector('#divisionResultTable tbody');
+  const resultMsg = document.getElementById('divisionResultMsg');
+
+  tableBody.innerHTML = '';
+  resultMsg.textContent = '';
+
+  try {
+    const response = await fetch('/sections-with-all-plant-types');
+    const data = await response.json();
+
+    if (data.success && data.data.length > 0) {
+      data.data.forEach((row) => {
+        const tr = document.createElement('tr');
+        const sectionCell = document.createElement('td');
+        sectionCell.textContent = row.section_id;
+        const gardenIdCell = document.createElement('td');
+        gardenIdCell.textContent = row.garden_id;
+        const gardenNameCell = document.createElement('td');
+        gardenNameCell.textContent = row.garden_name;
+        tr.appendChild(sectionCell);
+        tr.appendChild(gardenIdCell);
+        tr.appendChild(gardenNameCell);
+        tableBody.appendChild(tr);
+      });
+      resultMsg.textContent =
+        'Sections with all plant types loaded successfully.';
+    } else {
+      resultMsg.textContent = 'No sections have grown all plant types yet.';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error fetching data';
+  }
+}
+
+async function nestedAggregationQuery() {
+  const tableBody = document.querySelector('#nestedAggResultTable tbody');
+  const resultMsg = document.getElementById('nestedAggResultMsg');
+
+  tableBody.innerHTML = '';
+  resultMsg.textContent = '';
+
+  try {
+    const response = await fetch('/sections-above-avg-diversity');
+    const data = await response.json();
+
+    if (data.success && data.data.length > 0) {
+      data.data.forEach((row) => {
+        const tr = document.createElement('tr');
+        const sectionIdCell = document.createElement('td');
+        sectionIdCell.textContent = row.section_id;
+        const gardenIdCell = document.createElement('td');
+        gardenIdCell.textContent = row.garden_id;
+        const gardenNameCell = document.createElement('td');
+        gardenNameCell.textContent = row.garden_name;
+        const diversityCell = document.createElement('td');
+        diversityCell.textContent = row.diversity;
+        tr.appendChild(sectionIdCell);
+        tr.appendChild(gardenIdCell);
+        tr.appendChild(gardenNameCell);
+        tr.appendChild(diversityCell);
+        tableBody.appendChild(tr);
+      });
+      resultMsg.textContent =
+        'Sections with above-average diversity loaded successfully.';
+    } else {
+      resultMsg.textContent = 'No sections above average diversity found.';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error fetching data';
+  }
+}
+
+async function havingQuery() {
+  const tableBody = document.querySelector('#havingResultTable tbody');
+  const resultMsg = document.getElementById('havingResultMsg');
+
+  tableBody.innerHTML = '';
+  resultMsg.textContent = '';
+
+  try {
+    const response = await fetch('/sections-high-water-usage');
+    const data = await response.json();
+
+    if (data.success && data.data.length > 0) {
+      data.data.forEach((row) => {
+        const tr = document.createElement('tr');
+        const sectionIdCell = document.createElement('td');
+        sectionIdCell.textContent = row.section_id;
+        const gardenIdCell = document.createElement('td');
+        gardenIdCell.textContent = row.garden_id;
+        const gardenNameCell = document.createElement('td');
+        gardenNameCell.textContent = row.garden_name;
+        const waterCell = document.createElement('td');
+        waterCell.textContent = row.total_water.toFixed(1);
+        tr.appendChild(sectionIdCell);
+        tr.appendChild(gardenIdCell);
+        tr.appendChild(gardenNameCell);
+        tr.appendChild(waterCell);
+        tableBody.appendChild(tr);
+      });
+      resultMsg.textContent = 'High water usage sections loaded successfully.';
+    } else {
+      resultMsg.textContent = 'No sections with high water usage found.';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error fetching data';
+  }
+}
+
+async function projectionGarden(event) {
+  event.preventDefault();
+
+  const resultMsg = document.getElementById('projectionResultMsg');
+  const resultContainer = document.getElementById('projectionResult');
+
+  resultMsg.textContent = '';
+  resultContainer.innerHTML = '';
+
+  const checkboxes = [
+    'projGardenId',
+    'projName',
+    'projPostalCode',
+    'projStreetName',
+    'projHouseNumber',
+    'projOwnerId',
+  ];
+
+  const selectedColumns = checkboxes
+    .map((id) => {
+      const checkbox = document.getElementById(id);
+      return checkbox.checked ? checkbox.value : null;
+    })
+    .filter((val) => val !== null);
+
+  if (selectedColumns.length === 0) {
+    resultMsg.textContent = 'Please select at least one column!';
+    return;
+  }
+
+  try {
+    const response = await fetch('/project-garden', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ columns: selectedColumns }),
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.rows.length > 0) {
+      const table = document.createElement('table');
+      table.border = '1';
+
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      data.columns.forEach((col) => {
+        const th = document.createElement('th');
+        th.textContent = col;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      // Create body
+      const tbody = document.createElement('tbody');
+      data.rows.forEach((row) => {
+        const tr = document.createElement('tr');
+        row.forEach((cell) => {
+          const td = document.createElement('td');
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+
+      resultContainer.appendChild(table);
+      resultMsg.textContent = 'Projection query executed successfully!';
+    } else {
+      resultMsg.textContent = data.message || 'No data found.';
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error executing projection query!';
+    console.error('Projection error:', err);
   }
 }
 
@@ -282,15 +637,34 @@ window.onload = function () {
   // selection query
   document
     .getElementById('addFilterButton')
-    .addEventListener('click', addSelectFilter)
+    .addEventListener('click', addSelectFilter);
   document
     .getElementById('removeFilterButton')
     .addEventListener('click', removeSelectFilter);
   document
     .getElementById('selectionPlanttable')
     .addEventListener('submit', selectPlant);
-  //group by query
-  document.getElementById('groupByTypeBtn').addEventListener('click', groupByPlantType);
+  document
+    .getElementById('groupByTypeBtn')
+    .addEventListener('click', groupByPlantType);
+  document
+    .getElementById('divisionBtn')
+    .addEventListener('click', divisionQuery);
+  document
+    .getElementById('nestedAggBtn')
+    .addEventListener('click', nestedAggregationQuery);
+  document.getElementById('havingBtn').addEventListener('click', havingQuery);
+  document
+    .getElementById('projectionGardenForm')
+    .addEventListener('submit', projectionGarden);
+
+  document
+    .getElementById('updatePlantForm')
+    .addEventListener('submit', updatePlant);
+  document
+    .getElementById('updatePlantSelect')
+    .addEventListener('change', handlePlantSelection);
+  setupCheckboxListeners();
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
   queryButtons.forEach((button) => {
@@ -312,6 +686,11 @@ window.onload = function () {
         // Show selected button and container
         button.classList.add('selected');
         container.style.display = 'block';
+
+        // Populate update dropdowns when update container is shown
+        if (queryType === 'update') {
+          populateUpdatePlantDropdowns();
+        }
       }
     });
   });

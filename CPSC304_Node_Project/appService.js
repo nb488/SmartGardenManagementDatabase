@@ -132,13 +132,18 @@ async function insertGardentable(
   owner_id,
 ) {
   return await withOracleDB(async (connection) => {
-
     // check 1: if foreign key to Person table does not exist, reject insertion
     const ownerCheck = await connection.execute(
-        `SELECT * FROM PERSON WHERE person_id = :owner_id`,
-        [owner_id]);
+      `SELECT * FROM PERSON WHERE person_id = :owner_id`,
+      [owner_id],
+    );
 
-    if (ownerCheck.rows.length === 0) {return {success: false, message: "Owner ID does not exist in Person Table"}}
+    if (ownerCheck.rows.length === 0) {
+      return {
+        success: false,
+        message: 'Owner ID does not exist in Person Table',
+      };
+    }
 
     // check 3: if postal code does not exist in Postal Code table, reject insertion
     const postalcodeCheck = await connection.execute(
@@ -149,8 +154,9 @@ async function insertGardentable(
 
     // check 2: if foreign key to location table does not exist, insert it (note that location contains foreign key to Postal Code)
     const locationCheck = await connection.execute(
-        `SELECT * FROM LOCATION WHERE postal_code = :postal_code AND house_number = :house_number AND street_name = :street_name`,
-        [postal_code, house_number, street_name]);
+      `SELECT * FROM LOCATION WHERE postal_code = :postal_code AND house_number = :house_number AND street_name = :street_name`,
+      [postal_code, house_number, street_name],
+    );
 
     if (locationCheck.rows.length === 0) {
         try {
@@ -179,43 +185,254 @@ async function insertGardentable(
 }
 
 async function selectPlanttable(filters) {
-    let sql = 'SELECT * FROM PLANT';
-    const vals = [];
+  let sql = 'SELECT * FROM PLANT';
+  const vals = [];
 
-    // assemble sql query with binding
-    if(filters[0].value != '') { // check if no user input -> output all tuples
-        sql += ` WHERE `;
+  // assemble sql query with binding
+  if (filters[0].value != '') {
+    // check if no user input -> output all tuples
+    sql += ` WHERE `;
 
-        filters.forEach((f, index) => {
-            if (index > 0) sql += ` ${f.logic} `; // concatenate OR/AND after first attribute
-            sql += `${f.column} = :${index}`;
-            vals.push(f.value);
-        })
-    };
-
-    //console.log(sql);
-
-    return await withOracleDB(async (connection) => {
-        const result = await connection.execute(sql, vals, { autoCommit: true });
-        return result.rows;
-    }).catch(() => {
-        return false;
+    filters.forEach((f, index) => {
+      if (index > 0) sql += ` ${f.logic} `; // concatenate OR/AND after first attribute
+      sql += `${f.column} = :${index}`;
+      vals.push(f.value);
     });
+  }
+
+  //console.log(sql);
+
+  return await withOracleDB(async (connection) => {
+    const result = await connection.execute(sql, vals, { autoCommit: true });
+    return result.rows;
+  }).catch(() => {
+    return false;
+  });
+}
+
+async function updatePlant(plant_id, fieldsToUpdate) {
+  return await withOracleDB(async (connection) => {
+    // Validate at least one field is being updated
+    if (Object.keys(fieldsToUpdate).length === 0) {
+      return {
+        success: false,
+        message: 'At least one field must be selected for update',
+      };
+    }
+
+    // Validate type_name if being updated
+    if (fieldsToUpdate.type_name !== undefined) {
+      const typeCheck = await connection.execute(
+        `SELECT * FROM PLANTTYPE WHERE name = :type_name`,
+        [fieldsToUpdate.type_name],
+      );
+      if (typeCheck.rows.length === 0) {
+        return {
+          success: false,
+          message: 'Plant type does not exist in PlantType table',
+        };
+      }
+    }
+
+    // Validate section_id if being updated
+    if (fieldsToUpdate.section_id !== undefined) {
+      const sectionCheck = await connection.execute(
+        `SELECT * FROM SECTION WHERE section_id = :section_id`,
+        [fieldsToUpdate.section_id],
+      );
+      if (sectionCheck.rows.length === 0) {
+        return {
+          success: false,
+          message: 'Section ID does not exist in Section table',
+        };
+      }
+    }
+
+    // Build dynamic UPDATE query
+    const setClauses = [];
+    const values = [];
+    let bindIndex = 0;
+
+    if (fieldsToUpdate.latitude !== undefined) {
+      setClauses.push(`latitude = :${bindIndex}`);
+      values.push(fieldsToUpdate.latitude);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.longitude !== undefined) {
+      setClauses.push(`longitude = :${bindIndex}`);
+      values.push(fieldsToUpdate.longitude);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.radius !== undefined) {
+      setClauses.push(`radius = :${bindIndex}`);
+      values.push(fieldsToUpdate.radius);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.is_ready !== undefined) {
+      setClauses.push(`is_ready = :${bindIndex}`);
+      values.push(fieldsToUpdate.is_ready);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.type_name !== undefined) {
+      setClauses.push(`type_name = :${bindIndex}`);
+      values.push(fieldsToUpdate.type_name);
+      bindIndex++;
+    }
+    if (fieldsToUpdate.section_id !== undefined) {
+      setClauses.push(`section_id = :${bindIndex}`);
+      values.push(fieldsToUpdate.section_id);
+      bindIndex++;
+    }
+
+    // Add plant_id to values
+    values.push(plant_id);
+
+    const sql = `UPDATE PLANT SET ${setClauses.join(', ')} WHERE plant_id = :${bindIndex}`;
+
+    // Update the plant
+    try {
+      const result = await connection.execute(sql, values, {
+        autoCommit: true,
+      });
+
+      if (result.rowsAffected && result.rowsAffected > 0) {
+        return { success: true };
+      } else {
+        return { success: false, message: 'Plant not found' };
+      }
+    } catch (err) {
+      return { success: false, message: err.message };
+    }
+  });
+}
+
+async function projectGarden(columns) {
+  return await withOracleDB(async (connection) => {
+    if (!columns || columns.length === 0) {
+      return {
+        success: false,
+        message: 'At least one column must be selected',
+      };
+    }
+
+    // Build column list
+    const columnList = columns.join(', ');
+    const sql = `SELECT ${columnList} FROM GARDEN ORDER BY garden_id`;
+
+    const result = await connection.execute(sql);
+
+    return {
+      success: true,
+      columns: columns,
+      rows: result.rows,
+    };
+  }).catch((err) => {
+    return { success: false, message: err.message };
+  });
 }
 
 async function groupByPlantType() {
-
   return await withOracleDB(async (connection) => {
-
-    const sql = 'SELECT type_name, count(*) as plant_count FROM PLANT GROUP BY type_name ORDER BY type_name';
+    const sql =
+      'SELECT type_name, count(*) as plant_count FROM PLANT GROUP BY type_name ORDER BY type_name';
 
     const result = await connection.execute(sql);
-    return result.rows.map(row => {
+    return result.rows.map((row) => {
       return {
         type_name: row[0],
-        plant_count: row[1]
+        plant_count: row[1],
       };
-    })
+    });
+  }).catch(() => {
+    return [];
+  });
+}
+
+async function divisionSectionsWithAllPlantTypes() {
+  return await withOracleDB(async (connection) => {
+    const sql = `
+      SELECT s.section_id, s.garden_id, g.name as garden_name
+      FROM Section s
+      JOIN Garden g ON s.garden_id = g.garden_id
+      WHERE NOT EXISTS (
+        SELECT pt.name
+        FROM PlantType pt
+        WHERE NOT EXISTS (
+          SELECT p.plant_id
+          FROM Plant p
+          WHERE p.section_id = s.section_id
+          AND p.type_name = pt.name
+        )
+      )
+      ORDER BY s.section_id`;
+
+    const result = await connection.execute(sql);
+    return result.rows.map((row) => {
+      return {
+        section_id: row[0],
+        garden_id: row[1],
+        garden_name: row[2],
+      };
+    });
+  }).catch(() => {
+    return [];
+  });
+}
+
+async function nestedAggregationSectionDiversity() {
+  return await withOracleDB(async (connection) => {
+    const sql = `
+      SELECT s.section_id, s.garden_id, g.name as garden_name,
+             COUNT(DISTINCT p.type_name) as diversity
+      FROM Section s
+      JOIN Garden g ON s.garden_id = g.garden_id
+      JOIN Plant p ON s.section_id = p.section_id
+      GROUP BY s.section_id, s.garden_id, g.name
+      HAVING COUNT(DISTINCT p.type_name) > (
+        SELECT AVG(diversity_count)
+        FROM (
+          SELECT COUNT(DISTINCT p2.type_name) as diversity_count
+          FROM Plant p2
+          GROUP BY p2.section_id
+        )
+      )
+      ORDER BY diversity DESC, s.section_id`;
+
+    const result = await connection.execute(sql);
+    return result.rows.map((row) => {
+      return {
+        section_id: row[0],
+        garden_id: row[1],
+        garden_name: row[2],
+        diversity: row[3],
+      };
+    });
+  }).catch(() => {
+    return [];
+  });
+}
+
+async function havingSectionsHighWaterUsage() {
+  return await withOracleDB(async (connection) => {
+    const sql = `
+      SELECT s.section_id, s.garden_id, g.name as garden_name,
+             SUM(w.volume_litres) as total_water
+      FROM Section s
+      JOIN Garden g ON s.garden_id = g.garden_id
+      JOIN Water w ON s.section_id = w.section_id
+      GROUP BY s.section_id, s.garden_id, g.name
+      HAVING SUM(w.volume_litres) > 50
+      ORDER BY total_water DESC`;
+
+    const result = await connection.execute(sql);
+    return result.rows.map((row) => {
+      return {
+        section_id: row[0],
+        garden_id: row[1],
+        garden_name: row[2],
+        total_water: row[3],
+      };
+    });
   }).catch(() => {
     return [];
   });
@@ -385,8 +602,13 @@ module.exports = {
   resetDatabase,
 
   insertGardentable,
+  updatePlant,
   selectPlanttable,
+  projectGarden,
   groupByPlantType,
+  divisionSectionsWithAllPlantTypes,
+  nestedAggregationSectionDiversity,
+  havingSectionsHighWaterUsage,
 
   fetchGardentableFromDb,
   fetchPersonFromDb,

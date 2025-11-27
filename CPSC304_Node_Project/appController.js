@@ -106,6 +106,24 @@ router.get('/plant-groupby-type', async (req, res) => {
   res.json({ success: true, data: groupedData });
 });
 
+// for division query (sections that have grown all available plant types)
+router.get('/sections-with-all-plant-types', async (req, res) => {
+  const divisionData = await appService.divisionSectionsWithAllPlantTypes();
+  res.json({ success: true, data: divisionData });
+});
+
+// for nested aggregation query (sections with above-average plant diversity)
+router.get('/sections-above-avg-diversity', async (req, res) => {
+  const nestedAggData = await appService.nestedAggregationSectionDiversity();
+  res.json({ success: true, data: nestedAggData });
+});
+
+// for having query (sections with high water usage)
+router.get('/sections-high-water-usage', async (req, res) => {
+  const havingData = await appService.havingSectionsHighWaterUsage();
+  res.json({ success: true, data: havingData });
+});
+
 router.post('/reset-database', async (req, res) => {
   const initiateResult = await appService.resetDatabase();
   if (initiateResult) {
@@ -129,7 +147,23 @@ router.post('/insert-gardentable', async (req, res) => {
   if (insertResult.success) {
     res.json({ success: true });
   } else {
-    res.status(500).json({ success: false, message: insertResult.message || "Failed to insert Garden" });
+    res.status(500).json({
+      success: false,
+      message: insertResult.message || 'Failed to insert Garden',
+    });
+  }
+});
+
+router.post('/update-plant', async (req, res) => {
+  const { plant_id, fieldsToUpdate } = req.body;
+  const updateResult = await appService.updatePlant(plant_id, fieldsToUpdate);
+  if (updateResult.success) {
+    res.json({ success: true });
+  } else {
+    res.status(500).json({
+      success: false,
+      message: updateResult.message || 'Failed to update Plant',
+    });
   }
 });
 
@@ -141,6 +175,19 @@ router.post('/select-planttable', async (req, res) => {
     res.json({ success: true, data: selectRows });
   } else {
     res.status(500).json({ success: false });
+  }
+});
+
+router.post('/project-garden', async (req, res) => {
+  const { columns } = req.body;
+  const projectionResult = await appService.projectGarden(columns);
+  if (projectionResult.success) {
+    res.json(projectionResult);
+  } else {
+    res.status(500).json({
+      success: false,
+      message: projectionResult.message || 'Failed to project garden data',
+    });
   }
 });
 

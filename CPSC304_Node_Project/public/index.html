@@ -115,8 +115,64 @@
     </div>
 
     <div id="update-container" class="query-container" style="display: none">
-      <h2>Update Query</h2>
-      <p>Update functionality coming soon... :)</p>
+      <h2>Update Plant</h2>
+      <form id="updatePlantForm" class="queryinputContainer">
+        <p>Select a plant to update its information:</p>
+        <div class="field">
+          <label for="updatePlantSelect">Select Plant:</label>
+          <select id="updatePlantSelect" required>
+            <option value="">-- Select a Plant --</option>
+          </select>
+        </div>
+        <div id="updatePlantFields" style="display: none">
+          <br />
+          <p>
+            <strong
+              >Select which fields to update (check the checkboxes for the
+              fields you want to change):</strong
+            >
+          </p>
+          <div class="field">
+            <input type="checkbox" id="checkLatitude" class="field-checkbox" />
+            <label for="updateLatitude">Latitude:</label>
+            <input type="number" id="updateLatitude" step="0.0001" disabled />
+          </div>
+          <div class="field">
+            <input type="checkbox" id="checkLongitude" class="field-checkbox" />
+            <label for="updateLongitude">Longitude:</label>
+            <input 1type="number" id="updateLongitude" step="0.0001" disabled />
+          </div>
+          <div class="field">
+            <input type="checkbox" id="checkRadius" class="field-checkbox" />
+            <label for="updateRadius">Radius:</label>
+            <input type="number" id="updateRadius" step="0.01" disabled />
+          </div>
+          <div class="field">
+            <input type="checkbox" id="checkIsReady" class="field-checkbox" />
+            <label for="updateIsReady">Status:</label>
+            <select id="updateIsReady" disabled>
+              <option value="0">Not Ready</option>
+              <option value="1">Ready</option>
+            </select>
+          </div>
+          <div class="field">
+            <input type="checkbox" id="checkTypeName" class="field-checkbox" />
+            <label for="updateTypeName">Plant Type:</label>
+            <select id="updateTypeName" disabled>
+              <option value="">-- Select Type --</option>
+            </select>
+          </div>
+          <div class="field">
+            <input type="checkbox" id="checkSectionId" class="field-checkbox" />
+            <label for="updateSectionId">Section:</label>
+            <select id="updateSectionId" disabled>
+              <option value="">-- Select Section --</option>
+            </select>
+          </div>
+          <button type="submit">Update Plant</button>
+        </div>
+        <div id="updateResultMsg"></div>
+      </form>
     </div>
 
     <div id="delete-container" class="query-container" style="display: none">
@@ -125,35 +181,35 @@
     </div>
 
     <div id="selection-container" class="query-container" style="display: none">
-        <form id="selectionPlanttable" class="queryinputContainer">
-            <h2>Selection Query</h2>
-            <br /><br />
-            <div id="filters-container">
-                <div class="filter-row">
-                    <select class="column-select">
-                        <option value="plant_id">Plant ID</option>
-                        <option value="latitude">Latitude</option>
-                        <option value="longitude">Longitude</option>
-                        <option value="radius">Radius</option>
-                        <option value="is_ready">Status</option>
-                        <option value="type_name">Type</option>
-                        <option value="section_id">Section ID</option>
-                    </select>
+      <form id="selectionPlanttable" class="queryinputContainer">
+        <h2>Selection Query</h2>
+        <br /><br />
+        <div id="filters-container">
+          <div class="filter-row">
+            <select class="column-select">
+              <option value="plant_id">Plant ID</option>
+              <option value="latitude">Latitude</option>
+              <option value="longitude">Longitude</option>
+              <option value="radius">Radius</option>
+              <option value="is_ready">Status</option>
+              <option value="type_name">Type</option>
+              <option value="section_id">Section ID</option>
+            </select>
 
-                    <input class = "filter-value" placeholder="Value" required/>
-                </div>
-            </div>
-            <div id="selection-buttons">
-                <button type="button" id="addFilterButton">Add Filter</button>
-                <button type="button" id="removeFilterButton">Remove Filter</button>
-                <br />
-                <br />
-                <button type="submit">Search Plant Table</button>
-            </div>
-            <br />
-            <div id="selectionResultMsg"></div>
-            <div id="selectionResult"></div>
-        </form>
+            <input class="filter-value" placeholder="Value" required />
+          </div>
+        </div>
+        <div id="selection-buttons">
+          <button type="button" id="addFilterButton">Add Filter</button>
+          <button type="button" id="removeFilterButton">Remove Filter</button>
+          <br />
+          <br />
+          <button type="submit">Search Plant Table</button>
+        </div>
+        <br />
+        <div id="selectionResultMsg"></div>
+        <div id="selectionResult"></div>
+      </form>
     </div>
 
     <div
@@ -162,7 +218,37 @@
       style="display: none"
     >
       <h2>Projection Query</h2>
-      <p>Projection functionality coming soon...</p>
+      <form id="projectionGardenForm" class="queryinputContainer">
+        <p>Select which columns to display from the Garden table:</p>
+        <div class="field">
+          <input type="checkbox" id="projGardenId" value="garden_id" />
+          <label for="projGardenId">Garden ID</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projName" value="name" />
+          <label for="projName">Name</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projPostalCode" value="postal_code" />
+          <label for="projPostalCode">Postal Code</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projStreetName" value="street_name" />
+          <label for="projStreetName">Street Name</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projHouseNumber" value="house_number" />
+          <label for="projHouseNumber">House Number</label>
+        </div>
+        <div class="field">
+          <input type="checkbox" id="projOwnerId" value="owner_id" />
+          <label for="projOwnerId">Owner ID</label>
+        </div>
+        <br />
+        <button type="submit">Show Selected Columns</button>
+        <div id="projectionResultMsg"></div>
+        <div id="projectionResult"></div>
+      </form>
     </div>
 
     <div id="join-container" class="query-container" style="display: none">
@@ -170,12 +256,12 @@
       <p>Join functionality coming soon...</p>
     </div>
 
-  <div id="groupby-container" class="query-container" style="display: none">
+    <div id="groupby-container" class="query-container" style="display: none">
       <h2>Group By Query</h2>
-        <p>See how many plants of each type exist across all gardens:</p>
+      <p>See how many plants of each type exist across all gardens:</p>
       <button id="groupByTypeBtn">Show Plant Count By Type</button>
       <div id="groupByResultMsg"></div>
-      <table id ="groupByResultTable" border="1">
+      <table id="groupByResultTable" border="1">
         <thead>
           <tr>
             <th>Type</th>
@@ -183,26 +269,60 @@
           </tr>
         </thead>
         <tbody></tbody>
-        </table>
+      </table>
     </div>
 
     <div id="having-container" class="query-container" style="display: none">
       <h2>Having Query</h2>
-      <p>Having functionality coming soon...</p>
+      <p>Find sections with high water consumption (more than 50 litres):</p>
+      <button id="havingBtn">Show High Water Usage Sections</button>
+      <div id="havingResultMsg"></div>
+      <table id="havingResultTable" border="1">
+        <thead>
+          <tr>
+            <th>Section ID</th>
+            <th>Garden ID</th>
+            <th>Garden Name</th>
+            <th>Total Water (litres)</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
-    <div
-      id="nestedagg-container"
-      class="query-container"
-      style="display: none"
-    >
+    <div id="nestedagg-container" class="query-container" style="display: none">
       <h2>Nested Aggregation Query</h2>
-      <p>Nested Aggregation functionality coming soon...</p>
+      <p>Find sections with above-average plant type diversity:</p>
+      <button id="nestedAggBtn">Show Sections Above Average Diversity</button>
+      <div id="nestedAggResultMsg"></div>
+      <table id="nestedAggResultTable" border="1">
+        <thead>
+          <tr>
+            <th>Section ID</th>
+            <th>Garden ID</th>
+            <th>Garden Name</th>
+            <th>Plant Type Diversity</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
     <div id="division-container" class="query-container" style="display: none">
       <h2>Division Query</h2>
-      <p>Division functionality coming soon...</p>
+      <p>Find sections that have grown ALL available plant types:</p>
+      <button id="divisionBtn">Show Sections With All Plant Types</button>
+      <div id="divisionResultMsg"></div>
+      <table id="divisionResultTable" border="1">
+        <thead>
+          <tr>
+            <th>Section ID</th>
+            <th>Garden ID</th>
+            <th>Garden Name</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
     </div>
 
     <!-- ========================================================================= -->

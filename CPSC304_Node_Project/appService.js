@@ -200,11 +200,9 @@ async function selectPlanttable(filters) {
     });
   }
 
-  //console.log(sql);
-
   return await withOracleDB(async (connection) => {
     const result = await connection.execute(sql, vals, { autoCommit: true });
-    return result.rows;
+    return {success : true, rows : result.rows}
   }).catch(() => {
     return false;
   });

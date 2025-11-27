@@ -74,47 +74,49 @@
         <h2>Insert New Garden</h2>
           <br /><br />
           <div class="field">
-              <input type="number" id="insertgId" placeholder="Garden ID" required />
+              <input type="number" id="insertId" placeholder="Garden ID" required />
           </div>
           <div class="field">
               <input
                       type="text"
-                      id="insertgName"
+                      id="insertName"
                       placeholder="Garden Name"
-                      maxlength="20"
+                      maxlength="200"
               />
           </div>
           <div class="field">
               <input
                       type="text"
-                      id="insertgPostalCode"
-                      placeholder="Postal Code"
-                      maxlength="20"
+                      id="insertPostalCode"
+                      placeholder="Postal Code (ex. XXXXXX)"
+                      maxlength="6"
               required/></div>
           <div class="field">
               <input
                       type="text"
-                      id="insertgStreetName"
+                      id="insertStreetName"
                       placeholder="Street Name"
-                      maxlength="20"
-              required/></div>
+                      maxlength="200"
+                      pattern="[A-Za-z ]+"
+                      required
+              /></div>
           <div class="field">
               <input
                       type="number"
-                      id="insertgHouseNumber"
+                      id="insertHouseNumber"
                       placeholder="House Number"
               required/></div>
           <div class="field">
-              <input type="number" id="insertgOwnerId" placeholder="Owner ID"
+              <input type="number" id="insertOwnerId" placeholder="Owner ID"
               required/></div>
         <button type="submit">Insert Garden</button> <br />
-        <div id="ginsertResultMsg"></div>
+        <div id="insertionResultMsg"></div>
       </form>
     </div>
 
     <div id="update-container" class="query-container" style="display: none">
       <h2>Update Query</h2>
-      <p>Update functionality coming soon...</p>
+      <p>Update functionality coming soon... :)</p>
     </div>
 
     <div id="delete-container" class="query-container" style="display: none">

@@ -140,6 +140,13 @@ async function insertGardentable(
 
     if (ownerCheck.rows.length === 0) {return {success: false, message: "Owner ID does not exist in Person Table"}}
 
+    // check 3: if postal code does not exist in Postal Code table, reject insertion
+    const postalcodeCheck = await connection.execute(
+            `SELECT * FROM POSTALCODE WHERE postal_code = :postal_code`,
+            [postal_code]);
+
+    if (postalcodeCheck.rows.length === 0) {return {success: false, message: "Postal Code does not exist in Postal Code Table"}}
+
     // check 2: if foreign key to location table does not exist, insert it (note that location contains foreign key to Postal Code)
     const locationCheck = await connection.execute(
         `SELECT * FROM LOCATION WHERE postal_code = :postal_code AND house_number = :house_number AND street_name = :street_name`,
@@ -151,9 +158,9 @@ async function insertGardentable(
             `INSERT INTO LOCATION (postal_code, house_number, street_name) VALUES (:postal_code, :house_number, :street_name)`,
             [postal_code, house_number, street_name],
             { autoCommit: true })
-            //console.log("try!");
+
         } catch (err) {
-            return { success:false, message: "Postal Code does not exist in the Postal Code Table" } // TODO: assumes error always due to postal code
+            return { success:false, message: 'Location (postal code, house number, street name) invalid' }
         }
     }
 
@@ -166,7 +173,7 @@ async function insertGardentable(
     );
     return {success: true}; //original :  return result.rowsAffected && result.rowsAffected > 0
   } catch(err) {
-    return {success: false, message: err.message};
+    return {success: false, message: 'Insertion unsuccessful: Duplicate Garden ID, please enter a unique Garden ID'};
   };
   })
 }

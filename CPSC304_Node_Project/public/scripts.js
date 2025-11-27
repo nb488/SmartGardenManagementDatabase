@@ -77,12 +77,12 @@ async function resetDatabase() {
 async function insertGarden(event) {
   event.preventDefault();
 
-  const idValue = document.getElementById('insertgId').value;
-  const nameValue = document.getElementById('insertgName').value;
-  const postalcodeValue = document.getElementById('insertgPostalCode').value;
-  const streetnameValue = document.getElementById('insertgStreetName').value;
-  const housenumberValue = document.getElementById('insertgHouseNumber').value;
-  const owneridValue = document.getElementById('insertgOwnerId').value;
+  const idValue = document.getElementById('insertId').value;
+  const nameValue = document.getElementById('insertName').value;
+  const postalcodeValue = document.getElementById('insertPostalCode').value;
+  const streetnameValue = document.getElementById('insertStreetName').value;
+  const housenumberValue = document.getElementById('insertHouseNumber').value;
+  const owneridValue = document.getElementById('insertOwnerId').value;
 
   const response = await fetch('/insert-gardentable', {
     method: 'POST',
@@ -99,15 +99,20 @@ async function insertGarden(event) {
     }),
   });
 
-  const responseData = await response.json();
-  const messageElement = document.getElementById('ginsertResultMsg');
+  try {
+    const responseData = await response.json();
+    const messageElement = document.getElementById('insertionResultMsg');
 
-  if (responseData.success) {
-    messageElement.textContent = 'Data inserted successfully!';
-    loadTable({ endpoint: '/gardentable', tableId: 'gardentable' });
-    loadTable({ endpoint: '/locationtable', tableId: 'locationtable' });
-  } else {
-    messageElement.textContent = responseData.message || 'Error inserting data!';
+    if (responseData.success) {
+        messageElement.textContent = 'Data inserted successfully!';
+        loadTable({ endpoint: '/gardentable', tableId: 'gardentable' });
+        loadTable({ endpoint: '/locationtable', tableId: 'locationtable' });
+    } else {
+        messageElement.textContent = responseData.message || 'Data not inserted!'
+    }
+
+  } catch (err) {
+    messageElement.textContent = "Error inserting data!"
   }
 }
 
@@ -185,6 +190,7 @@ async function addSelectFilter(event) {
     filtersContainer.appendChild(filterRow);
 }
 
+// remove a selection-query filter from view
 async function removeSelectFilter(event) {
     event.preventDefault();
     const filtersContainer = document.getElementById('filters-container');
@@ -215,7 +221,7 @@ async function groupByPlantType() {
         tr.appendChild(countCell);
         tableBody.appendChild(tr);
       });
-      resultMsg.textContent = 'Plant count by type loaded sucessfully.';
+      resultMsg.textContent = 'Plant count by type loaded successfully.';
     } else {
       resultMsg.textContent = 'No data available';
     }
@@ -269,10 +275,11 @@ window.onload = function () {
     .getElementById('resetDatabase')
     .addEventListener('click', resetDatabase);
 
+  // insertion query
   document
     .getElementById('insertGardentable')
     .addEventListener('submit', insertGarden);
-
+  // selection query
   document
     .getElementById('addFilterButton')
     .addEventListener('click', addSelectFilter)
@@ -282,7 +289,8 @@ window.onload = function () {
   document
     .getElementById('selectionPlanttable')
     .addEventListener('submit', selectPlant);
-    document.getElementById('groupByTypeBtn').addEventListener('click', groupByPlantType);
+  //group by query
+  document.getElementById('groupByTypeBtn').addEventListener('click', groupByPlantType);
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
   queryButtons.forEach((button) => {

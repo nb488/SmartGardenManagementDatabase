@@ -71,7 +71,8 @@
 
     <div id="insert-container" class="query-container" style="display: none">
       <form id="insertGardentable" class="queryinputContainer">
-        <h2>Insert New Garden</h2>
+        <h2>Insertion Query</h2><br />
+          <p>Insert a new garden into the Garden table:</p>
           <br /><br />
           <div class="field">
               <input type="number" id="insertId" placeholder="Garden ID" required />
@@ -183,8 +184,9 @@
 
     <div id="selection-container" class="query-container" style="display: none">
       <form id="selectionPlanttable" class="queryinputContainer">
-        <h2>Selection Query</h2>
-        <br /><br />
+        <h2>Selection Query</h2><br />
+          <p>Select plants from the Plant table (conditions based on equality):</p>
+          <br /><br />
         <div id="filters-container">
           <div class="filter-row">
             <select class="column-select">
@@ -272,7 +274,7 @@
     <div id="groupby-container" class="query-container" style="display: none">
       <h2>Group By Query</h2>
       <p>See how many plants of each type exist across all gardens:</p>
-      <button id="groupByTypeBtn">Show Plant Count By Type</button>
+      <button id="groupByTypeBtn">Show Plant Count By Type</button><br /><br />
       <div id="groupByResultMsg"></div>
       <table id="groupByResultTable" border="1">
         <thead>
@@ -288,7 +290,7 @@
     <div id="having-container" class="query-container" style="display: none">
       <h2>Having Query</h2>
       <p>Find sections with high water consumption (more than 50 litres):</p>
-      <button id="havingBtn">Show High Water Usage Sections</button>
+      <button id="havingBtn">Show High Water Usage Sections</button><br /><br />
       <div id="havingResultMsg"></div>
       <table id="havingResultTable" border="1">
         <thead>
@@ -306,7 +308,7 @@
     <div id="nestedagg-container" class="query-container" style="display: none">
       <h2>Nested Aggregation Query</h2>
       <p>Find sections with above-average plant type diversity:</p>
-      <button id="nestedAggBtn">Show Sections Above Average Diversity</button>
+      <button id="nestedAggBtn">Show Sections Above Average Diversity</button><br /><br />
       <div id="nestedAggResultMsg"></div>
       <table id="nestedAggResultTable" border="1">
         <thead>
@@ -324,7 +326,7 @@
     <div id="division-container" class="query-container" style="display: none">
       <h2>Division Query</h2>
       <p>Find sections that have grown ALL available plant types:</p>
-      <button id="divisionBtn">Show Sections With All Plant Types</button>
+      <button id="divisionBtn">Show Sections With All Plant Types</button><br /><br />
       <div id="divisionResultMsg"></div>
       <table id="divisionResultTable" border="1">
         <thead>

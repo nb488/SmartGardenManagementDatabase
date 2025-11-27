@@ -251,10 +251,22 @@
       </form>
     </div>
 
-    <div id="join-container" class="query-container" style="display: none">
+      <div id="join-container" class="query-container" style="display: none">
       <h2>Join Query</h2>
-      <p>Join functionality coming soon...</p>
+      <form id="joinPlantTypeForm" class="queryinputContainer">
+    <p>Select a plant type to see all existing plants and their gardening requirements:</p>
+    <div class="field">
+      <label for="joinPlantTypeSelect">Select Plant Type:</label>
+      <select id="joinPlantTypeSelect" required>
+        <option value="">-- Select a Plant Type --</option>
+      </select>
     </div>
+    <br />
+    <button type="submit">Search Plants by Type</button>
+    <div id="joinResultMsg"></div>
+    <div id="joinResult"></div>
+  </form>
+</div>
 
     <div id="groupby-container" class="query-container" style="display: none">
       <h2>Group By Query</h2>

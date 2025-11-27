@@ -191,4 +191,12 @@ router.post('/project-garden', async (req, res) => {
   }
 });
 
+// for join query 
+router.post('/join-plant-planttype', async (req, res) => {
+  const { plantTypeName } = req.body;
+  const joinData = await appService.joinPlantWithPlantType(plantTypeName);
+  res.json({ success: true, data: joinData });
+});
+
+
 module.exports = router;

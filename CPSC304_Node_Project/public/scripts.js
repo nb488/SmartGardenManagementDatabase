@@ -585,6 +585,125 @@ async function projectionGarden(event) {
   }
 }
 
+async function populateJoinTypeDropdown() {
+
+  try {
+    const response = await fetch('/planttypetable');
+    const result = await response.json();
+    const plantTypes = result.data;
+
+    const select = document.getElementById('joinPlantTypeSelect');
+    select.innerHTML = '<option value="">-- Select a Plant Type --</option>';
+    
+    plantTypes.forEach((type) => {
+      const option = document.createElement('option');
+      option.value = type[0]; 
+      option.textContent = type[0];
+      select.appendChild(option);
+
+    });
+  } catch (err) {
+    console.error('Error populating plant type dropdown:', err);
+  }
+}
+
+async function joinPlantType(event) {
+  event.preventDefault();
+
+  const resultMsg = document.getElementById('joinResultMsg');
+  const resultContainer = document.getElementById('joinResult');
+
+  resultMsg.textContent = '';
+  resultContainer.innerHTML = '';
+
+  const plantTypeName = document.getElementById('joinPlantTypeSelect').value;
+
+  if (!plantTypeName) {
+    resultMsg.textContent = 'Please select a plant type!';
+    return;
+  }
+
+  try {
+    const response = await fetch('/join-plant-planttype', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ plantTypeName: plantTypeName }),
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.data.length > 0) {
+      const table = document.createElement('table');
+      table.border = '1';
+
+
+      const thead = document.createElement('thead');
+      const headerRow = document.createElement('tr');
+      const headers = ['Plant ID', 'Latitude', 'Longitude', 'Radius', 'Status', 'Section ID', 'Type', 'Requirements', 'Description'];
+      headers.forEach((header) => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+      });
+      thead.appendChild(headerRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement('tbody');
+      data.data.forEach((row) => {
+        const tr = document.createElement('tr');
+        
+        const tdId = document.createElement('td');
+        tdId.textContent = row.plant_id;
+        tr.appendChild(tdId);
+
+        const tdLat = document.createElement('td');
+        tdLat.textContent = row.latitude.toFixed(4);
+        tr.appendChild(tdLat);
+
+        const tdLon = document.createElement('td');
+        tdLon.textContent = row.longitude.toFixed(4);
+        tr.appendChild(tdLon);
+
+        const tdRadius = document.createElement('td');
+        tdRadius.textContent = row.radius.toFixed(2);
+        tr.appendChild(tdRadius);
+
+        const tdStatus = document.createElement('td');
+        tdStatus.textContent = row.is_ready === 1 ? 'Ready' : 'Not Ready';
+        tr.appendChild(tdStatus);
+
+        const tdSection = document.createElement('td');
+        tdSection.textContent = row.section_id;
+        tr.appendChild(tdSection);
+
+        const tdType = document.createElement('td');
+        tdType.textContent = row.type_name;
+        tr.appendChild(tdType);
+
+        const tdReq = document.createElement('td');
+        tdReq.textContent = row.requirements || 'N/A';
+        tr.appendChild(tdReq);
+
+        const tdDesc = document.createElement('td');
+        tdDesc.textContent = row.description;
+        tr.appendChild(tdDesc);
+
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+
+      resultContainer.appendChild(table);
+      resultMsg.textContent = `Join query succesfully executed`;
+    } else {
+      resultMsg.textContent = `No plants found.`;
+    }
+  } catch (err) {
+    resultMsg.textContent = 'Error executing join query';
+  }
+}
+
 // Fetches data from a table and displays it.
 // tableID is string ex. 'persontable', endpoint is string ex. '/persontable'
 // adjusted to handle database info as objects instead of arrays
@@ -664,6 +783,9 @@ window.onload = function () {
   document
     .getElementById('updatePlantSelect')
     .addEventListener('change', handlePlantSelection);
+  document
+    .getElementById('joinPlantTypeForm')
+    .addEventListener('submit', joinPlantType);
   setupCheckboxListeners();
 
   const queryButtons = document.querySelectorAll('.queryButtons button');
@@ -691,6 +813,12 @@ window.onload = function () {
         if (queryType === 'update') {
           populateUpdatePlantDropdowns();
         }
+
+        if (queryType === 'join') {
+          populateJoinTypeDropdown();
+        }
+
+
       }
     });
   });

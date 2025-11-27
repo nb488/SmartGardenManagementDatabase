@@ -438,6 +438,45 @@ async function havingSectionsHighWaterUsage() {
   });
 }
 
+// for join query
+async function joinPlantWithPlantType(plantTypeName) {
+  return await withOracleDB(async (connection) => {
+    const sql = `
+      SELECT 
+        p.plant_id,
+        p.latitude,
+        p.longitude,
+        p.radius,
+        p.is_ready,
+        p.section_id,
+        pt.name as type_name,
+        pt.requirements,
+        pt.description
+      FROM Plant p
+      JOIN PlantType pt ON p.type_name = pt.name
+      WHERE pt.name = :plantTypeName
+      ORDER BY p.plant_id`;
+
+    const result = await connection.execute(sql, [plantTypeName]);
+    
+    return result.rows.map((row) => {
+      return {
+        plant_id: row[0],
+        latitude: row[1],
+        longitude: row[2],
+        radius: row[3],
+        is_ready: row[4],
+        section_id: row[5],
+        type_name: row[6],
+        requirements: row[7],
+        description: row[8]
+      };
+    });
+  }).catch(() => {
+    return [];
+  });
+}
+
 // ---------------------------------------------------------------
 // FETCH COMMANDS
 // ---------------------------------------------------------------
@@ -609,6 +648,7 @@ module.exports = {
   divisionSectionsWithAllPlantTypes,
   nestedAggregationSectionDiversity,
   havingSectionsHighWaterUsage,
+  joinPlantWithPlantType,
 
   fetchGardentableFromDb,
   fetchPersonFromDb,

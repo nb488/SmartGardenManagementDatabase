@@ -208,7 +208,7 @@ async function selectPlanttable(filters) {
 
     filters.forEach((f, index) => {
       if (index > 0) sql += ` ${f.logic} `; // concatenate OR/AND after first attribute
-      sql += `${f.column} = :${index}`;
+      sql += `LOWER(${f.column}) = LOWER(:${index})`;
       vals.push(f.value);
     });
   }

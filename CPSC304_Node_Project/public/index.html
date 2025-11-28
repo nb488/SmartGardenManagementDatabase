@@ -83,7 +83,7 @@
                       id="insertName"
                       placeholder="Garden Name"
                       maxlength="200"
-              />
+              required/>
           </div>
           <div class="field">
               <input
@@ -130,7 +130,7 @@
           <br />
           <p>
             <strong
-              >Select which fields to update (check the checkboxes for the
+              >Select which fields to update <br />(check the checkboxes for the
               fields you want to change):</strong
             >
           </p>
@@ -144,7 +144,7 @@
               <label>
             <input type="checkbox" id="checkLongitude" class="field-checkbox" />
             Longitude:</label>
-            <input 1type="number" id="updateLongitude" step="0.0001" disabled />
+            <input type="number" id="updateLongitude" step="0.0001" disabled />
           </div>
           <div class="field">
               <label>
@@ -152,16 +152,17 @@
             Radius:</label>
             <input type="number" id="updateRadius" step="0.01" disabled />
           </div>
-          <div class="field">
+          <div class="field" style="display: inline-block">
+              <br />
               <label>
-            <input type="checkbox" id="checkIsReady" class="field-checkbox" />
+            <input type="checkbox" id="checkIsReady" class="field-checkbox"/>
             Status:</label>
             <select id="updateIsReady" class="select-button" disabled>
               <option value="0">Not Ready</option>
               <option value="1">Ready</option>
             </select>
           </div>
-          <div class="field">
+          <div class="field" style="display: inline-block">
               <label>
             <input type="checkbox" id="checkTypeName" class="field-checkbox" />
            Plant Type:</label>
@@ -169,7 +170,7 @@
               <option value="">-- Select Type --</option>
             </select>
           </div>
-          <div class="field">
+          <div class="field" style="display: inline-block">
               <label>
             <input type="checkbox" id="checkSectionId" class="field-checkbox" />
             Section:</label>
@@ -177,7 +178,7 @@
               <option value="">-- Select Section --</option>
             </select>
           </div>
-            <br />
+            <br /><br />
           <button type="submit">Update Plant</button>
         </div>
         <div id="updateResultMsg"></div>
@@ -229,8 +230,8 @@
         </div>
         <br />
         <div id="selectionResultMsg"></div>
-        <div id="selectionResult"></div>
       </form>
+        <div id="selectionResult"></div>
     </div>
 
     <div
@@ -372,7 +373,7 @@
     <p>
       If this is the first time you're running this page, you MUST use reset
     </p>
-    <button id="resetDatabase">reset</button> <br />
+    <button id="resetDatabase">Reset</button> <br />
     <div id="resetResultMsg"></div>
 
     <!-- ========================================================================= -->
@@ -438,7 +439,7 @@
           <thead>
             <tr>
               <th>Length</th>
-              <th>With</th>
+              <th>Width</th>
               <th>Area</th>
             </tr>
           </thead>
@@ -576,7 +577,7 @@
         <table id="watertable" border="1">
           <thead>
             <tr>
-              <th>Resource Usage I</th>
+              <th>Resource Usage ID</th>
               <th>Timestamp</th>
               <th>Volume (l)</th>
               <th>Section ID</th>

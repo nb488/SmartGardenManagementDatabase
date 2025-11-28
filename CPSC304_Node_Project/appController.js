@@ -133,6 +133,7 @@ router.post('/reset-database', async (req, res) => {
   }
 });
 
+// for insert query (add new tuple to the Garden table)
 router.post('/insert-gardentable', async (req, res) => {
   const { garden_id, name, postal_code, street_name, house_number, owner_id } =
     req.body;
@@ -154,6 +155,7 @@ router.post('/insert-gardentable', async (req, res) => {
   }
 });
 
+// for update query (update attribute of tuple in Plant table)
 router.post('/update-plant', async (req, res) => {
   const { plant_id, fieldsToUpdate } = req.body;
   const updateResult = await appService.updatePlant(plant_id, fieldsToUpdate);
@@ -167,6 +169,7 @@ router.post('/update-plant', async (req, res) => {
   }
 });
 
+// for select query (select Plant by attribute from Plant table)
 router.post('/select-planttable', async (req, res) => {
   const { filters } = req.body;
   const result = await appService.selectPlanttable(filters);
@@ -178,6 +181,7 @@ router.post('/select-planttable', async (req, res) => {
   }
 });
 
+// for project query (select columns from Garden table to display)
 router.post('/project-garden', async (req, res) => {
   const { columns } = req.body;
   const projectionResult = await appService.projectGarden(columns);
@@ -191,14 +195,14 @@ router.post('/project-garden', async (req, res) => {
   }
 });
 
-// for join query 
+// for join query (joins Plant and Plant type tables)
 router.post('/join-plant-planttype', async (req, res) => {
   const { plantTypeName } = req.body;
   const joinData = await appService.joinPlantWithPlantType(plantTypeName);
   res.json({ success: true, data: joinData });
 });
 
-// for delete query
+// for delete query (deletes tool type from tool type table)
 router.post('/delete-tooltype', async (req, res) => {
   const { toolTypeName } = req.body;
   const deleteResult = await appService.deleteToolType(toolTypeName);

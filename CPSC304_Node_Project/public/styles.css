@@ -26,6 +26,7 @@ hr {
   margin-bottom: 24px;
 }
 
+/* Title text inside the header */
 .title {
   margin: 20px;
 }
@@ -56,7 +57,7 @@ hr {
   border: 2px solid #0f5a2a;
 }
 
-/* SELECT QUERY OPTIONS */
+/* DROPDOWNS QUERY OPTIONS */
 .logic-select,
 .column-select {
   margin-right: 15px;
@@ -71,7 +72,7 @@ hr {
   width: fit-content;
 }
 
-/* QUERY CONTAINER STYLES */
+/* QUERY BLOCK CONTAINERS */
 .query-container {
   background-color: #f9f9f9;
   border: 1px solid #ddd;
@@ -83,6 +84,7 @@ hr {
   align-items:flex-start;
 }
 
+/* Layout for form elements inside each query block */
 .queryinputContainer {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -95,35 +97,18 @@ hr {
   width: fit-content;
 }
 
-/* Insert query fields */
+/* Wrapper for each label/input pair */
 .field {
   display: flex;
   flex-direction: column;
 }
 
-/* TABLE STYLES */
+/* TABLE APPEARANCE */
 table {
   width: 100%;
   border-collapse: collapse;
   background-color: #fff;
   box-shadow: 0 1px 12px rgba(0, 0, 0, 0.1);
-  border-radius: 5px;
-}
-
-#tableContainer {
-  display: flex;
-  align-items: flex-start;
-  gap: 20px;
-}
-
-#sidebar {
-  width: 220px;
-  padding: 20px;
-  background-color: #f4f4f4;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  position: sticky;
-  top: 20px;
 }
 
 .table-container {
@@ -134,12 +119,14 @@ table {
   display: block;
 }
 
+/* Cell styling */
 th,
 td {
   padding: 12px 15px;
   border-bottom: 1px solid #ddd;
 }
 
+/* Header row styling */
 th {
   background-color: #f2f2f2;
   font-weight: bold;
@@ -154,6 +141,7 @@ tr:hover {
   cursor: pointer;
 }
 
+/* BUTTONS DEFAULT */
 button {
   background-color: #15803d;
   color: #fff;
@@ -167,14 +155,12 @@ button {
 }
 
 button:hover {
-  background-color: rgb(22, 87, 207);
+  background-color: #7CA37C;
 }
 
 button:active {
-  background-color: rgb(12, 67, 187);
+  background-color: #7CA37C;
 }
-
-
 
 /* INPUT STYLES */
 input,

@@ -63,7 +63,6 @@ async function withOracleDB(action) {
 
 // ----------------------------------------------------------
 // Core functions for database operations
-// Modify these functions, especially the SQL queries, based on your project's requirements and design.
 async function testOracleConnection() {
   return await withOracleDB(async (connection) => {
     return true;
@@ -72,6 +71,7 @@ async function testOracleConnection() {
   });
 }
 
+// reset database and run database_initialization.sql to populate tables
 async function resetDatabase() {
   return await withOracleDB(async (connection) => {
     const fs = require('fs').promises;
@@ -123,6 +123,7 @@ async function resetDatabase() {
 // QUERY COMMANDS
 // ---------------------------------------------------------------
 
+// insert query
 async function insertGardentable(
   garden_id,
   name,
@@ -195,6 +196,7 @@ async function insertGardentable(
   })
 }
 
+// select query
 async function selectPlanttable(filters) {
   let sql = 'SELECT * FROM PLANT';
   const vals = [];
@@ -221,6 +223,7 @@ async function selectPlanttable(filters) {
   };})
 }
 
+// update query
 async function updatePlant(plant_id, fieldsToUpdate) {
   return await withOracleDB(async (connection) => {
     // Validate at least one field is being updated
@@ -317,6 +320,7 @@ async function updatePlant(plant_id, fieldsToUpdate) {
   });
 }
 
+// project query
 async function projectGarden(columns) {
   return await withOracleDB(async (connection) => {
     if (!columns || columns.length === 0) {
@@ -359,6 +363,7 @@ async function groupByPlantType() {
   });
 }
 
+// division query
 async function divisionSectionsWithAllPlantTypes() {
   return await withOracleDB(async (connection) => {
     const sql = `
@@ -390,6 +395,7 @@ async function divisionSectionsWithAllPlantTypes() {
   });
 }
 
+// nested aggregation query
 async function nestedAggregationSectionDiversity() {
   return await withOracleDB(async (connection) => {
     const sql = `
@@ -423,6 +429,7 @@ async function nestedAggregationSectionDiversity() {
   });
 }
 
+// having query
 async function havingSectionsHighWaterUsage() {
   return await withOracleDB(async (connection) => {
     const sql = `
@@ -449,7 +456,7 @@ async function havingSectionsHighWaterUsage() {
   });
 }
 
-// for join query
+// join query
 async function joinPlantWithPlantType(plantTypeName) {
   return await withOracleDB(async (connection) => {
     const sql = `
@@ -488,6 +495,7 @@ async function joinPlantWithPlantType(plantTypeName) {
   });
 }
 
+// delete query
 async function deleteToolType(toolTypeName) {
   return await withOracleDB(async (connection) => {
 

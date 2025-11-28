@@ -352,10 +352,10 @@ try {
         messageElement.textContent = 'There are no plants with these conditions';
     }
     } else {
-        resultContainer.textContent = data.message;
+        messageElement.textContent = data.message;
   }
 } catch (err) {
-    resultContainer.textContent = 'Error retrieving plant selection';
+    messageElement.textContent = 'Error retrieving plant selection';
 }
 }
 

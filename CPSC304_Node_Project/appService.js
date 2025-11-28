@@ -212,11 +212,13 @@ async function selectPlanttable(filters) {
   }
 
   return await withOracleDB(async (connection) => {
+
+  try {
     const result = await connection.execute(sql, vals, { autoCommit: true });
-    return {success : true, rows : result.rows}
-  }).catch(() => {
-    return false;
-  });
+    return {success : true, rows : result.rows};
+  } catch (err) {
+    return {success : false, message : 'Selection unsuccessful, invalid Input'}
+  };})
 }
 
 async function updatePlant(plant_id, fieldsToUpdate) {

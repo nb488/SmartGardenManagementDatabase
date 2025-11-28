@@ -300,7 +300,7 @@ async function selectPlant(event) {
   });
 
     const messageElement = document.getElementById('selectionResultMsg');
-    //const resultContainer = document.getElementById('selectionResult');
+    messageElement.textContent =" ";
     const resultContainer = document.getElementById('selectionResult');
     const plantCol = ['Plant ID', 'Latitude', 'Longitude', 'Radius', 'Status', 'Type', 'Section ID'];
     resultContainer.innerHTML = '';
@@ -315,8 +315,8 @@ try {
   });
 
   const data = await response.json();
-
-    if (data.success && data.rows.length > 0) {
+    if (data.success) {
+    if (data.rows && data.rows.length > 0) {
         const table = document.createElement('table');
         table.border = '1';
 
@@ -349,11 +349,14 @@ try {
         resultContainer.appendChild(table);
 
     } else {
-        messageElement.textContent = 'No results found';
+        messageElement.textContent = 'There are no plants with these conditions';
     }
-} catch (err) {
-        resultContainer.textContent = 'Error fetching data.';
+    } else {
+        resultContainer.textContent = data.message;
   }
+} catch (err) {
+    resultContainer.textContent = 'Error retrieving plant selection';
+}
 }
 
 // Dynamically create filter option-menus for logic (AND/OR) and column selection

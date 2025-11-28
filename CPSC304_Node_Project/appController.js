@@ -171,10 +171,10 @@ router.post('/select-planttable', async (req, res) => {
   const { filters } = req.body;
   const result = await appService.selectPlanttable(filters);
 
-  if (result) {
+  if (result.success) {
     res.json(result);
   } else {
-    res.status(500).json({ success: false });
+    res.status(500).json(result);
   }
 });
 

@@ -380,7 +380,7 @@ async function addSelectFilter(event) {
         <option value="latitude">Latitude</option>
         <option value="longitude">Longitude</option>
         <option value="radius">Radius</option>
-        <option value="is_ready">Status</option>
+        <option value="is_ready">Status (1=Ready, 0=Not Ready)</option>
         <option value="type_name">Type</option>
         <option value="section_id">Section ID</option>`;
 

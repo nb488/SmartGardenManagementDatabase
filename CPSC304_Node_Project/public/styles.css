@@ -64,6 +64,13 @@ hr {
   background-color: transparent;
 }
 
+.select-button {
+  margin-right: 15px;
+  font-size: 16px;
+  background-color: transparent;
+  width: fit-content;
+}
+
 /* QUERY CONTAINER STYLES */
 .query-container {
   background-color: #f9f9f9;
@@ -73,6 +80,7 @@ hr {
   margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   display: flex;
+  align-items:flex-start;
 }
 
 .queryinputContainer {

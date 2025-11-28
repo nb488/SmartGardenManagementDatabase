@@ -122,7 +122,7 @@
         <p>Select a plant to update its information:</p>
         <div class="field">
           <label for="updatePlantSelect">Select Plant:</label>
-          <select id="updatePlantSelect" required>
+          <select id="updatePlantSelect" class = "select-button" required>
             <option value="">-- Select a Plant --</option>
           </select>
         </div>
@@ -135,42 +135,49 @@
             >
           </p>
           <div class="field">
+              <label>
             <input type="checkbox" id="checkLatitude" class="field-checkbox" />
-            <label for="updateLatitude">Latitude:</label>
+            Latitude:</label>
             <input type="number" id="updateLatitude" step="0.0001" disabled />
           </div>
           <div class="field">
+              <label>
             <input type="checkbox" id="checkLongitude" class="field-checkbox" />
-            <label for="updateLongitude">Longitude:</label>
+            Longitude:</label>
             <input 1type="number" id="updateLongitude" step="0.0001" disabled />
           </div>
           <div class="field">
+              <label>
             <input type="checkbox" id="checkRadius" class="field-checkbox" />
-            <label for="updateRadius">Radius:</label>
+            Radius:</label>
             <input type="number" id="updateRadius" step="0.01" disabled />
           </div>
           <div class="field">
+              <label>
             <input type="checkbox" id="checkIsReady" class="field-checkbox" />
-            <label for="updateIsReady">Status:</label>
-            <select id="updateIsReady" disabled>
+            Status:</label>
+            <select id="updateIsReady" class="select-button" disabled>
               <option value="0">Not Ready</option>
               <option value="1">Ready</option>
             </select>
           </div>
           <div class="field">
+              <label>
             <input type="checkbox" id="checkTypeName" class="field-checkbox" />
-            <label for="updateTypeName">Plant Type:</label>
-            <select id="updateTypeName" disabled>
+           Plant Type:</label>
+            <select id="updateTypeName" class="select-button" disabled>
               <option value="">-- Select Type --</option>
             </select>
           </div>
           <div class="field">
+              <label>
             <input type="checkbox" id="checkSectionId" class="field-checkbox" />
-            <label for="updateSectionId">Section:</label>
-            <select id="updateSectionId" disabled>
+            Section:</label>
+            <select id="updateSectionId" class="select-button" disabled>
               <option value="">-- Select Section --</option>
             </select>
           </div>
+            <br />
           <button type="submit">Update Plant</button>
         </div>
         <div id="updateResultMsg"></div>
@@ -183,7 +190,7 @@
     <p>Select a tool type. All tools of this type will be deleted from every garden.</p>
     <div class="field">
       <label for="deleteToolTypeSelect">Select Tool Type:</label>
-      <select id="deleteToolTypeSelect" required>
+      <select id="deleteToolTypeSelect" class="select-button" required>
         <option value="">-- Select a Tool Type --</option>
       </select>
     </div>
@@ -205,7 +212,7 @@
               <option value="latitude">Latitude</option>
               <option value="longitude">Longitude</option>
               <option value="radius">Radius</option>
-              <option value="is_ready">Status</option>
+              <option value="is_ready">Status (1=Ready, 0=Not Ready)</option>
               <option value="type_name">Type</option>
               <option value="section_id">Section ID</option>
             </select>
@@ -213,7 +220,7 @@
             <input class="filter-value" placeholder="Value" required />
           </div>
         </div>
-        <div id="selection-buttons">
+        <div id="selection-buttons" class="select-button">
           <button type="button" id="addFilterButton">Add Filter</button>
           <button type="button" id="removeFilterButton">Remove Filter</button>
           <br />
@@ -232,37 +239,39 @@
       style="display: none"
     >
       <h2>Projection Query</h2>
+      <p>Select which columns to display from the Garden table:</p>
       <form id="projectionGardenForm" class="queryinputContainer">
-        <p>Select which columns to display from the Garden table:</p>
-        <div class="field">
+        <div class="field" style="display: inline-block">
           <input type="checkbox" id="projGardenId" value="garden_id" />
           <label for="projGardenId">Garden ID</label>
         </div>
-        <div class="field">
+        <div class="field" style="display: inline-block">
           <input type="checkbox" id="projName" value="name" />
           <label for="projName">Name</label>
         </div>
-        <div class="field">
+        <div class="field" style="display: inline-block">
           <input type="checkbox" id="projPostalCode" value="postal_code" />
           <label for="projPostalCode">Postal Code</label>
         </div>
-        <div class="field">
+        <div class="field" style="display: inline-block">
           <input type="checkbox" id="projStreetName" value="street_name" />
           <label for="projStreetName">Street Name</label>
         </div>
-        <div class="field">
+        <div class="field" style="display: inline-block">
           <input type="checkbox" id="projHouseNumber" value="house_number" />
           <label for="projHouseNumber">House Number</label>
         </div>
-        <div class="field">
+        <div class="field" style="display: inline-block">
           <input type="checkbox" id="projOwnerId" value="owner_id" />
           <label for="projOwnerId">Owner ID</label>
         </div>
-        <br />
         <button type="submit">Show Selected Columns</button>
-        <div id="projectionResultMsg"></div>
-        <div id="projectionResult"></div>
       </form>
+        <br />
+        <div id="projectionResultMsg"></div>
+          <br />
+        <div id="projectionResult"></div>
+
     </div>
 
       <div id="join-container" class="query-container" style="display: none">
@@ -271,15 +280,17 @@
     <p>Select a plant type to see all existing plants and their gardening requirements:</p>
     <div class="field">
       <label for="joinPlantTypeSelect">Select Plant Type:</label>
-      <select id="joinPlantTypeSelect" required>
+      <select id="joinPlantTypeSelect" class="select-button" required>
         <option value="">-- Select a Plant Type --</option>
       </select>
     </div>
     <br />
     <button type="submit">Search Plants by Type</button>
+      </form>
+          <br />
     <div id="joinResultMsg"></div>
+          <br />
     <div id="joinResult"></div>
-  </form>
 </div>
 
     <div id="groupby-container" class="query-container" style="display: none">
@@ -287,6 +298,7 @@
       <p>See how many plants of each type exist across all gardens:</p>
       <button id="groupByTypeBtn">Show Plant Count By Type</button><br /><br />
       <div id="groupByResultMsg"></div>
+        <br />
       <table id="groupByResultTable" border="1">
         <thead>
           <tr>
@@ -303,6 +315,7 @@
       <p>Find sections with high water consumption (more than 50 litres):</p>
       <button id="havingBtn">Show High Water Usage Sections</button><br /><br />
       <div id="havingResultMsg"></div>
+        <br />
       <table id="havingResultTable" border="1">
         <thead>
           <tr>
@@ -321,6 +334,7 @@
       <p>Find sections with above-average plant type diversity:</p>
       <button id="nestedAggBtn">Show Sections Above Average Diversity</button><br /><br />
       <div id="nestedAggResultMsg"></div>
+        <br />
       <table id="nestedAggResultTable" border="1">
         <thead>
           <tr>
@@ -339,6 +353,7 @@
       <p>Find sections that have grown ALL available plant types:</p>
       <button id="divisionBtn">Show Sections With All Plant Types</button><br /><br />
       <div id="divisionResultMsg"></div>
+        <br />
       <table id="divisionResultTable" border="1">
         <thead>
           <tr>
@@ -368,8 +383,8 @@
         <table id="persontable" border="1">
           <thead>
             <tr>
-              <th>person_id</th>
-              <th>name</th>
+              <th>Person ID</th>
+              <th>Name</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -381,9 +396,9 @@
         <table id="postalcodetable" border="1">
           <thead>
             <tr>
-              <th>postalcode</th>
-              <th>province</th>
-              <th>city</th>
+              <th>Postal Code</th>
+              <th>Province</th>
+              <th>City</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -395,8 +410,8 @@
         <table id="tooltypetable" border="1">
           <thead>
             <tr>
-              <th>name</th>
-              <th>function</th>
+              <th>Name</th>
+              <th>Function</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -408,9 +423,9 @@
         <table id="planttypetable" border="1">
           <thead>
             <tr>
-              <th>name</th>
-              <th>requirements</th>
-              <th>description</th>
+              <th>Name</th>
+              <th>Requirements</th>
+              <th>Descriptions</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -422,9 +437,9 @@
         <table id="sectiondimensionstable" border="1">
           <thead>
             <tr>
-              <th>length</th>
-              <th>width</th>
-              <th>area</th>
+              <th>Length</th>
+              <th>With</th>
+              <th>Area</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -436,9 +451,9 @@
         <table id="locationtable" border="1">
           <thead>
             <tr>
-              <th>postal_code</th>
-              <th>house_number</th>
-              <th>street_name</th>
+              <th>Postal Code</th>
+              <th>House Number</th>
+              <th>Street Name</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -450,12 +465,12 @@
         <table id="gardentable" border="1">
           <thead>
             <tr>
-              <th>garden_id</th>
-              <th>name</th>
-              <th>postal_code</th>
-              <th>street_name</th>
-              <th>house_number</th>
-              <th>owner_id</th>
+              <th>Garden ID</th>
+              <th>Name</th>
+              <th>Postal Code</th>
+              <th>Street Name</th>
+              <th>House Number</th>
+              <th>Owner ID</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -467,10 +482,10 @@
         <table id="tooltable" border="1">
           <thead>
             <tr>
-              <th>tool_id</th>
-              <th>date_added</th>
-              <th>garden_id</th>
-              <th>type_name</th>
+              <th>Tool ID</th>
+              <th>Date Added</th>
+              <th>Garden ID</th>
+              <th>Type Name</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -482,8 +497,8 @@
         <table id="hasaccesstable" border="1">
           <thead>
             <tr>
-              <th>garden_id</th>
-              <th>person_id</th>
+              <th>Garden ID</th>
+              <th>Person ID</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -495,12 +510,12 @@
         <table id="sectiontable" border="1">
           <thead>
             <tr>
-              <th>section_id</th>
-              <th>garden_id</th>
-              <th>latitude</th>
-              <th>longitude</th>
-              <th>length</th>
-              <th>width</th>
+              <th>Section ID</th>
+              <th>Garden ID</th>
+              <th>Latitude</th>
+              <th>Longitude</th>
+              <th>Length</th>
+              <th>Width</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -512,13 +527,13 @@
         <table id="planttable" border="1">
           <thead>
             <tr>
-              <th>plant_id</th>
-              <th>latitude</th>
-              <th>longitude</th>
-              <th>radius</th>
-              <th>is_ready</th>
-              <th>type_name</th>
-              <th>section_id</th>
+              <th>Plant ID</th>
+              <th>Latitude</th>
+              <th>Longitude</th>
+              <th>Radius</th>
+              <th>Status (1=Ready, 0=Not Ready)</th>
+              <th>Type</th>
+              <th>Section ID</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -530,10 +545,10 @@
         <table id="environmentaldatapointtable" border="1">
           <thead>
             <tr>
-              <th>timestamp</th>
-              <th>section_id</th>
-              <th>temperature</th>
-              <th>moisture</th>
+              <th>Timestamp</th>
+              <th>Section ID</th>
+              <th>Temperature</th>
+              <th>Moisture</th>
               <th>pH</th>
             </tr>
           </thead>
@@ -546,10 +561,10 @@
         <table id="maintenancelogtable" border="1">
           <thead>
             <tr>
-              <th>maintenance_log_id</th>
-              <th>timestamp</th>
-              <th>entry</th>
-              <th>section_id</th>
+              <th>Maintenance Log ID</th>
+              <th>Timestamp</th>
+              <th>Entry</th>
+              <th>Section ID</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -561,10 +576,10 @@
         <table id="watertable" border="1">
           <thead>
             <tr>
-              <th>resource_usage_data_point_id</th>
-              <th>timestamp</th>
-              <th>volume_litres</th>
-              <th>section_id</th>
+              <th>Resource Usage I</th>
+              <th>Timestamp</th>
+              <th>Volume (l)</th>
+              <th>Section ID</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -576,12 +591,12 @@
         <table id="nutrienttable" border="1">
           <thead>
             <tr>
-              <th>resource_usage_data_point_id</th>
-              <th>timestamp</th>
-              <th>nitrogen_grams</th>
-              <th>potassium_grams</th>
-              <th>phosphorus_grams</th>
-              <th>section_id</th>
+              <th>Resource Usage ID</th>
+              <th>Timestamp</th>
+              <th>Nitrogen (g)</th>
+              <th>Potassium (g)</th>
+              <th>Phosphorus (g)</th>
+              <th>Section ID</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -593,12 +608,12 @@
         <table id="lighttable" border="1">
           <thead>
             <tr>
-              <th>resource_usage_data_point_id</th>
-              <th>timestamp</th>
-              <th>intensity_lux</th>
-              <th>duration_mins</th>
-              <th>type</th>
-              <th>section_id</th>
+              <th>Resource Usage ID</th>
+              <th>Timestamp</th>
+              <th>Intensity (lux)</th>
+              <th>Duration (min)</th>
+              <th>Type</th>
+              <th>Section ID</th>
             </tr>
           </thead>
           <tbody></tbody>

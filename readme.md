@@ -4,9 +4,8 @@ This repository contains the CPSC 304 Project for team 68.
 
 # Team Members:
 
--Kaitlin
--Natalia
--Kieran
+Kaitlin Gill<br>
+Natalia Blanco<br>Kieran Freitag
 
 # Project Description
 

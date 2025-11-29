@@ -203,13 +203,18 @@ async function selectPlanttable(filters) {
 
   // assemble sql query with binding
   if (filters[0].value != '') {
-    // check if no user input -> output all tuples
     sql += ` WHERE `;
 
     filters.forEach((f, index) => {
+      let col = f.column;
+      let value = f.value;
+      if (col === 'type_name' && value !== '') {
+      col = `LOWER(${f.column})`;
+      value = f.value.toLowerCase();}
+
       if (index > 0) sql += ` ${f.logic} `; // concatenate OR/AND after first attribute
-      sql += `LOWER(${f.column}) = LOWER(:${index})`;
-      vals.push(f.value);
+      sql += `${col} = :${index}`;
+      vals.push(value);
     });
   }
 

@@ -349,7 +349,7 @@ try {
         resultContainer.appendChild(table);
 
     } else {
-        messageElement.textContent = 'There are no plants with these conditions';
+        messageElement.textContent = 'Selection successful, but no plants found';
     }
     } else {
         messageElement.textContent = data.message;

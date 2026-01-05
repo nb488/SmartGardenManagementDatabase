@@ -6,9 +6,11 @@ Team Members : Kaitlin Gill, Natalia Blanco, Kieran Freitag
 
 Smart Garden Management System that organizes gardens into monitored sections. Tracks environmental conditions, resource usage, plants, and maintenance logs, while managing ownership and access. Enables gardeners and workers to make informed decisions, optimize plant growth, and efficiently manage garden resources.
 
+**Features:** Allows users to navigate and modify the garden database, the interface provides functionalities such as new garden insertion, updating plants, and deleting available tools. 
+
 --- 
 
-## Queries
+## Database Queries
 
 | Query Type                        | Description                                                                                                                                                                      |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -66,6 +68,14 @@ Smart Garden Management System that organizes gardens into monitored sections. T
 
    Use your preferred SQL client or command-line tool with the credentials specified in the initialization script.
    
+ ---
+
+ ## Tech Stack
+
+ - **Backend:** Node.js, Express
+ - **Database:** Oracle Database (oracledb)
+ - **Frontend:** HTML, CSS
+
  ---
  
 ## Notes
